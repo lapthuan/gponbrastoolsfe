@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   Card,
@@ -36,6 +36,7 @@ function Gpon() {
   const [loadingDevices, setLoadingDevices] = useState(false);
   const [selectDevices, setSelectDevices] = useState();
   const [radioValue, setRadioValue] = useState(null);
+  const terminalRef = useRef(null);
   const { data: dataIp, loading: loadingIp } = useAsync(() =>
     ServiceIp.getAllIp()
   );
@@ -50,7 +51,13 @@ function Gpon() {
   );
   const [form] = useForm();
   const [form2] = useForm();
-
+  useEffect(() => {
+    // Cuộn xuống cuối khi lineData thay đổi
+    if (terminalRef.current) {
+      const terminalElement = terminalRef.current;
+      terminalElement.scrollTop = terminalElement.scrollHeight;
+    }
+  }, [lineData]);
   const controlGpon = async (mytv, net, ims, ip, loaithietbi, form2Values) => {
     const data = {
       ipaddress: ip,
@@ -188,7 +195,7 @@ function Gpon() {
                 layout="horizontal"
                 size={"small"}
                 className="form-card"
-                style={{ marginTop: 10 }}
+                style={{ marginTop: 40 }}
               >
                 <Form.Item
                   label="Loại thiết bị"
@@ -306,11 +313,12 @@ function Gpon() {
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">
-            <Card bordered={false} className="criclebox h-full">
+            <Card bordered={false} className="criclebox h-full" ref={terminalRef}>
               <Terminal
                 style={{ maxWidth: "150px" }}
-                height="40vh"
+                height="45vh"
                 colorMode={ColorMode.Dark}
+                ref={terminalRef}
               >
                 {lineData}
               </Terminal>
@@ -346,7 +354,7 @@ function Gpon() {
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <Form
-                labelCol={{ span: 10 }}
+                labelCol={{ span: 8 }}
                 initialValues={{
                   size: "small",
                 }}
@@ -375,10 +383,9 @@ function Gpon() {
             <Card bordered={false} className="criclebox h-full card-center" >
               <Space direction="horizontal">
                 <Button type="primary" onClick={handleRun} loading={runLoading}>
-                  {" "}
-                  Run{" "}
+                  {runLoading ? "Loading" : "Run"}
                 </Button>
-                <Button type="primary" danger>
+                <Button type="primary" danger onClick={handleClear}>
                   {" "}
                   Clear Terminal{" "}
                 </Button>

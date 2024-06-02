@@ -3073,13 +3073,18 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   color: #2bff2b;
 
 }
-
+.react-terminal-window-buttons{
+  display: none !important;
+}
 .react-terminal-wrapper {
 	font-size: 14px !important;
-  padding: 75px 10px 10px !important;
+  padding: 20px 10px !important;
 }
 .react-terminal {
     word-wrap: break-word;
     word-break: break-all;
     white-space: normal;
+}
+.select-item .ant-input-number {
+  width: 200px; 
 }
