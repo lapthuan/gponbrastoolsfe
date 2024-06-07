@@ -22,21 +22,21 @@ import IpAddress from "./pages/IpAddress";
 import VlanIms from "./pages/VlanIms";
 import VlanMyTV from "./pages/VlanMyTV";
 import VlanNet from "./pages/VlanNet";
-
+import PrivateRoute from "./privateRouter";
 function App() {
   return (
     <div className="App">
       <Switch>
         <Route exact path="/sign-in" component={SignIn} />
         <Main>
-          <Route exact path="/" component={Gpon} />
-          <Route exact path="/gpon" component={Gpon} />
-          <Route exact path="/bras" component={Bras} />
-          <Route exact path="/device" component={Device} />
-          <Route exact path="/ipaddress" component={IpAddress} />
-          <Route exact path="/vlanims" component={VlanIms} />
-          <Route exact path="/vlanmytv" component={VlanMyTV} />
-          <Route exact path="/vlannet" component={VlanNet} />
+          <PrivateRoute exact path="/" component={Gpon} />
+          <PrivateRoute exact path="/gpon" component={Gpon} />
+          <PrivateRoute exact path="/bras" component={Bras} />
+          <PrivateRoute exact path="/device" component={Device} />
+          <PrivateRoute exact path="/ipaddress" component={IpAddress} />
+          <PrivateRoute exact path="/vlanims" component={VlanIms} />
+          <PrivateRoute exact path="/vlanmytv" component={VlanMyTV} />
+          <PrivateRoute exact path="/vlannet" component={VlanNet} />
         </Main>
       </Switch>
     </div>
