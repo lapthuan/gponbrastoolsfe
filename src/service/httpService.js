@@ -9,6 +9,20 @@ const instance = axios.create({
   },
 });
 
+// Interceptor để thêm token vào tất cả các yêu cầu
+instance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage hoặc từ nguồn lưu trữ khác
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 const responseBody = (response) => response.data;
 
 const requests = {

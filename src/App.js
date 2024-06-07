@@ -16,24 +16,25 @@ import Billing from "./pages/Billing";
 import Rtl from "./pages/Rtl";
 import Profile from "./pages/Profile";
 import Main from "./components/layout/Main";
+import SignIn from "./pages/SignIn";
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import Bras from "./pages/Bras";
+import PrivateRoute from "./privateRouter";
 
 function App() {
   return (
     <div className="App">
       <Switch>
-
+        <Route exact path="/sign-in" component={SignIn} />
         <Main>
-          <Route exact path="/" component={Gpon} />
-          <Route exact path="/gpon" component={Gpon} />
-          <Route exact path="/bras" component={Bras} />
-          <Route exact path="/billing" component={Billing} />
-          <Route exact path="/rtl" component={Rtl} />
-          <Route exact path="/profile" component={Profile} />
-          <Redirect from="*" to="/gpon" />
+          <PrivateRoute exact path="/" component={Gpon} />
+          <PrivateRoute exact path="/gpon" component={Gpon} />
+          <PrivateRoute exact path="/bras" component={Bras} />
+          <PrivateRoute exact path="/billing" component={Billing} />
+          <PrivateRoute exact path="/rtl" component={Rtl} />
+          <PrivateRoute exact path="/profile" component={Profile} />
         </Main>
       </Switch>
     </div>

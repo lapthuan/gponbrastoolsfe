@@ -1,14 +1,6 @@
 import { useState, useEffect } from "react";
 
-import {
-  Row,
-  Col,
-  Breadcrumb,
-  Button,
-  Drawer,
-  Typography,
-  Switch,
-} from "antd";
+import { Row, Col, Breadcrumb, Button, Drawer, Typography, Switch } from "antd";
 
 import {
   StarOutlined,
@@ -76,8 +68,6 @@ const logsetting = [
   </svg>,
 ];
 
-
-
 const toggler = [
   <svg
     width="20"
@@ -121,18 +111,23 @@ function Header({
 
   const [visible, setVisible] = useState(false);
   const [sidenavType, setSidenavType] = useState("transparent");
-
+  const [token, setToken] = useState("");
   useEffect(() => window.scrollTo(0, 0));
+  useEffect(() => setToken(localStorage.getItem("token")), []);
 
   const showDrawer = () => setVisible(true);
   const hideDrawer = () => setVisible(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    
+  };
 
   return (
     <>
       <div className="setting-drwer" onClick={showDrawer}>
         {setting}
       </div>
-
       <Row gutter={[24, 0]}>
         <Col span={24} md={6}>
           <Breadcrumb>
@@ -153,7 +148,6 @@ function Header({
           </div>
         </Col>
         <Col span={24} md={18} className="header-control">
-
           <Button type="link" onClick={showDrawer}>
             {logsetting}
           </Button>
@@ -176,7 +170,9 @@ function Header({
               <div className="header-top">
                 <Title level={4}>
                   Trình cấu hình
-                  <Text className="subtitle">Xem các tùy chọn bảng điều khiển của chúng tôi.</Text>
+                  <Text className="subtitle">
+                    Xem các tùy chọn bảng điều khiển của chúng tôi.
+                  </Text>
                 </Title>
               </div>
 
@@ -246,15 +242,20 @@ function Header({
                   <Title level={5}>Thanh điều hướng cố định</Title>
                   <Switch onChange={(e) => handleFixedNavbar(e)} />
                 </div>
-
               </div>
             </div>
           </Drawer>
-          <Link to="/sign-in" className="btn-sign-in">
-            {profile}
-            <span>Sign in</span>
-          </Link>
-
+          {token === undefined || token === null ? (
+            <Link to="/sign-in" className="btn-sign-in">
+              {profile}
+              <span>Sign in</span>
+            </Link>
+          ) : (
+            <Link to="/sign-in" className="btn-sign-in">
+              {profile}
+              <span onClick={() => handleLogout()}>Logout</span>
+            </Link>
+          )}
         </Col>
       </Row>
       ```
