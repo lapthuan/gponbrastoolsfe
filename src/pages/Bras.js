@@ -218,7 +218,7 @@ const Bras = () => {
         }, 0);
     };
     // Xử lý đọc file txt
-  
+
     return (<>
         <div className="layout-content">
 
@@ -239,18 +239,20 @@ const Bras = () => {
                             form={form}
                         >
                             <Radio.Group onChange={handleRadioChange}>
-                                <Radio value="check_auth_mac">Kiểm tra xác thực MAC</Radio>
-                                <Radio value="check_lock_mac">
-                                    Kiểm tra mac bị khóa trên BRAS
-                                </Radio>
-                                <Radio value="check_user_bras">Kiểm tra user trên BRAS</Radio>
-                                <Radio value="clear_user_bras">
-                                    Clear xác thực user trên BRAS
-                                </Radio>
-                                <Radio value="clear_user_bras_file">
-                                    Clear xác thực user trên BRAS <strong>(File)</strong>
-                                </Radio>
-                                <Radio value="clear_in_bras">Clear BRAS</Radio>
+                                <Space direction="vertical">
+                                    <Radio value="check_auth_mac">Kiểm tra xác thực MAC</Radio>
+                                    <Radio value="check_lock_mac">
+                                        Kiểm tra mac bị khóa trên BRAS
+                                    </Radio>
+                                    <Radio value="check_user_bras">Kiểm tra user trên BRAS</Radio>
+                                    <Radio value="clear_user_bras">
+                                        Clear xác thực user trên BRAS
+                                    </Radio>
+                                    <Radio value="clear_user_bras_file">
+                                        Clear xác thực user trên BRAS <strong>(File)</strong>
+                                    </Radio>
+                                    <Radio value="clear_in_bras">Clear BRAS</Radio>
+                                </Space>
                             </Radio.Group>
 
                             <Space size="middle" style={{ paddingTop: 10 }}>
@@ -285,7 +287,7 @@ const Bras = () => {
                                         disabled={userFileDisabled} >
                                         <Button icon={<UploadOutlined />}>Upload</Button>
                                     </Upload>
-                                  
+
                                 </div>
                             </Space>
                         </Form>
