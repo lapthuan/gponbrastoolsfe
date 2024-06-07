@@ -11,17 +11,17 @@
 */
 import { Switch, Route, Redirect } from "react-router-dom";
 import Gpon from "./pages/Gpon";
-import Tables from "./pages/Tables";
-import Billing from "./pages/Billing";
-import Rtl from "./pages/Rtl";
-import Profile from "./pages/Profile";
 import Main from "./components/layout/Main";
 import SignIn from "./pages/SignIn";
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import Bras from "./pages/Bras";
-import PrivateRoute from "./privateRouter";
+import Device from "./pages/Device";
+import IpAddress from "./pages/IpAddress";
+import VlanIms from "./pages/VlanIms";
+import VlanMyTV from "./pages/VlanMyTV";
+import VlanNet from "./pages/VlanNet";
 
 function App() {
   return (
@@ -29,12 +29,14 @@ function App() {
       <Switch>
         <Route exact path="/sign-in" component={SignIn} />
         <Main>
-          <PrivateRoute exact path="/" component={Gpon} />
-          <PrivateRoute exact path="/gpon" component={Gpon} />
-          <PrivateRoute exact path="/bras" component={Bras} />
-          <PrivateRoute exact path="/billing" component={Billing} />
-          <PrivateRoute exact path="/rtl" component={Rtl} />
-          <PrivateRoute exact path="/profile" component={Profile} />
+          <Route exact path="/" component={Gpon} />
+          <Route exact path="/gpon" component={Gpon} />
+          <Route exact path="/bras" component={Bras} />
+          <Route exact path="/device" component={Device} />
+          <Route exact path="/ipaddress" component={IpAddress} />
+          <Route exact path="/vlanims" component={VlanIms} />
+          <Route exact path="/vlanmytv" component={VlanMyTV} />
+          <Route exact path="/vlannet" component={VlanNet} />
         </Main>
       </Switch>
     </div>
