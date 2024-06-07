@@ -29,7 +29,7 @@ const Device = () => {
 
 
             <Row gutter={[24, 0]}>
-                <Col xs={24} sm={24} md={12} lg={8} xl={8} className="mb-24">
+                <Col xs={24} sm={24} md={12} lg={6} xl={6} className="mb-24">
                     {editTab === false ? (
                         <Card title="Thêm dữ liệu" bordered={true}  >
                             <Form
@@ -149,10 +149,10 @@ const Device = () => {
                         </Card>)}
 
                 </Col>
-                <Col xs={24} sm={24} md={12} lg={16} xl={16} className="mb-24">
-                    <Card bordered={true}  >
+                <Col xs={24} sm={24} md={12} lg={18} xl={18} className="mb-24">
+                    
                         <Table pagination={{ pageSize: 4 }} columns={columns} dataSource={dataTable.slice().reverse()} loading={loading} />
-                    </Card>
+                
                 </Col>
             </Row>
 

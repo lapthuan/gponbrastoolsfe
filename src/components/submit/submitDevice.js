@@ -163,13 +163,6 @@ const SubmitDevice = () => {
     };
     const columns = [
         {
-            title: 'ID',
-            dataIndex: '_id',
-            render: (id) => (
-                <p>{id.slice(-6)}</p>
-            )
-        },
-        {
             title: 'Loại thiết bị',
             dataIndex: 'loaithietbi',
             sorter: (a, b) => a.name.localeCompare(b.name),
