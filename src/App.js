@@ -27,7 +27,7 @@ function App() {
   return (
     <div className="App">
       <Switch>
-        <Route exact path="/sign-in" component={SignIn} />
+        <Route exact path="/login" component={SignIn} />
         <Main>
           <PrivateRoute exact path="/" component={Gpon} />
           <PrivateRoute exact path="/gpon" component={Gpon} />

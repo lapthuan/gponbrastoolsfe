@@ -535,14 +535,14 @@ h4 {
   fill: #141414;
 }
 
-.layout-dashboard .header-control .btn-sign-in {
+.layout-dashboard .header-control .btn-login {
   height: auto;
   padding: 0 7px;
   margin: 0;
   box-shadow: none;
   color: #8c8c8c;
 }
-.layout-dashboard .header-control .btn-sign-in svg {
+.layout-dashboard .header-control .btn-login svg {
   margin-right: 4px;
 }
 .layout-dashboard .header-control svg {
@@ -613,7 +613,7 @@ h6 {
 .layout-dashboard .header-control .sidebar-toggler {
   display: block;
 }
-.layout-dashboard .header-control .btn-sign-in span {
+.layout-dashboard .header-control .btn-login span {
   font-weight: 600;
   vertical-align: middle;
   display: none;
@@ -2102,7 +2102,7 @@ body {
   > .ant-menu-item {
   padding: 0;
 }
-.sign-in {
+.login {
   padding: 0 20px;
 }
 .layout-default .ant-layout-content {
@@ -2620,7 +2620,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
 }
 
 section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
-  .btn-sign-in {
+  .btn-login {
   color: #fff;
 }
 
@@ -2924,7 +2924,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   transform: translate(-50%, -50%);
 }
 
-.layout-dashboard-rtl .header-control .btn-sign-in svg {
+.layout-dashboard-rtl .header-control .btn-login svg {
   margin-left: 4px;
   margin-right: 0px;
 }

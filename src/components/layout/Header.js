@@ -184,12 +184,12 @@ function Header({
             </div>
           </Drawer>
           {token === undefined || token === null ? (
-            <Link to="/sign-in" className="btn-sign-in">
+            <Link to="/login" className="btn-login">
               {profile}
               <span>Sign in</span>
             </Link>
           ) : (
-            <Link to="/sign-in" className="btn-sign-in">
+            <Link to="/login" className="btn-login">
               {profile}
               <span onClick={() => handleLogout()}>Logout</span>
             </Link>

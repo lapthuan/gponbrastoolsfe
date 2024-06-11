@@ -34,6 +34,7 @@ const SignIn = () => {
       if (res.access_token) {
         cookies.set("token", res.access_token, { path: "/" });
         history.push("/"); // Chuyển hướng sau khi đăng nhập thành công
+        message.success("Đăng nhập thành công");
       } else {
         message.error("Đăng nhập thất bại. Vui lòng kiểm tra lại.");
       }

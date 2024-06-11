@@ -34,7 +34,7 @@ React
 - [Billing](https://demos.creative-tim.com/muse-ant-design-dashboard/#/billing?ref=readme-madd)
 - [RTL](https://demos.creative-tim.com/muse-ant-design-dashboard/#/rtl?ref=readme-madd)
 - [Profile](https://demos.creative-tim.com/muse-ant-design-dashboard/#/profile?ref=readme-madd)
-- [Sign In](https://demos.creative-tim.com/muse-ant-design-dashboard/#/sign-in?ref=readme-madd)
+- [Sign In](https://demos.creative-tim.com/muse-ant-design-dashboard/#/login?ref=readme-madd)
 - [Sign Up](https://demos.creative-tim.com/muse-ant-design-dashboard/#/sign-up?ref=readme-madd)
 
 ## Quick start

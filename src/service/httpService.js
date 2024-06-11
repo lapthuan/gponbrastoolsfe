@@ -40,16 +40,16 @@ instance.interceptors.response.use(
           onOk: () => {
             modalVisible = false;
             cookies.remove("token");
-            window.location.href = "/sign-in"; // Sử dụng window.location để điều hướng
+            window.location.href = "/"; // Sử dụng window.location để điều hướng
           },
           maskClosable: false, // Ngăn không cho đóng modal bằng cách click ra ngoài
           closable: false, // Ngăn không cho đóng modal bằng cách click nút đóng
         });
-
+        
         setTimeout(() => {
           modalVisible = false;
           cookies.remove("token");
-          window.location.href = "/sign-in"; // Tự động điều hướng sau 10 giây
+          window.location.href = "/"; // Tự động điều hướng sau 10 giây
         }, 10000); // Logout tự động sau 5 giây
       }
     }

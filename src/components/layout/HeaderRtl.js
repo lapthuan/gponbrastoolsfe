@@ -414,7 +414,7 @@ function Header({
               </div>
             </div>
           </Drawer>
-          <Link to="/sign-in" className="btn-sign-in">
+          <Link to="/login" className="btn-login">
             {profile}
             <span>Sign in</span>
           </Link>
