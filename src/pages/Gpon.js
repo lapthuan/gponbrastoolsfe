@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -30,7 +29,7 @@ function Gpon() {
   const [lineData, setLineData] = useState([
     <TerminalOutput>{"typ:isadmin>#"}</TerminalOutput>,
   ]);
-  const [runLoading, setRunLoading] = useState(false)
+  const [runLoading, setRunLoading] = useState(false);
   const [deviceType, setDeviceType] = useState("");
   const [devices, setDevices] = useState([]);
   const [loadingDevices, setLoadingDevices] = useState(false);
@@ -59,26 +58,35 @@ function Gpon() {
     }
   }, [lineData]);
   const controlGpon = async (mytv, net, ims, ip, loaithietbi, form2Values) => {
-    const data = {
-      ipaddress: ip,
-      commands: radioValue,
-      device_types: loaithietbi,
-      card: form2Values.card ? form2Values.card : 0,
-      port: form2Values.port ? form2Values.port : 0,
-      onu: form2Values.onuId ? form2Values.onuId : 0,
-      slid: form2Values.slId ? form2Values.slId : 0,
-      vlanims: ims,
-      vlanmytv: mytv,
-      vlannet: net,
-    };
+    try {
+      const data = {
+        ipaddress: ip,
+        commands: radioValue,
+        device_types: loaithietbi,
+        card: form2Values.card ? form2Values.card : 0,
+        port: form2Values.port ? form2Values.port : 0,
+        onu: form2Values.onuId ? form2Values.onuId : 0,
+        slid: form2Values.slId ? form2Values.slId : 0,
+        vlanims: ims,
+        vlanmytv: mytv,
+        vlannet: net,
+      };
 
-    const res = await ServiceGpon.ControlGpon(data);
+      const res = await ServiceGpon.ControlGpon(data);
 
-    const newLine = (
-      <TerminalOutput> {res.detail.map((item) => item)}</TerminalOutput>
-    );
-    setLineData((prevLineData) => prevLineData.concat(newLine));
-    setRunLoading(false)
+      const newLine = (
+        <TerminalOutput key={lineData.length}>
+          {" "}
+          {res.detail.map((item) => item)}
+        </TerminalOutput>
+      );
+      setLineData((prevLineData) => prevLineData.concat(newLine));
+    } catch (error) {
+      console.error("Error controlling GPON:", error);
+      // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
+    } finally {
+      setRunLoading(false);
+    }
   };
 
   const handleRun = async () => {
@@ -86,7 +94,6 @@ function Gpon() {
       const formValues = await form.validateFields();
       const form2Values = await form2.validateFields();
       if (radioValue === null) {
-
         message.error("Vui lòng chọn một chức năng.");
         return;
       }
@@ -114,7 +121,7 @@ function Gpon() {
           return;
         }
       }
-      setRunLoading(true)
+      setRunLoading(true);
       const newLine = <TerminalOutput>{"typ:isadmin># ..."}</TerminalOutput>;
       setLineData((prevLineData) => prevLineData.concat(newLine));
       const device = devices.find((item) => item._id === formValues.deviceName);
@@ -144,25 +151,35 @@ function Gpon() {
     if (deviceType) {
       setLoadingDevices(true);
       const getDevice = async () => {
-        const res = await ServiceDevice.getDevice(deviceType);
-
-        setDevices(res);
-        setLoadingDevices(false);
+        try {
+          const res = await ServiceDevice.getDevice(deviceType);
+          setDevices(res);
+        } catch (error) {
+          console.error("Error fetching device data:", error);
+          // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
+        } finally {
+          setLoadingDevices(false);
+        }
       };
       getDevice();
     }
   }, [deviceType]);
 
+  //Load dữ liệu cho các input còn lại
   useEffect(() => {
     if (selectDevices) {
       const getADV = async () => {
-        const res = await ServiceDevice.getADevice(selectDevices);
-        form.setFieldsValue({
-          ipaddress: res.ipaddress,
-          vlanims: res.vlanims,
-          vlanmytv: res.vlanmytv,
-          vlannet: res.vlannet,
-        });
+        try {
+          const res = await ServiceDevice.getADevice(selectDevices);
+          form.setFieldsValue({
+            ipaddress: res.ipaddress,
+            vlanims: res.vlanims,
+            vlanmytv: res.vlanmytv,
+            vlannet: res.vlannet,
+          });
+        } catch (error) {
+          console.error("Error fetching device data:", error);
+        }
       };
 
       getADV();
@@ -173,18 +190,14 @@ function Gpon() {
     setLineData([<TerminalOutput>$</TerminalOutput>]);
   };
 
-
   return (
     <>
       <div className="layout-content">
-
-
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <div>
                 <Title level={5}>Thông số</Title>
-
               </div>
               <Form
                 form={form}
@@ -222,7 +235,9 @@ function Gpon() {
                   label="Thiết bị"
                   className="select-item"
                   name="deviceName"
-                  rules={[{ required: true, message: "Vui lòng chọn thiết bị" }]}
+                  rules={[
+                    { required: true, message: "Vui lòng chọn thiết bị" },
+                  ]}
                 >
                   <Select
                     style={{ width: "100%" }}
@@ -261,7 +276,9 @@ function Gpon() {
                   label="Vlan Net"
                   name="vlannet"
                   className="select-item"
-                  rules={[{ required: true, message: "Vui lòng chọn Vlan Net" }]}
+                  rules={[
+                    { required: true, message: "Vui lòng chọn Vlan Net" },
+                  ]}
                 >
                   <Select
                     style={{ width: "100%" }}
@@ -279,7 +296,9 @@ function Gpon() {
                   label="Vlan Mytv"
                   name="vlanmytv"
                   className="select-item"
-                  rules={[{ required: true, message: "Vui lòng chọn Vlan Mytv" }]}
+                  rules={[
+                    { required: true, message: "Vui lòng chọn Vlan Mytv" },
+                  ]}
                 >
                   <Select
                     style={{ width: "100%" }}
@@ -299,7 +318,9 @@ function Gpon() {
                   name="vlanims"
                   className="select-item"
                   loading={loadingVlanIMS}
-                  rules={[{ required: true, message: "Vui lòng chọn Vlan IMS" }]}
+                  rules={[
+                    { required: true, message: "Vui lòng chọn Vlan IMS" },
+                  ]}
                 >
                   <Select placeholder="Chọn Vlan IMS">
                     {dataVlanIMS?.map((item, i) => (
@@ -313,7 +334,11 @@ function Gpon() {
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">
-            <Card bordered={false} className="criclebox h-full" ref={terminalRef}>
+            <Card
+              bordered={false}
+              className="criclebox h-full"
+              ref={terminalRef}
+            >
               <Terminal
                 style={{ maxWidth: "150px" }}
                 height="45vh"
@@ -331,11 +356,12 @@ function Gpon() {
             <Card bordered={false} className="criclebox cardbody h-full ">
               <div className="ml-16">
                 <Title level={5}>Thông số</Title>
-
               </div>
-              <Radio.Group className="ml-16" onChange={(e) => setRadioValue(e.target.value)}>
+              <Radio.Group
+                className="ml-16"
+                onChange={(e) => setRadioValue(e.target.value)}
+              >
                 <Space direction="vertical">
-
                   <Radio value={"sync_password"}>Xem Password đồng bộ</Radio>
                   <Radio value={"delete_port"}>Xóa Port</Radio>
                   <Radio value={"check_mac"}>Xem Mac</Radio>
@@ -346,7 +372,6 @@ function Gpon() {
                   <Radio value={"status_port"}>
                     Xem trạng thái port (GPON ALU)
                   </Radio>
-
                 </Space>
               </Radio.Group>
             </Card>
@@ -380,7 +405,7 @@ function Gpon() {
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
-            <Card bordered={false} className="criclebox h-full card-center" >
+            <Card bordered={false} className="criclebox h-full card-center">
               <Space direction="horizontal">
                 <Button type="primary" onClick={handleRun} loading={runLoading}>
                   {runLoading ? "Loading" : "Run"}
@@ -393,8 +418,6 @@ function Gpon() {
             </Card>
           </Col>
         </Row>
-
-
       </div>
     </>
   );

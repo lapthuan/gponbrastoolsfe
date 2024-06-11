@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import Cookies from "universal-cookie";
 import { Row, Col, Breadcrumb, Button, Drawer, Typography, Switch } from "antd";
 
 import {
@@ -13,6 +13,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 import { Icon } from "../icon/icon";
 
+const cookies = new Cookies();
 const ButtonContainer = styled.div`
   .ant-btn-primary {
     background-color: #1890ff;
@@ -51,13 +52,13 @@ function Header({
   const [sidenavType, setSidenavType] = useState("transparent");
   const [token, setToken] = useState("");
   useEffect(() => window.scrollTo(0, 0));
-  useEffect(() => setToken(localStorage.getItem("token")), []);
+  useEffect(() => setToken(cookies.get("token")), []);
 
   const showDrawer = () => setVisible(true);
   const hideDrawer = () => setVisible(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    cookies.remove("token");
   };
 
   return (

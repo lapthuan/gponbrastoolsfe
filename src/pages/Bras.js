@@ -55,10 +55,13 @@ const Bras = () => {
                 );
                 setLineData((prevLineData) => prevLineData.concat(newLine));
             }
+        } catch (error) {
+            console.error("Error controlling BRAS:", error);
+            // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
         } finally {
-            setOnLoading(false); // Kết thúc trạng thái loading sau khi nhận được phản hồi
+            setOnLoading(false); // Kết thúc trạng thái loading sau khi nhận được phản hồi hoặc gặp lỗi
         }
-    };
+    };    
 
     const handleRun = async () => {
         try {
