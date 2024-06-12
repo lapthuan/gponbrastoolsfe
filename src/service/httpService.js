@@ -37,6 +37,7 @@ instance.interceptors.response.use(
           title: "Session Expired",
           content: "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại",
           okText: "OK",
+          centered: true,
           onOk: () => {
             modalVisible = false;
             cookies.remove("token");
