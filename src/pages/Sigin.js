@@ -13,7 +13,6 @@ import signinbg from "../assets/images/Logo-VNPT.png";
 import ServiceUser from "../service/ServiceUser";
 import Cookies from "universal-cookie";
 import { useHistory } from "react-router-dom";
-
 const { Title } = Typography;
 const { Content } = Layout;
 
@@ -59,13 +58,13 @@ const SignIn = () => {
             <Form layout="vertical" className="row-col">
               <Form.Item
                 className="username"
-                label="Username"
+                label="User name"
                 name="username"
                 onChange={(e) => setUsername(e.target.value)}
                 rules={[
                   {
                     required: true,
-                    message: "Please input your username!",
+                    message: "Vui lòng nhập tài khoản!",
                   },
                 ]}
               >
@@ -73,18 +72,24 @@ const SignIn = () => {
               </Form.Item>
 
               <Form.Item
-                className="username"
                 label="Password"
                 name="password"
                 onChange={(e) => setPassword(e.target.value)}
                 rules={[
                   {
                     required: true,
-                    message: "Please input your password!",
+                    message: "vui lòng nhập mật khẩu!",
                   },
                 ]}
               >
-                <Input placeholder="Password" type="password" />
+                <Input.Password
+                  placeholder="Password"
+                  type="password"
+                  style={{
+                    padding: "0px 11px 0px 11px",
+                    borderRadius: "5px",
+                  }}
+                />
               </Form.Item>
 
               <Form.Item>
