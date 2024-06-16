@@ -107,7 +107,7 @@ const SubmitVlanMyTV = () => {
         {
             title: 'Vlan',
             dataIndex: 'number',
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => a.number - b.number,
             sortDirections: ['descend', 'ascend'],
         },
         {

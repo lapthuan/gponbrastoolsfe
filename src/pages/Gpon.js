@@ -12,6 +12,8 @@ import {
   InputNumber,
   Space,
   message,
+  Switch,
+  Input,
 } from "antd";
 
 import Terminal, { ColorMode, TerminalOutput } from "react-terminal-ui";
@@ -23,6 +25,7 @@ import ServiceVlanNet from "../service/ServiceVlanNet";
 import ServiceDevice from "../service/ServiceDevice";
 import ServiceGpon from "../service/ServiceGpon";
 import { useForm } from "antd/es/form/Form";
+import { UserOutlined } from "@ant-design/icons";
 
 function Gpon() {
   const { Title } = Typography;
@@ -35,7 +38,11 @@ function Gpon() {
   const [loadingDevices, setLoadingDevices] = useState(false);
   const [selectDevices, setSelectDevices] = useState();
   const [radioValue, setRadioValue] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
   const terminalRef = useRef(null);
+  const { data: dataDevice, loading: loadingDevice } = useAsync(() =>
+    ServiceDevice.getAlldevice()
+  );
   const { data: dataIp, loading: loadingIp } = useAsync(() =>
     ServiceIp.getAllIp()
   );
@@ -189,7 +196,9 @@ function Gpon() {
   const handleClear = () => {
     setLineData([<TerminalOutput>$</TerminalOutput>]);
   };
-
+  const handleSwitchChange = (checked) => {
+    setIsChecked(checked);
+  };
   return (
     <>
       <div className="layout-content">
@@ -197,9 +206,15 @@ function Gpon() {
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <div>
-                <Title level={5}>Thông số</Title>
+                <Space direction="horizontal">
+                  <Title level={5}>Thông số</Title>
+                  <Switch checked={isChecked}
+                    onChange={handleSwitchChange}
+                    checkedChildren="Tài khoản" unCheckedChildren="Thiết bị" />
+                </Space>
+
               </div>
-              <Form
+              {isChecked === false ? <Form
                 form={form}
                 labelCol={{ span: 8 }}
                 initialValues={{
@@ -263,6 +278,11 @@ function Gpon() {
                     style={{ width: "100%" }}
                     placeholder="Chọn Ip"
                     loading={loadingIp}
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().includes(input.toLowerCase())
+                    }
                   >
                     {dataIp?.map((item, i) => (
                       <Select.Option key={item._id} value={item._id}>
@@ -330,7 +350,158 @@ function Gpon() {
                     ))}
                   </Select>
                 </Form.Item>
-              </Form>
+              </Form> :
+                <>
+                  <Space direction="horizontal">
+                    <Input placeholder="Tài khoản" prefix={<UserOutlined />} />
+                    <Button >Lấy dữ liệu</Button>
+                  </Space>
+                  <Form
+                    form={form}
+                    labelCol={{ span: 8 }}
+                    initialValues={{
+                      size: "small",
+                    }}
+                    layout="horizontal"
+                    size={"small"}
+                    className="form-card"
+                    style={{ marginTop: 40 }}
+                  >
+
+                    <Form.Item
+                      label="Loại thiết bị"
+                      className="select-item"
+                      name="deviceType"
+                      rules={[
+                        { required: true, message: "Vui lòng chọn loại thiết bị" },
+                      ]}
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+
+                        placeholder="Chọn loại thiết bị"
+                      >
+                        <Select.Option value="GPON ALU">GPON ALU</Select.Option>
+                        <Select.Option value="GPON HW">GPON HW</Select.Option>
+                        <Select.Option value="GPON MINI ZTE">
+                          GPON Mini ZTE
+                        </Select.Option>
+                        <Select.Option value="GPON ZTE">GPON ZTE</Select.Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      label="Thiết bị"
+                      className="select-item"
+                      name="deviceName"
+                      rules={[
+                        { required: true, message: "Vui lòng chọn thiết bị" },
+                      ]}
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+                        placeholder="Chọn thiết bị"
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          option.children.toLowerCase().includes(input.toLowerCase())
+                        }
+                        loading={loadingDevice}
+                      >
+                        {dataDevice.map((device) => (
+                          <Select.Option key={device._id} value={device._id}>
+                            {device.tenthietbi}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Ip"
+                      name="ipaddress"
+                      className="select-item"
+                      rules={[{ required: true, message: "Vui lòng chọn Ip" }]}
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+                        placeholder="Chọn Ip"
+                        loading={loadingIp}
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          option.children.toLowerCase().includes(input.toLowerCase())
+                        }
+                      >
+                        {dataIp?.map((item, i) => (
+                          <Select.Option key={item._id} value={item._id}>
+                            {item.ipaddress}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Vlan Net"
+                      name="vlannet"
+                      className="select-item"
+                      rules={[
+                        { required: true, message: "Vui lòng chọn Vlan Net" },
+                      ]}
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+                        placeholder="Chọn Vlan Net"
+                        loading={loadingVlanNet}
+                      >
+                        {dataVlanNet?.map((item, i) => (
+                          <Select.Option key={item._id} value={item._id}>
+                            {item.number}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      label="Vlan Mytv"
+                      name="vlanmytv"
+                      className="select-item"
+                      rules={[
+                        { required: true, message: "Vui lòng chọn Vlan Mytv" },
+                      ]}
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+                        placeholder="Chọn Vlan Mytv"
+                        loading={loadingVlanMyTV}
+                      >
+                        {dataVlanMyTV?.map((item, i) => (
+                          <Select.Option key={item._id} value={item._id}>
+                            {item.number}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Vlan IMS"
+                      name="vlanims"
+                      className="select-item"
+                      loading={loadingVlanIMS}
+                      rules={[
+                        { required: true, message: "Vui lòng chọn Vlan IMS" },
+                      ]}
+                    >
+                      <Select placeholder="Chọn Vlan IMS">
+                        {dataVlanIMS?.map((item, i) => (
+                          <Select.Option key={item._id} value={item._id}>
+                            {item.number}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Form>
+                </>
+
+              }
+
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">

@@ -41,7 +41,7 @@ const SubmitVlanNet = () => {
             const res = await ServiceVlanNet.editVlanNet({ number: number }, idEdit)
             if (res.detail.msg === "success") {
                 message.success("Sửa thành công thành công")
-                const datatab =  await res.detail.data.map((item, i) => {
+                const datatab = await res.detail.data.map((item, i) => {
                     return {
                         _id: item._id,
                         number: item.number,
@@ -61,7 +61,7 @@ const SubmitVlanNet = () => {
         const res = await ServiceVlanNet.deleteVlanNet(_id)
         if (res.detail.msg === "success") {
             message.success("Xóa thành công")
-            const datatab =  await res.detail.data.map((item, i) => {
+            const datatab = await res.detail.data.map((item, i) => {
                 return {
                     _id: item._id,
                     number: item.number,
@@ -80,7 +80,7 @@ const SubmitVlanNet = () => {
 
             if (res.detail.msg === "success") {
                 message.success("Thêm thành công")
-                const datatab =  await res.detail.data.map((item, i) => {
+                const datatab = await res.detail.data.map((item, i) => {
                     return {
                         _id: item._id,
                         number: item.number,
@@ -108,7 +108,7 @@ const SubmitVlanNet = () => {
         {
             title: 'Vlan',
             dataIndex: 'number',
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => a.number - b.number,
             sortDirections: ['descend', 'ascend'],
         },
         {

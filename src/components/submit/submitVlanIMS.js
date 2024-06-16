@@ -41,7 +41,7 @@ const SubmitVlanIMS = () => {
             const res = await ServiceVlanIMS.editVlanIMS({ number: number }, idEdit)
             if (res.detail.msg === "success") {
                 message.success("Sửa thành công thành công")
-                const datatab =  await res.detail.data.map((item, i) => {
+                const datatab = await res.detail.data.map((item, i) => {
                     return {
                         _id: item._id,
                         number: item.number,
@@ -61,7 +61,7 @@ const SubmitVlanIMS = () => {
         const res = await ServiceVlanIMS.deleteVlanIMS(_id)
         if (res.detail.msg === "success") {
             message.success("Xóa thành công")
-            const datatab =  await res.detail.data.map((item, i) => {
+            const datatab = await res.detail.data.map((item, i) => {
                 return {
                     _id: item._id,
                     number: item.number,
@@ -80,7 +80,7 @@ const SubmitVlanIMS = () => {
 
             if (res.detail.msg === "success") {
                 message.success("Thêm thành công")
-                const datatab =  await res.detail.data.map((item, i) => {
+                const datatab = await res.detail.data.map((item, i) => {
                     return {
                         _id: item._id,
                         number: item.number,
@@ -108,7 +108,7 @@ const SubmitVlanIMS = () => {
         {
             title: 'Vlan',
             dataIndex: 'number',
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => a.number - b.number,
             sortDirections: ['descend', 'ascend'],
         },
         {

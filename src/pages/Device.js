@@ -23,7 +23,11 @@ const Device = () => {
         loadingVlanMyTV,
         loadingVlanNet,
     } = SubmitDevice();
-
+    const filterOption = (input, option) => {
+        return option.children
+            ? option.children.toString().toLowerCase().includes(input.toLowerCase())
+            : false;
+    };
     return (
         <div className="layout-content">
 
@@ -55,34 +59,90 @@ const Device = () => {
                                 <Form.Item label="Tên TB" name="tenthietbi" rules={[{ required: true, message: 'Chưa nhập tên TB' }]} className='select-item'>
                                     <Input />
                                 </Form.Item>
-                                <Form.Item label="Ip" name="ipaddress" rules={[{ required: true, message: 'Hãy Chọn Ip' }]} className='select-item'>
-                                    <Select style={{ width: "100%" }} placeholder="Chọn Ip" loading={loadingIp}>
+                                <Form.Item
+                                    label="Ip"
+                                    name="ipaddress"
+                                    rules={[{ required: true, message: 'Hãy Chọn Ip' }]}
+                                    className='select-item'
+                                >
+                                    <Select
+                                        showSearch
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn Ip"
+                                        loading={loadingIp}
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                            option.children.toLowerCase().includes(input.toLowerCase())
+                                        }
+                                    >
                                         {dataIp?.map((item, i) => (
-                                            <Select.Option key={i + 1} value={item._id}>{item.ipaddress}</Select.Option>
+                                            <Select.Option key={i + 1} value={item._id}>
+                                                {item.ipaddress}
+                                            </Select.Option>
                                         ))}
                                     </Select>
                                 </Form.Item>
-                                <Form.Item label="Vlan IMS" name="vlanims" rules={[{ required: true, message: 'Hãy Chọn Vlan IMS' }]} className='select-item'>
-                                    <Select style={{ width: "100%" }} placeholder="Chọn Vlan IMS" loading={loadingVlanIMS}>
+
+                                <Form.Item
+                                    label="Vlan IMS"
+                                    name="vlanims"
+                                    rules={[{ required: true, message: 'Hãy Chọn Vlan IMS' }]}
+                                    className='select-item'
+                                >
+                                    <Select
+                                        showSearch
+                                        filterOption={filterOption}
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn Vlan IMS"
+                                        loading={loadingVlanIMS}
+                                    >
                                         {dataVlanIMS?.map((item, i) => (
-                                            <Select.Option key={i + 1} value={item._id}>{item.number}</Select.Option>
+                                            <Select.Option key={i + 1} value={item._id}>
+                                                {item.number}
+                                            </Select.Option>
                                         ))}
                                     </Select>
                                 </Form.Item>
-                                <Form.Item label="Vlan MyTV" name="vlanmytv" rules={[{ required: true, message: 'Hãy Chọn Vlan MyTV' }]} className='select-item'>
-                                    <Select style={{ width: "100%" }} placeholder="Chọn Vlan MyTV" loading={loadingVlanMyTV}>
+
+                                <Form.Item
+                                    label="Vlan MyTV"
+                                    name="vlanmytv"
+                                    rules={[{ required: true, message: 'Hãy Chọn Vlan MyTV' }]}
+                                    className='select-item'
+                                >
+                                    <Select
+                                        showSearch
+                                        filterOption={filterOption}
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn Vlan MyTV"
+                                        loading={loadingVlanMyTV}
+                                    >
                                         {dataVlanMyTV?.map((item, i) => (
-                                            <Select.Option key={i + 1} value={item._id}>{item.number}</Select.Option>
+                                            <Select.Option key={i + 1} value={item._id}>
+                                                {item.number}
+                                            </Select.Option>
                                         ))}
                                     </Select>
                                 </Form.Item>
-                                <Form.Item label="Vlan Net" name="vlannet" rules={[{ required: true, message: 'Hãy Chọn Vlan Net' }]} className='select-item'>
-                                    <Select style={{ width: "100%" }} placeholder="Chọn Vlan Net" loading={loadingVlanNet}>
+
+                                <Form.Item
+                                    label="Vlan Net"
+                                    name="vlannet"
+                                    rules={[{ required: true, message: 'Hãy Chọn Vlan Net' }]}
+                                    className='select-item'
+                                >
+                                    <Select
+                                        showSearch
+                                        filterOption={filterOption}
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn Vlan Net"
+                                        loading={loadingVlanNet}
+                                    >
                                         {dataVlanNet?.map((item, i) => (
-                                            <Select.Option key={i + 1} value={item._id}>{item.number}</Select.Option>
+                                            <Select.Option key={i + 1} value={item._id}>
+                                                {item.number}
+                                            </Select.Option>
                                         ))}
-
-
                                     </Select>
                                 </Form.Item>
                                 <Button type='primary' loading={loadingButton} htmlType="submit">Thêm</Button>
@@ -114,28 +174,42 @@ const Device = () => {
                                     <Input />
                                 </Form.Item>
                                 <Form.Item label="Ip" name="ipaddress" rules={[{ required: true, message: 'Hãy Chọn Ip' }]} className='select-item'>
-                                    <Select style={{ width: "100%" }} placeholder="Chọn Ip" loading={loadingIp}>
+                                    <Select
+                                        showSearch
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                            option.children.toLowerCase().includes(input.toLowerCase())
+                                        } style={{ width: "100%" }} placeholder="Chọn Ip" loading={loadingIp}>
                                         {dataIp?.map((item, i) => (
                                             <Select.Option key={i + 1} value={item._id}>{item.ipaddress}</Select.Option>
                                         ))}
                                     </Select>
                                 </Form.Item>
                                 <Form.Item label="Vlan IMS" name="vlanims" rules={[{ required: true, message: 'Hãy Chọn Vlan IMS' }]} className='select-item'>
-                                    <Select style={{ width: "100%" }} placeholder="Chọn Vlan IMS" loading={loadingVlanIMS}>
+                                    <Select
+                                        showSearch
+                                        filterOption={filterOption}
+                                        style={{ width: "100%" }} placeholder="Chọn Vlan IMS" loading={loadingVlanIMS}>
                                         {dataVlanIMS?.map((item, i) => (
                                             <Select.Option key={i + 1} value={item._id}>{item.number}</Select.Option>
                                         ))}
                                     </Select>
                                 </Form.Item>
                                 <Form.Item label="Vlan MyTV" name="vlanmytv" rules={[{ required: true, message: 'Hãy Chọn Vlan MyTV' }]} className='select-item'>
-                                    <Select style={{ width: "100%" }} placeholder="Chọn Vlan MyTV" loading={loadingVlanMyTV}>
+                                    <Select
+                                        showSearch
+                                        filterOption={filterOption}
+                                        style={{ width: "100%" }} placeholder="Chọn Vlan MyTV" loading={loadingVlanMyTV}>
                                         {dataVlanMyTV?.map((item, i) => (
                                             <Select.Option key={i + 1} value={item._id}>{item.number}</Select.Option>
                                         ))}
                                     </Select>
                                 </Form.Item>
                                 <Form.Item label="Vlan Net" name="vlannet" rules={[{ required: true, message: 'Hãy Chọn Vlan Net' }]} className='select-item'>
-                                    <Select style={{ width: "100%" }} placeholder="Chọn Vlan Net" loading={loadingVlanNet}>
+                                    <Select
+                                        showSearch
+                                        filterOption={filterOption}
+                                        style={{ width: "100%" }} placeholder="Chọn Vlan Net" loading={loadingVlanNet}>
                                         {dataVlanNet?.map((item, i) => (
                                             <Select.Option key={i + 1} value={item._id}>{item.number}</Select.Option>
                                         ))}
@@ -150,9 +224,9 @@ const Device = () => {
 
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={18} xl={18} className="mb-24">
-                    
-                        <Table pagination={{ pageSize: 4 }} columns={columns} dataSource={dataTable.slice().reverse()} loading={loading} />
-                
+
+                    <Table pagination={{ pageSize: 4 }} columns={columns} dataSource={dataTable.slice().reverse()} loading={loading} />
+
                 </Col>
             </Row>
 
