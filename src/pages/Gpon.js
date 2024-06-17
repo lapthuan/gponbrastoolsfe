@@ -200,7 +200,7 @@ function Gpon() {
     setIsChecked(checked);
   };
 
-  
+
   return (
     <>
       <div className="layout-content">
@@ -356,7 +356,7 @@ function Gpon() {
                 <>
                   <Space direction="horizontal">
                     <Input placeholder="Tài khoản" prefix={<UserOutlined />} />
-                    <Button >Lấy dữ liệu</Button>
+                    <Button >Tìm dữ liệu</Button>
                   </Space>
                   <Form
                     form={form}
