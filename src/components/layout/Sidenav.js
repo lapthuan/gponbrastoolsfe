@@ -1,10 +1,7 @@
-
 import { Menu } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import logoVnpt from "../../assets/images/logoVnpt.png";
-import {
-  Icon
-} from "../icon/icon.js"
+import { Icon } from "../icon/icon.js";
 function Sidenav({ color }) {
   const { pathname } = useLocation();
   const page = pathname.replace("/", "");
@@ -16,8 +13,9 @@ function Sidenav({ color }) {
     dashboard,
     bras,
     ipaddress,
-    device
-  } = Icon(color)
+    device,
+    sheets,
+  } = Icon(color);
 
   return (
     <>
@@ -121,8 +119,20 @@ function Sidenav({ color }) {
             <span className="label">VlanNet</span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="8">
+          <NavLink to="/suy-hao">
+            <span
+              className="icon"
+              style={{
+                background: page === "sheets" ? color : "",
+              }}
+            >
+              {sheets}
+            </span>
+            <span className="label">Google sheets</span>
+          </NavLink>
+        </Menu.Item>
       </Menu>
-
     </>
   );
 }

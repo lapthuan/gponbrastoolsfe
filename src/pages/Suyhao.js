@@ -11,9 +11,9 @@ import {
   Table,
 } from "antd";
 
-import SubmitVlanNet from "../components/submit/submitVlanNet";
+import SubmitGoogleSheet from "../components/submit/submitGoogleSheet";
 
-const VlanNet = () => {
+const GoogleSheet = () => {
   const {
     form,
     columns,
@@ -24,7 +24,7 @@ const VlanNet = () => {
     loading,
     handleEdit,
     handleSubmit,
-  } = SubmitVlanNet();
+  } = SubmitGoogleSheet();
 
   return (
     <div className="layout-content">
@@ -34,7 +34,7 @@ const VlanNet = () => {
             <Card title="Thêm dữ liệu" bordered={true}>
               <Form
                 form={form}
-                labelCol={{ span: 8 }}
+                labelCol={{ span: 10 }}
                 initialValues={{
                   size: "small",
                 }}
@@ -43,14 +43,25 @@ const VlanNet = () => {
                 className="form-card"
               >
                 <Form.Item
-                  label="Vlan Net :"
-                  name="number"
+                  label="Sheet name:"
+                  name="name"
                   rules={[
-                    { required: true, message: "Vui lòng nhập Vlan MyTV!" },
+                    { required: true, message: "Vui lòng nhập tên Sheet!" },
                   ]}
                   className="select-item"
                 >
-                  <InputNumber type="number" />
+                  <Input />
+                </Form.Item>
+
+                <Form.Item
+                  label="Mã liên kết :"
+                  name="link"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập mã liên kết!" },
+                  ]}
+                  className="select-item"
+                >
+                  <Input />
                 </Form.Item>
 
                 <Button type="primary" onClick={handleSubmit}>
@@ -63,7 +74,7 @@ const VlanNet = () => {
               <i>Sửa dữ liệu của id: {idEdit.slice(-6)}</i>
               <Form
                 form={form}
-                labelCol={{ span: 8 }}
+                labelCol={{ span: 10 }}
                 initialValues={{
                   size: "small",
                 }}
@@ -72,14 +83,25 @@ const VlanNet = () => {
                 className="form-card"
               >
                 <Form.Item
-                  label="Vlan Net :"
-                  name="number"
+                  label="Sheet name :"
+                  name="name"
                   rules={[
-                    { required: true, message: "Vui lòng nhập Vlan Net!" },
+                    { required: true, message: "Vui lòng nhập tên Sheet!" },
                   ]}
                   className="select-item"
                 >
-                  <InputNumber type="number" />
+                  <Input />
+                </Form.Item>
+
+                <Form.Item
+                  label="Mã liên kết :"
+                  name="link"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập mã liên kết!" },
+                  ]}
+                  className="select-item"
+                >
+                  <Input />
                 </Form.Item>
                 <Space size="middle">
                   <Button type="primary" onClick={handleEdit}>
@@ -106,4 +128,4 @@ const VlanNet = () => {
   );
 };
 
-export default VlanNet;
+export default GoogleSheet;

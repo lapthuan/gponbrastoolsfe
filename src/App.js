@@ -22,6 +22,7 @@ import IpAddress from "./pages/IpAddress";
 import VlanIms from "./pages/VlanIms";
 import VlanMyTV from "./pages/VlanMyTV";
 import VlanNet from "./pages/VlanNet";
+import SuyHao from "./pages/Suyhao";
 import PrivateRoute from "./privateRouter";
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <PrivateRoute exact path="/vlanims" component={VlanIms} />
           <PrivateRoute exact path="/vlanmytv" component={VlanMyTV} />
           <PrivateRoute exact path="/vlannet" component={VlanNet} />
+          <PrivateRoute exact path="/suy-hao" component={SuyHao} />
         </Main>
       </Switch>
     </div>
