@@ -24,6 +24,8 @@ const GoogleSheet = () => {
     loading,
     handleEdit,
     handleSubmit,
+    handleUpdateSheets,
+    loadingUpdate,
   } = SubmitGoogleSheet();
 
   return (
@@ -112,6 +114,46 @@ const GoogleSheet = () => {
               </Form>
             </Card>
           )}
+          <Card
+            title="Cập nhật sheet"
+            bordered={true}
+            style={{ marginTop: "10px" }}
+          >
+            <Form form={form}>
+              <Form.Item
+                label="Sheet"
+                name="google_sheet_id"
+                rules={[{ required: true, message: "Hãy chọn sheet" }]}
+                className="select-item"
+              >
+                <Select
+                  showSearch
+                  style={{ width: "100%" }}
+                  placeholder="Chọn sheet"
+                  loading={loading}
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().includes(input.toLowerCase())
+                  }
+                >
+                  {dataTable?.map((item, i) => (
+                    <Select.Option key={i + 1} value={item.link}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Space size="middle">
+                <Button
+                  type="primary"
+                  onClick={handleUpdateSheets}
+                  loading={loadingUpdate}
+                >
+                  {loadingUpdate ? "Loading" : "Cập nhật"}
+                </Button>
+              </Space>
+            </Form>
+          </Card>
         </Col>
         <Col xs={24} sm={24} md={12} lg={18} xl={18} className="mb-24">
           <Card bordered={true}>

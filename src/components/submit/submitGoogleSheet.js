@@ -9,7 +9,7 @@ const SubmitGoogleSheet = () => {
   const [dataTable, setData] = useState([]);
   const [editTab, setEditTab] = useState(false);
   const [idEdit, setIdEdit] = useState();
-
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const { data, loading } = useAsync(() => ServiceGgSheet.getAllGgSheets());
   const [form] = useForm();
 
@@ -149,6 +149,24 @@ const SubmitGoogleSheet = () => {
     },
   ];
 
+  const handleUpdateSheets = async () => {
+    const google_sheet_id = form.getFieldsValue("google_sheet_id");
+    if (google_sheet_id) {
+      setLoadingUpdate(true);
+      const res = await ServiceGgSheet.updateData(google_sheet_id);
+      if (res.detail.msg === "Cập nhật thành công") {
+        message.success("Cập nhật dữ liệu thành công");
+        setLoadingUpdate(false);
+      } else {
+        message.error("Đã xảy ra lỗi trong quá trình cập nhật");
+        setLoadingUpdate(false);
+      }
+    } else {
+      message.error("Không có sheet nào được chọn");
+      setLoadingUpdate(false);
+    }
+  };
+
   return {
     form,
     columns,
@@ -159,6 +177,8 @@ const SubmitGoogleSheet = () => {
     loading,
     handleEdit,
     handleSubmit,
+    handleUpdateSheets,
+    loadingUpdate,
   };
 };
 

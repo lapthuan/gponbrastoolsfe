@@ -54,6 +54,19 @@ function Sidenav({ color }) {
         <Menu.Item className="menu-item-header" key="5">
           Quản lí
         </Menu.Item>
+        <Menu.Item key="8">
+          <NavLink to="/suy-hao">
+            <span
+              className="icon"
+              style={{
+                background: page === "sheets" ? color : "",
+              }}
+            >
+              {sheets}
+            </span>
+            <span className="label">Google sheets</span>
+          </NavLink>
+        </Menu.Item>
         <Menu.Item key="4">
           <NavLink to="/device">
             <span
@@ -117,19 +130,6 @@ function Sidenav({ color }) {
               {vlannet}
             </span>
             <span className="label">VlanNet</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="8">
-          <NavLink to="/suy-hao">
-            <span
-              className="icon"
-              style={{
-                background: page === "sheets" ? color : "",
-              }}
-            >
-              {sheets}
-            </span>
-            <span className="label">Google sheets</span>
           </NavLink>
         </Menu.Item>
       </Menu>
