@@ -220,6 +220,9 @@ function Gpon() {
   };
   const handleSwitchChange = (checked) => {
     setIsChecked(checked);
+    form.resetFields()
+
+    form2.resetFields()
   };
 
   const handleGetUser = async () => {
