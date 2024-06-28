@@ -26,6 +26,8 @@ import ServiceDevice from "../service/ServiceDevice";
 import ServiceGpon from "../service/ServiceGpon";
 import { useForm } from "antd/es/form/Form";
 import { UserOutlined } from "@ant-design/icons";
+import ServiceUser from "../service/ServiceUser";
+import { IoFastFood } from "react-icons/io5";
 
 function Gpon() {
   const { Title } = Typography;
@@ -39,6 +41,7 @@ function Gpon() {
   const [selectDevices, setSelectDevices] = useState();
   const [radioValue, setRadioValue] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
+  const [userName, setUserName] = useState(false);
   const terminalRef = useRef(null);
   const { data: dataDevice, loading: loadingDevice } = useAsync(() =>
     ServiceDevice.getAlldevice()
@@ -132,6 +135,24 @@ function Gpon() {
       const newLine = <TerminalOutput>{"typ:isadmin># ..."}</TerminalOutput>;
       setLineData((prevLineData) => prevLineData.concat(newLine));
       const device = devices.find((item) => item._id === formValues.deviceName);
+      if (device == undefined) {
+        const ip = dataIp.find((item) => item._id === formValues.ipaddress);
+        const mytv = dataVlanMyTV.find(
+          (item) => item._id === formValues.vlanmytv
+        );
+        const net = dataVlanNet.find((item) => item._id === formValues.vlannet);
+        const ims = dataVlanIMS.find((item) => item._id === formValues.vlanims);
+
+        controlGpon(
+          mytv.number,
+          net.number,
+          ims.number,
+          ip.ipaddress,
+          formValues.deviceType,
+          form2Values
+        );
+        return
+      }
       const ip = dataIp.find((item) => item._id === formValues.ipaddress);
       const mytv = dataVlanMyTV.find(
         (item) => item._id === formValues.vlanmytv
@@ -150,6 +171,7 @@ function Gpon() {
       // Process the collected data as needed
     } catch (error) {
       console.error("Validation failed:", error);
+      setRunLoading(false);
       message.error("Vui lòng điền đầy đủ thông tin.");
     }
   };
@@ -200,7 +222,30 @@ function Gpon() {
     setIsChecked(checked);
   };
 
+  const handleGetUser = async () => {
 
+    const rs = await ServiceUser.getUser({ "username": userName })
+    console.log(rs.detail.data[0]);
+
+    const idDevice = dataDevice.find((device) => device.tenthietbi == rs.detail.data[0].SystemName)
+    console.log(idDevice);
+    const res = await ServiceDevice.getADevice(idDevice._id);
+    console.log(res);
+    form.setFieldsValue({
+      deviceType: res.loaithietbi,
+      deviceName: res.tenthietbi,
+      ipaddress: res.ipaddress,
+      vlanims: res.vlanims,
+      vlanmytv: res.vlanmytv,
+      vlannet: res.vlannet,
+    });
+
+    form2.setFieldsValue({
+      port: rs.detail.data[0].PortNo,
+      card: rs.detail.data[0].SlotNo,
+      onuId: rs.detail.data[0].OnuIndex,
+    })
+  }
   return (
     <>
       <div className="layout-content">
@@ -355,8 +400,8 @@ function Gpon() {
               </Form> :
                 <>
                   <Space direction="horizontal">
-                    <Input placeholder="Tài khoản" prefix={<UserOutlined />} />
-                    <Button >Tìm dữ liệu</Button>
+                    <Input placeholder="Tài khoản" onChange={(value) => setUserName(value.target.value)} prefix={<UserOutlined />} />
+                    <Button onClick={handleGetUser}>Tìm dữ liệu</Button>
                   </Space>
                   <Form
                     form={form}

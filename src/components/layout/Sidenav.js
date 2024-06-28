@@ -80,7 +80,7 @@ function Sidenav({ color }) {
             <span className="label">Thiết bị</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="5">
+        {/* <Menu.Item key="5">
           <NavLink to="/ipaddress">
             <span
               className="icon"
@@ -130,9 +130,9 @@ function Sidenav({ color }) {
               {vlannet}
             </span>
             <span className="label">VlanNet</span>
-          </NavLink>
-        </Menu.Item>
-      </Menu>
+          </NavLink> */}
+        {/* </Menu.Item> */}
+      </Menu >
     </>
   );
 }

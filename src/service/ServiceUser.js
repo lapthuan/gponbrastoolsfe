@@ -10,6 +10,9 @@ const ServiceUser = {
   userSignup: async (body) => {
     return requests.post(`/user/`, body);
   },
+  getUser: async (body) => {
+    return requests.post(`/cts`, body)
+  }
 };
 
 export default ServiceUser;
