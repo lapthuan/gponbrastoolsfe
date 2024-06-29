@@ -150,10 +150,12 @@ const SubmitGoogleSheet = () => {
   ];
 
   const handleUpdateSheets = async () => {
-    const google_sheet_id = form.getFieldsValue("google_sheet_id");
+    const google_sheet_id = form.getFieldValue("google_sheet_id");
     if (google_sheet_id) {
       setLoadingUpdate(true);
-      const res = await ServiceGgSheet.updateData(google_sheet_id);
+      const res = await ServiceGgSheet.updateData({
+        google_sheet_id: google_sheet_id,
+      });
       if (res.detail.msg === "Cập nhật thành công") {
         message.success("Cập nhật dữ liệu thành công");
         setLoadingUpdate(false);

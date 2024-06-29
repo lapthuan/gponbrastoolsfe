@@ -19,8 +19,7 @@ import { UploadOutlined } from "@ant-design/icons";
 const Bras = () => {
   const { Title } = Typography;
   const [lineData, setLineData] = useState([
-    <TerminalOutput key="welcome">Chào mừng đến với Auto Bras</TerminalOutput>,
-    <TerminalOutput>$</TerminalOutput>,
+    <TerminalOutput>{"bras_vlg_01@inoc2-T3200:~$"}</TerminalOutput>,
   ]);
 
   const [macAddress, setMacAddress] = useState("");
@@ -41,7 +40,7 @@ const Bras = () => {
       if (res.data && Array.isArray(res.data)) {
         const newLine = (
           <TerminalOutput key={lineData.length}>
-            $
+            {"  "}
             {res.data.map((item, index) => (
               <div key={index}>{item}</div>
             ))}
@@ -152,7 +151,9 @@ const Bras = () => {
       }
 
       const newLine = (
-        <TerminalOutput key={lineData.length}>$...</TerminalOutput>
+        <TerminalOutput key={lineData.length}>
+          {"bras_vlg_01@inoc2-T3200:~$ ..."}
+        </TerminalOutput>
       );
       setLineData((prevLineData) => prevLineData.concat(newLine));
       console.log(data);
@@ -205,7 +206,9 @@ const Bras = () => {
   };
 
   const handleClear = () => {
-    setLineData([<TerminalOutput key="$">$</TerminalOutput>]);
+    setLineData([
+      <TerminalOutput>{"bras_vlg_01@inoc2-T3200:~$"}</TerminalOutput>,
+    ]);
   };
 
   const customRequest = ({ file, onSuccess }) => {
