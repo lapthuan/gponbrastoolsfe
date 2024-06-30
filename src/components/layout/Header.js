@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
-import { Row, Col, Breadcrumb, Button, Drawer, Typography, Switch } from "antd";
+import {
+  Row,
+  Col,
+  Breadcrumb,
+  Button,
+  Drawer,
+  Typography,
+  Switch,
+  Modal,
+} from "antd";
 
 import {
   StarOutlined,
@@ -51,6 +60,8 @@ function Header({
   const [visible, setVisible] = useState(false);
   const [sidenavType, setSidenavType] = useState("transparent");
   const [token, setToken] = useState("");
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+
   useEffect(() => window.scrollTo(0, 0));
   useEffect(() => setToken(cookies.get("token")), []);
 
@@ -59,7 +70,12 @@ function Header({
 
   const handleLogout = () => {
     cookies.remove("token");
+    setLogoutModalVisible(false);
+    window.location.href = "/login"; // Redirect to login page
   };
+
+  const showLogoutModal = () => setLogoutModalVisible(true);
+  const hideLogoutModal = () => setLogoutModalVisible(false);
 
   return (
     <>
@@ -189,14 +205,26 @@ function Header({
               <span>Sign in</span>
             </Link>
           ) : (
-            <Link to="/login" className="btn-login">
+            <Link>
               {profile}
-              <span onClick={() => handleLogout()}>Logout</span>
+              <span className="btn-login" onClick={showLogoutModal}>
+                Logout
+              </span>
             </Link>
           )}
         </Col>
       </Row>
-      ```
+
+      <Modal
+        title="Logout"
+        visible={logoutModalVisible}
+        onOk={handleLogout}
+        onCancel={hideLogoutModal}
+        okText="Xác nhận"
+        cancelText="Hủy"
+      >
+        <h3 style={{ color: "#747d8c" }}>Bạn chắc chắn muốn đăng xuất?</h3>
+      </Modal>
     </>
   );
 }
