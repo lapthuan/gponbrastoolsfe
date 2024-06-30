@@ -10,12 +10,17 @@ import {
   Space,
   message,
   Upload,
+  Progress,
 } from "antd";
 import { useState } from "react";
 import Terminal, { ColorMode, TerminalOutput } from "react-terminal-ui";
 import ServiceBras from "../service/ServiceBras";
 import { useForm } from "antd/es/form/Form";
 import { UploadOutlined } from "@ant-design/icons";
+const twoColors = {
+  '0%': '#108ee9',
+  '100%': '#87d068',
+};
 const Bras = () => {
   const { Title } = Typography;
   const [lineData, setLineData] = useState([
@@ -31,7 +36,7 @@ const Bras = () => {
   const [userDisabled, setUserDisabled] = useState(true);
   const [userFileDisabled, setUserFileDisabled] = useState(true);
   const [onLoading, setOnLoading] = useState(false);
-
+  const [progress, setProgress] = useState(0);
   const [form] = useForm();
 
   const controlBras = async (data) => {
@@ -39,7 +44,7 @@ const Bras = () => {
       const res = await ServiceBras.ControlBras(data);
       if (res.data && Array.isArray(res.data)) {
         const newLine = (
-          <TerminalOutput key={lineData.length}>
+          <TerminalOutput key={lineData.length + 1}>
             {"  "}
             {res.data.map((item, index) => (
               <div key={index}>{item}</div>
@@ -49,7 +54,7 @@ const Bras = () => {
         setLineData((prevLineData) => prevLineData.concat(newLine));
       } else {
         const newLine = (
-          <TerminalOutput key={lineData.length}>
+          <TerminalOutput key={lineData.length + 1}>
             {"Unexpected response format"}
           </TerminalOutput>
         );
@@ -85,13 +90,27 @@ const Bras = () => {
 
         // Format lại data body từ danh sách username trong file
         const formattedUsernames = `[${usernames.join(",")}]`;
+        const arr = formattedUsernames.replace('[', '').replace(']', '').split(',');
+        setProgress(0)
+        const totalItems = arr.length;
+        const timePerItem = 6 * 1000; // 6 giây cho mỗi phần tử
+
+
+        if (totalItems > 0) {
+          let currentProgress = 0;
+
+          arr.forEach((item, index) => {
+            setTimeout(() => {
+              currentProgress = Math.floor(((index + 1) / totalItems) * 100);
+              setProgress(currentProgress);
+            }, timePerItem * (index + 1));
+          });
+        }
         data = {
           command: "clear_user_bras",
           username_bras: formattedUsernames,
         };
       } else {
-        // Kiểm tra xem người dùng đã nhập thông tin cần thiết hay chưa
-        const formValues = await form.validateFields();
 
         if (
           radioValue === "check_auth_mac" ||
@@ -151,7 +170,7 @@ const Bras = () => {
       }
 
       const newLine = (
-        <TerminalOutput key={lineData.length}>
+        <TerminalOutput key={lineData.length + 1}>
           {"bras_vlg_01@inoc2-T3200:~$ ..."}
         </TerminalOutput>
       );
@@ -207,7 +226,7 @@ const Bras = () => {
 
   const handleClear = () => {
     setLineData([
-      <TerminalOutput>{"bras_vlg_01@inoc2-T3200:~$"}</TerminalOutput>,
+      <TerminalOutput key={lineData.length + 1}>{"bras_vlg_01@inoc2-T3200:~$"}</TerminalOutput>,
     ]);
   };
 
@@ -220,6 +239,7 @@ const Bras = () => {
       };
       reader.readAsText(file);
     }
+    console.log(fileUserBras);
     setTimeout(() => {
       onSuccess("ok");
     }, 0);
@@ -285,24 +305,31 @@ const Bras = () => {
                     />
                   </div>
                 </Space>
-                <Space size="left" style={{ paddingTop: 10 }}>
+                {!userFileDisabled && <> <Space size="left" style={{ paddingTop: 10 }}>
                   <div>
                     <p>Chọn file chứa danh sách tên người dùng</p>
                     <Upload
                       customRequest={customRequest}
                       maxCount={1}
-                      disabled={userFileDisabled}
+
                     >
                       <Button icon={<UploadOutlined />}>Upload</Button>
                     </Upload>
                   </div>
+
                 </Space>
+                  {onLoading && <Progress strokeLinecap="butt" percent={progress} strokeColor={twoColors} />}
+                </>
+                }
+
+
               </Form>
+
+
               <div style={{ marginTop: 10 }}>
                 <Button type="primary" onClick={handleRun} loading={onLoading}>
                   {onLoading ? "Loading" : "Run"}
                 </Button>
-
                 <Space direction="vertical" style={{ marginLeft: "10px" }}>
                   <Button type="primary" danger onClick={handleClear}>
                     {" "}
