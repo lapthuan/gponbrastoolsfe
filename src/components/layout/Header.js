@@ -9,18 +9,17 @@ import {
   Typography,
   Switch,
   Modal,
+  Form,
+  Input,
+  message,
 } from "antd";
-
-import {
-  StarOutlined,
-  TwitterOutlined,
-  FacebookFilled,
-} from "@ant-design/icons";
 
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 import { Icon } from "../icon/icon";
+import { RiLockPasswordFill } from "react-icons/ri";
+import ServiceUser from "../../service/ServiceUser";
 
 const cookies = new Cookies();
 const ButtonContainer = styled.div`
@@ -55,13 +54,17 @@ function Header({
   handleSidenavType,
   handleFixedNavbar,
 }) {
-  const { Title, Text } = Typography;
 
+  const { Title, Text } = Typography;
   const [visible, setVisible] = useState(false);
   const [sidenavType, setSidenavType] = useState("transparent");
   const [token, setToken] = useState("");
+  const [oldPassWord, setOldPassWord] = useState("");
+  const [newPassWord, setNewPassWord] = useState("");
+  const [rpNewPassWord, setRpNewPassWord] = useState("");
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
-
+  const [changePWModalVisible, setchangePWModalVisible] = useState(false);
+  const [loadingChangePassword, setLoadingChangePassword] = useState(false)
   useEffect(() => window.scrollTo(0, 0));
   useEffect(() => setToken(cookies.get("token")), []);
 
@@ -76,7 +79,49 @@ function Header({
 
   const showLogoutModal = () => setLogoutModalVisible(true);
   const hideLogoutModal = () => setLogoutModalVisible(false);
+  const showChangePWModal = () => setchangePWModalVisible(true);
+  const hideChangePWModal = () => setchangePWModalVisible(false);
+  const handlerChangePassword = async () => {
+    setLoadingChangePassword(true)
+    if (!oldPassWord) {
+      message.warning("Nhập mật khẩu cũ")
+      setLoadingChangePassword(false)
+      return
+    }
+    if (!newPassWord) {
+      message.warning("Nhập mật khẩu mới")
+      setLoadingChangePassword(false)
+      return
+    }
+    if (!rpNewPassWord) {
+      message.warning("Nhập lại mật khẩu")
+      setLoadingChangePassword(false)
+      return
+    }
+    if (newPassWord !== rpNewPassWord) {
+      message.warning("Mật khẩu nhập lại không trùng khớp")
+      setLoadingChangePassword(false)
+      return
+    }
 
+    try {
+      const res = await ServiceUser.changePassword({
+        "old_password": oldPassWord,
+        "new_password": newPassWord
+      })
+      if (res.detail.msg === "Đổi mật khẩu thành công") {
+        message.success("Đổi mật khẩu thành công")
+        setLoadingChangePassword(false)
+
+      }
+    } catch (error) {
+      setLoadingChangePassword(false)
+
+      if (error.response.data.detail === "Mật khẩu cũ không đúng") {
+        message.warning("Mật khẩu cũ không đúng")
+      }
+    }
+  }
   return (
     <>
       <div className="setting-drwer" onClick={showDrawer}>
@@ -102,9 +147,12 @@ function Header({
           </div>
         </Col>
         <Col span={24} md={18} className="header-control">
+
+
           <Button type="link" onClick={showDrawer}>
             {logsetting}
           </Button>
+          <div onClick={showChangePWModal}><RiLockPasswordFill /> Đổi mật khẩu</div>
           <Button
             type="link"
             className="sidebar-toggler"
@@ -208,15 +256,46 @@ function Header({
             <Link>
               {profile}
               <span className="btn-login" onClick={showLogoutModal}>
-                Logout
+                Đăng xuất
               </span>
             </Link>
           )}
+
         </Col>
       </Row>
-
       <Modal
-        title="Logout"
+        title="Đổi mật khẩu"
+        visible={changePWModalVisible}
+        onOk={handlerChangePassword}
+        onCancel={hideChangePWModal}
+        okText="Đổi mật khẩu"
+        cancelText="Hủy"
+        confirmLoading={loadingChangePassword}
+      >
+        <Form
+
+          labelCol={{ span: 7 }}
+          initialValues={{
+            size: "small",
+          }}
+          layout="horizontal"
+          size={"small"}
+          className="form-card"
+
+        >
+          <Form.Item label="Mật khẩu cũ" name={"oldPassWord"} >
+            <Input.Password placeholder="Nhập mật khẩu cũ" onChange={(e) => setOldPassWord(e.target.value)} />
+          </Form.Item>
+          <Form.Item label="Mật khẩu mới" name={"newPassWord"}>
+            <Input.Password placeholder="Nhập mật khẩu mới" onChange={(e) => setNewPassWord(e.target.value)} />
+          </Form.Item>
+          <Form.Item label="Nhập lại mật khẩu " name={"rpNewPassWord"}>
+            <Input.Password placeholder="Nhập lại mật khẩu " onChange={(e) => setRpNewPassWord(e.target.value)} />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="Đăng xuất"
         visible={logoutModalVisible}
         onOk={handleLogout}
         onCancel={hideLogoutModal}

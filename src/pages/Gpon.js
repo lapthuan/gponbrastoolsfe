@@ -227,30 +227,37 @@ function Gpon() {
 
   const handleGetUser = async () => {
     setLoadingUserName(true)
-    const rs = await ServiceUser.getUser({ username: userName });
-    console.log(rs.detail.data[0]);
+    try {
+      const rs = await ServiceUser.getUser({ username: userName });
+      const idDevice = dataDevice.find(
+        (device) => device.tenthietbi == rs.detail.data[0].SystemName
+      );
 
-    const idDevice = dataDevice.find(
-      (device) => device.tenthietbi == rs.detail.data[0].SystemName
-    );
+      const res = await ServiceDevice.getADevice(idDevice._id);
 
-    const res = await ServiceDevice.getADevice(idDevice._id);
+      form.setFieldsValue({
+        deviceType: res.loaithietbi,
+        deviceName: res.tenthietbi,
+        ipaddress: res.ipaddress,
+        vlanims: res.vlanims,
+        vlanmytv: res.vlanmytv,
+        vlannet: res.vlannet,
+      });
 
-    form.setFieldsValue({
-      deviceType: res.loaithietbi,
-      deviceName: res.tenthietbi,
-      ipaddress: res.ipaddress,
-      vlanims: res.vlanims,
-      vlanmytv: res.vlanmytv,
-      vlannet: res.vlannet,
-    });
+      form2.setFieldsValue({
+        port: rs.detail.data[0].PortNo,
+        card: rs.detail.data[0].SlotNo,
+        onuId: rs.detail.data[0].OnuIndex,
+      });
+      setLoadingUserName(false)
+    } catch (error) {
+      message.warning("Không tìm thấy người dùng")
+      setLoadingUserName(false)
 
-    form2.setFieldsValue({
-      port: rs.detail.data[0].PortNo,
-      card: rs.detail.data[0].SlotNo,
-      onuId: rs.detail.data[0].OnuIndex,
-    });
-    setLoadingUserName(false)
+    }
+
+
+
 
   };
   return (
