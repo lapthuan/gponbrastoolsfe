@@ -152,7 +152,7 @@ function Header({
           <Button type="link" onClick={showDrawer}>
             {logsetting}
           </Button>
-          <div onClick={showChangePWModal}><RiLockPasswordFill /> Đổi mật khẩu</div>
+          <Link onClick={showChangePWModal}><RiLockPasswordFill /> <span className="btn-login">Đổi mật khẩu</span></Link>
           <Button
             type="link"
             className="sidebar-toggler"

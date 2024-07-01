@@ -3090,3 +3090,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
 .select-item .ant-input-number {
   width: 200px; 
 }
+.hover-changepw :hover{
+    cursor: pointer;
+
+}
