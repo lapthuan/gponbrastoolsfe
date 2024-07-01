@@ -616,7 +616,7 @@ function Gpon() {
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <Form
-                labelCol={{ span: 8 }}
+                labelCol={{ span: 6 }}
                 initialValues={{
                   size: "small",
                 }}
@@ -627,16 +627,16 @@ function Gpon() {
                 style={{ marginTop: 40 }}
               >
                 <Form.Item label="Card" name="card" className="select-item">
-                  <InputNumber placeholder="Nhập Card" />
+                  <Input placeholder="Nhập Card" />
                 </Form.Item>
                 <Form.Item label="Port" name="port" className="select-item">
-                  <InputNumber placeholder="Nhập Port" />
+                  <Input placeholder="Nhập Port" />
                 </Form.Item>
                 <Form.Item label="Onu ID" name="onuId" className="select-item">
-                  <InputNumber placeholder="Nhập Onu ID" />
+                  <Input placeholder="Nhập Onu ID" />
                 </Form.Item>
                 <Form.Item label="SL ID" name="slId" className="select-item">
-                  <InputNumber placeholder="Nhập SL ID" />
+                  <Input placeholder="Nhập SL ID" />
                 </Form.Item>
               </Form>
             </Card>
