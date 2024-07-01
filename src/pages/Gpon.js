@@ -41,6 +41,7 @@ function Gpon() {
   const [radioValue, setRadioValue] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [userName, setUserName] = useState(false);
+  const [loadingUserName, setLoadingUserName] = useState(false);
   const terminalRef = useRef(null);
   const { data: dataDevice, loading: loadingDevice } = useAsync(() =>
     ServiceDevice.getAlldevice()
@@ -225,15 +226,16 @@ function Gpon() {
   };
 
   const handleGetUser = async () => {
+    setLoadingUserName(true)
     const rs = await ServiceUser.getUser({ username: userName });
     console.log(rs.detail.data[0]);
 
     const idDevice = dataDevice.find(
       (device) => device.tenthietbi == rs.detail.data[0].SystemName
     );
-    console.log(idDevice);
+
     const res = await ServiceDevice.getADevice(idDevice._id);
-    console.log(res);
+
     form.setFieldsValue({
       deviceType: res.loaithietbi,
       deviceName: res.tenthietbi,
@@ -248,6 +250,8 @@ function Gpon() {
       card: rs.detail.data[0].SlotNo,
       onuId: rs.detail.data[0].OnuIndex,
     });
+    setLoadingUserName(false)
+
   };
   return (
     <>
@@ -417,7 +421,7 @@ function Gpon() {
                       onChange={(value) => setUserName(value.target.value)}
                       prefix={<UserOutlined />}
                     />
-                    <Button onClick={handleGetUser}>Tìm dữ liệu</Button>
+                    <Button onClick={handleGetUser} loading={loadingUserName}>Tìm dữ liệu</Button>
                   </Space>
                   <Form
                     form={form}
