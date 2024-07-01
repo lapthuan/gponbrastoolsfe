@@ -112,7 +112,7 @@ function Header({
       if (res.detail.msg === "Đổi mật khẩu thành công") {
         message.success("Đổi mật khẩu thành công")
         setLoadingChangePassword(false)
-
+        setchangePWModalVisible(false)
       }
     } catch (error) {
       setLoadingChangePassword(false)
