@@ -80,6 +80,7 @@ function Gpon() {
         vlanims: ims,
         vlanmytv: mytv,
         vlannet: net,
+
       };
 
       const res = await ServiceGpon.ControlGpon(data);
@@ -98,7 +99,40 @@ function Gpon() {
       setRunLoading(false);
     }
   };
+  const controlGponHW = async (mytv, net, ims, ip, loaithietbi, form2Values) => {
+    try {
+      const data = {
+        ipaddress: ip,
+        commands: radioValue,
+        device_types: loaithietbi,
+        card: form2Values.card ? form2Values.card : 0,
+        port: form2Values.port ? form2Values.port : 0,
+        onu: form2Values.onuId ? form2Values.onuId : 0,
+        slid: form2Values.slId ? form2Values.slId : 0,
+        vlanims: ims,
+        vlanmytv: mytv,
+        vlannet: net,
+        service_portnet: form2Values.portvlannet ? form2Values.portvlannet : 0,
+        service_portgnms: form2Values.portgnms ? form2Values.portgnms : 0,
+        service_portims: form2Values.portims ? form2Values.portims : 0,
+      };
 
+      const res = await ServiceGpon.ControlGpon(data);
+
+      const newLine = (
+        <TerminalOutput key={lineData.length}>
+          {" "}
+          {res.detail.map((item) => item)}
+        </TerminalOutput>
+      );
+      setLineData((prevLineData) => prevLineData.concat(newLine));
+    } catch (error) {
+      console.error("Error controlling GPON:", error);
+      // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
+    } finally {
+      setRunLoading(false);
+    }
+  };
   const handleRun = async () => {
     try {
       const formValues = await form.validateFields();
@@ -121,6 +155,33 @@ function Gpon() {
       if (radioValue === "create_dvnet") {
         if (form2Values.slId === undefined) {
           message.warning("Nhập thiếu SLID");
+          return;
+        }
+        if (form2Values.portvlannet === undefined) {
+          message.warning("Nhập thiếu Port Vlan Net");
+          return;
+        }
+        if (form2Values.portgnms === undefined) {
+          message.warning("Nhập thiếu Port GNMS");
+          return;
+        }
+        if (
+          form2Values.slId.toString().length < 6 ||
+          form2Values.slId.toString().length > 10
+        ) {
+          message.warning("SLID phải bao gồm 6 đến 10 ký tự");
+          return;
+        }
+      }
+      if (radioValue === "dv_ims") {
+        if (form2Values.portims === undefined) {
+          message.warning("Nhập thiếu Port IMS");
+          return;
+        }
+      }
+      if (radioValue === "change_sync_password") {
+        if (form2Values.slId === undefined) {
+          message.warning("Nhập thiếu SLid");
           return;
         }
         if (
@@ -159,15 +220,26 @@ function Gpon() {
       );
       const net = dataVlanNet.find((item) => item._id === formValues.vlannet);
       const ims = dataVlanIMS.find((item) => item._id === formValues.vlanims);
+      if (deviceType === "GPON HW") {
+        controlGponHW(
+          mytv.number,
+          net.number,
+          ims.number,
+          ip.ipaddress,
+          device.loaithietbi,
+          form2Values
+        );
+      } else {
+        controlGpon(
+          mytv.number,
+          net.number,
+          ims.number,
+          ip.ipaddress,
+          device.loaithietbi,
+          form2Values
+        );
+      }
 
-      controlGpon(
-        mytv.number,
-        net.number,
-        ims.number,
-        ip.ipaddress,
-        device.loaithietbi,
-        form2Values
-      );
       // Process the collected data as needed
     } catch (error) {
       console.error("Validation failed:", error);
@@ -249,6 +321,7 @@ function Gpon() {
         card: rs.detail.data[0].SlotNo,
         onuId: rs.detail.data[0].OnuIndex,
       });
+      setDeviceType(res.loaithietbi)
       setLoadingUserName(false)
     } catch (error) {
       message.warning("Không tìm thấy người dùng")
@@ -307,6 +380,7 @@ function Gpon() {
                     >
                       <Select.Option value="GPON ALU">GPON ALU</Select.Option>
                       <Select.Option value="GPON HW">GPON HW</Select.Option>
+                      <Select.Option value="GPON MINI HW">GPON Mini HW</Select.Option>
                       <Select.Option value="GPON MINI ZTE">
                         GPON Mini ZTE
                       </Select.Option>
@@ -455,9 +529,11 @@ function Gpon() {
                       <Select
                         style={{ width: "100%" }}
                         placeholder="Chọn loại thiết bị"
+                        onChange={(value) => setDeviceType(value)}
                       >
                         <Select.Option value="GPON ALU">GPON ALU</Select.Option>
                         <Select.Option value="GPON HW">GPON HW</Select.Option>
+                        <Select.Option value="GPON MINI HW">GPON Mini HW</Select.Option>
                         <Select.Option value="GPON MINI ZTE">
                           GPON Mini ZTE
                         </Select.Option>
@@ -605,29 +681,48 @@ function Gpon() {
               <div className="ml-16">
                 <Title level={5}>Thông số</Title>
               </div>
+
               <Radio.Group
                 className="ml-16"
                 onChange={(e) => setRadioValue(e.target.value)}
               >
                 <Space direction="vertical">
                   <Radio value={"sync_password"}>Xem Password đồng bộ</Radio>
+                  <Radio value={"change_sync_password"}>Đổi Password đồng bộ</Radio>
                   <Radio value={"delete_port"}>Xóa Port</Radio>
                   <Radio value={"check_mac"}>Xem Mac</Radio>
                   <Radio value={"create_dvnet"}>Tạo DV_NET</Radio>
                   <Radio value={"dv_mytv"}>Tạo DV_MYTV</Radio>
                   <Radio value={"dv_ims"}>Tạo DV_IMS</Radio>
                   <Radio value={"check_capacity"}>Kiểm tra công suất</Radio>
-                  <Radio value={"status_port"}>
-                    Xem trạng thái port (GPON ALU)
-                  </Radio>
+                  {deviceType === "GPON ALU" && <Radio value={"status_port"}>
+                    Xem trạng thái port
+                  </Radio>}
+                  {deviceType === "GPON HW" || deviceType === "GPON MINI HW" && <Radio value={"view_info_onu"}>
+                    Xem info Onu
+                  </Radio>}
+
                 </Space>
               </Radio.Group>
+              <Form
+                labelCol={{ span: 8 }}
+                initialValues={{
+                  size: "small",
+                }}
+                layout="horizontal"
+                size={"small"}
+                className="form-card"
+                form={form2}
+
+              >
+
+              </Form>
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <Form
-                labelCol={{ span: 6 }}
+                labelCol={{ span: 8 }}
                 initialValues={{
                   size: "small",
                 }}
@@ -638,17 +733,53 @@ function Gpon() {
                 style={{ marginTop: 40 }}
               >
                 <Form.Item label="Card" name="card" className="select-item">
-                  <Input placeholder="Nhập Card" />
+                  <InputNumber placeholder="Nhập Card" />
                 </Form.Item>
                 <Form.Item label="Port" name="port" className="select-item">
-                  <Input placeholder="Nhập Port" />
+                  <InputNumber placeholder="Nhập Port" />
                 </Form.Item>
                 <Form.Item label="Onu ID" name="onuId" className="select-item">
-                  <Input placeholder="Nhập Onu ID" />
+                  <InputNumber placeholder="Nhập Onu ID" />
                 </Form.Item>
+
                 <Form.Item label="SL ID" name="slId" className="select-item">
                   <Input placeholder="Nhập SL ID" />
                 </Form.Item>
+                {deviceType === "GPON HW" && radioValue === "create_dvnet" &&
+                  <>
+                    <Form.Item label="Port Vlan Net" name="portvlannet" className="select-item" rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập Port Vlan Net",
+                      },
+                    ]}>
+                      <InputNumber placeholder="Nhập Port Vlan Net" />
+                    </Form.Item>
+                    <Form.Item label="Port GNMS" name="portgnms" className="select-item" rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập Port GNMS",
+                      },
+                    ]}>
+                      <InputNumber placeholder="Nhập Port GNMS" />
+                    </Form.Item>
+                  </>
+
+                }
+                {deviceType === "GPON HW" && radioValue === "dv_ims" &&
+                  <>
+                    <Form.Item label="Port IMS" name="portims" className="select-item" rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập Port IMS",
+                      },
+                    ]}>
+                      <InputNumber placeholder="Nhập Port IMS" />
+                    </Form.Item>
+
+                  </>
+
+                }
               </Form>
             </Card>
           </Col>

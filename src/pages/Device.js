@@ -197,6 +197,7 @@ const Device = () => {
                   >
                     <Select.Option value="GPON ALU">GPON ALU</Select.Option>
                     <Select.Option value="GPON HW">GPON HW</Select.Option>
+                    <Select.Option value="GPON MINI HW">GPON Mini HW</Select.Option>
                     <Select.Option value="GPON MINI ZTE">
                       GPON Mini ZTE
                     </Select.Option>
