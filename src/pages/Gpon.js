@@ -93,6 +93,8 @@ function Gpon() {
       );
       setLineData((prevLineData) => prevLineData.concat(newLine));
     } catch (error) {
+      setRunLoading(false);
+      message.warning("Max Sessions Reached")
       console.error("Error controlling GPON:", error);
       // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
     } finally {
@@ -127,6 +129,8 @@ function Gpon() {
       );
       setLineData((prevLineData) => prevLineData.concat(newLine));
     } catch (error) {
+      setRunLoading(false);
+      message.warning("Max Sessions Reached")
       console.error("Error controlling GPON:", error);
       // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
     } finally {
