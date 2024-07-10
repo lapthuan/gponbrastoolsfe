@@ -698,10 +698,12 @@ function Gpon() {
                   {deviceType === "GPON ALU" && <Radio value={"status_port"}>
                     Xem trạng thái port
                   </Radio>}
-                  {deviceType === "GPON HW" || deviceType === "GPON MINI HW" && <Radio value={"view_info_onu"}>
-                    Xem info Onu
+                  {deviceType === "GPON MINI HW" && <Radio value={"status_port"}>
+                    Xem info
                   </Radio>}
-
+                  {deviceType === "GPON HW" && <Radio value={"status_port"}>
+                    Xem info
+                  </Radio>}
                 </Space>
               </Radio.Group>
               <Form
