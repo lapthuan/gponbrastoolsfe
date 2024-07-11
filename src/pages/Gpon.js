@@ -161,11 +161,11 @@ function Gpon() {
           message.warning("Nhập thiếu SLID");
           return;
         }
-        if (form2Values.portvlannet === undefined) {
+        if (deviceType === "GPON HW" && form2Values.portvlannet === undefined) {
           message.warning("Nhập thiếu Port Vlan Net");
           return;
         }
-        if (form2Values.portgnms === undefined) {
+        if (deviceType === "GPON HW" && form2Values.portgnms === undefined) {
           message.warning("Nhập thiếu Port GNMS");
           return;
         }
@@ -178,7 +178,7 @@ function Gpon() {
         }
       }
       if (radioValue === "dv_ims") {
-        if (form2Values.portims === undefined) {
+        if (deviceType === "GPON HW" && form2Values.portims === undefined) {
           message.warning("Nhập thiếu Port IMS");
           return;
         }
