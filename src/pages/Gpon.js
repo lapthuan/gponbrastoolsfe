@@ -700,15 +700,13 @@ function Gpon() {
                   <Radio value={"dv_mytv"}>Tạo DV_MYTV</Radio>
                   <Radio value={"dv_ims"}>Tạo DV_IMS</Radio>
                   <Radio value={"check_capacity"}>Kiểm tra công suất</Radio>
-                  {deviceType === "GPON ALU" && <Radio value={"status_port"}>
-                    Xem trạng thái port
-                  </Radio>}
-                  {deviceType === "GPON MINI HW" && <Radio value={"status_port"}>
-                    Xem info
-                  </Radio>}
-                  {deviceType === "GPON HW" && <Radio value={"status_port"}>
-                    Xem info
-                  </Radio>}
+                  <Radio disabled={deviceType === "GPON ALU" ? false : true} value={"status_port"}>
+                    Xem trạng thái port (GPON ALU)
+                  </Radio>
+                  <Radio disabled={deviceType === "GPON MINI HW" || deviceType === "GPON HW" ? false : true} value={"view_info_onu"}>
+                    Xem info (GPON MINI HW && GPOM HW)
+                  </Radio>
+
                 </Space>
               </Radio.Group>
               <Form
