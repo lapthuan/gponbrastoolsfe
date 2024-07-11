@@ -259,6 +259,7 @@ function Gpon() {
       const getDevice = async () => {
         try {
           const res = await ServiceDevice.getDevice(deviceType);
+          setRadioValue(null)
           setDevices(res);
         } catch (error) {
           console.error("Error fetching device data:", error);
@@ -297,6 +298,8 @@ function Gpon() {
   };
   const handleSwitchChange = (checked) => {
     setIsChecked(checked);
+    setDeviceType("")
+    setRadioValue(null)
     form.resetFields();
 
     form2.resetFields();
@@ -690,6 +693,7 @@ function Gpon() {
               <Radio.Group
                 className="ml-16"
                 onChange={(e) => setRadioValue(e.target.value)}
+                value={radioValue}
               >
                 <Space direction="vertical">
                   <Radio value={"sync_password"}>Xem Password đồng bộ</Radio>
