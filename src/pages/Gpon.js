@@ -80,7 +80,9 @@ function Gpon() {
         vlanims: ims,
         vlanmytv: mytv,
         vlannet: net,
-
+        service_portnet: form2Values.portvlannet ? form2Values.portvlannet : 0,
+        service_portgnms: form2Values.portgnms ? form2Values.portgnms : 0,
+        service_portims: form2Values.portims ? form2Values.portims : 0,
       };
 
       const res = await ServiceGpon.ControlGpon(data);
@@ -96,6 +98,8 @@ function Gpon() {
       setRunLoading(false);
       if (error.response.data.detail)
         message.warning(error.response.data.detail)
+      else
+        message.warning("Max Sessions Reached")
       console.error("Error controlling GPON:", error);
       // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
     } finally {
@@ -131,7 +135,11 @@ function Gpon() {
       setLineData((prevLineData) => prevLineData.concat(newLine));
     } catch (error) {
       setRunLoading(false);
-      message.warning("Max Sessions Reached")
+      if (error.response.data.detail)
+        message.warning(error.response.data.detail)
+      else
+        message.warning("Max Sessions Reached")
+
       console.error("Error controlling GPON:", error);
       // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
     } finally {
@@ -225,7 +233,7 @@ function Gpon() {
       );
       const net = dataVlanNet.find((item) => item._id === formValues.vlannet);
       const ims = dataVlanIMS.find((item) => item._id === formValues.vlanims);
-      if (deviceType === "GPON HW") {
+      if (deviceType === "GPON HW" || deviceType === "GPON MINI HW") {
         controlGponHW(
           mytv.number,
           net.number,
@@ -334,11 +342,7 @@ function Gpon() {
     } catch (error) {
       message.warning("Không tìm thấy người dùng")
       setLoadingUserName(false)
-
     }
-
-
-
 
   };
   return (
@@ -711,7 +715,7 @@ function Gpon() {
                   <Radio disabled={deviceType === "GPON MINI HW" || deviceType === "GPON HW" ? false : true} value={"view_info_onu"}>
                     Xem info (GPON MINI HW && GPOM HW)
                   </Radio>
-
+                 
                 </Space>
               </Radio.Group>
               <Form
