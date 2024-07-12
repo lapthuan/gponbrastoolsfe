@@ -700,7 +700,7 @@ function Gpon() {
                   <Radio value={"change_sync_password"}>Đổi Password đồng bộ</Radio>
                   <Radio value={"delete_port"}>Xóa Port</Radio>
                   <Radio value={"check_mac"}>Xem Mac</Radio>
-                  <Radio value={"check_service_port"}>Kiểm tra service port cho OLT HW</Radio>
+                  <Radio disabled={deviceType === "GPON HW" || deviceType === "GPON MINI HW" ? false : true} value={"check_service_port"}>Kiểm tra service port cho OLT HW</Radio>
                   <Radio value={"create_dvnet"}>Tạo DV_NET</Radio>
                   <Radio value={"dv_mytv"}>Tạo DV_MYTV</Radio>
                   <Radio value={"dv_ims"}>Tạo DV_IMS</Radio>
