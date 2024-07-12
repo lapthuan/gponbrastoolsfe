@@ -385,7 +385,7 @@ body {
 }
 
 .layout-dashboard .ant-layout-header {
-  background: transparent;
+  background: #1f7ed0;
   height: auto;
   padding: 16px;
   margin: 10px 4px;
@@ -395,10 +395,10 @@ body {
 }
 
 .layout-dashboard .ant-breadcrumb > span .ant-breadcrumb-link a {
-  color: #8c8c8c;
+  color: white;
 }
 .layout-dashboard .ant-breadcrumb > span:last-child .ant-breadcrumb-link {
-  color: #141414;
+  color: white;
 }
 .layout-dashboard .ant-page-header-heading {
   margin-top: 0;
@@ -533,7 +533,7 @@ h4 {
 }
 
 .layout-dashboard .header-control svg path {
-  fill: #141414;
+  fill: white;
 }
 
 .layout-dashboard .header-control .btn-login {
@@ -541,7 +541,7 @@ h4 {
   padding: 0 7px;
   margin: 0;
   box-shadow: none;
-  color: #8c8c8c;
+  color: white;
 }
 .layout-dashboard .header-control .btn-login svg {
   margin-right: 4px;
@@ -2601,7 +2601,7 @@ section.ant-layout.layout-content .ant-layout-content.content-ant {
 
 section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   span.ant-page-header-heading-title {
-  color: #fff;
+  color: #fff ;
 }
 
 section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile

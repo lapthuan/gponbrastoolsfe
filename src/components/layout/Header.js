@@ -20,6 +20,7 @@ import { Link } from "react-router-dom/cjs/react-router-dom";
 import { Icon } from "../icon/icon";
 import { RiLockPasswordFill } from "react-icons/ri";
 import ServiceUser from "../../service/ServiceUser";
+import { SettingFilled } from "@ant-design/icons";
 
 const cookies = new Cookies();
 const ButtonContainer = styled.div`
@@ -43,7 +44,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const { setting, toggler, profile, logsetting } = Icon("none");
+const { setting, toggler, profile, logsetting } = Icon({ color: "#fff" });
 
 function Header({
   placement,
@@ -140,9 +141,9 @@ function Header({
           <div className="ant-page-header-heading">
             <span
               className="ant-page-header-heading-title"
-              style={{ textTransform: "capitalize" }}
+              style={{ textTransform: "capitalize", color: "white" }}
             >
-              {subName.replace("/", "")}
+              Trang web khai thác GPON
             </span>
           </div>
         </Col>
@@ -150,7 +151,7 @@ function Header({
 
 
           <Button type="link" onClick={showDrawer}>
-            {logsetting}
+            <SettingFilled color="#fff" style={{ color: "white" }} />
           </Button>
           <Link onClick={showChangePWModal}><RiLockPasswordFill /> <span className="btn-login">Đổi mật khẩu</span></Link>
           <Button
