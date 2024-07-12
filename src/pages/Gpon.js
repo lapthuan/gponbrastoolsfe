@@ -269,6 +269,26 @@ function Gpon() {
           const res = await ServiceDevice.getDevice(deviceType);
           setRadioValue(null)
           setDevices(res);
+          form.setFieldsValue({
+
+            deviceName: null,
+            ipaddress: null,
+            vlanims: null,
+            vlanmytv: null,
+            vlannet: null,
+          });
+
+          form2.setFieldsValue({
+            port: null,
+            card: null,
+            onuId: null,
+          });
+          if (deviceType === "GPON MINI ZTE") {
+            form2.setFieldsValue({ card: 3 })
+          }
+          if (deviceType === "GPON MINI HW") {
+            form2.setFieldsValue({ card: 1 })
+          }
         } catch (error) {
           console.error("Error fetching device data:", error);
           // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
@@ -278,7 +298,7 @@ function Gpon() {
       };
       getDevice();
     }
-  }, [deviceType]);
+  }, [deviceType, form]);
 
   //Load dữ liệu cho các input còn lại
   useEffect(() => {
@@ -411,6 +431,13 @@ function Gpon() {
                       style={{ width: "100%" }}
                       placeholder="Chọn thiết bị"
                       onChange={(value) => setSelectDevices(value)}
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
                       loading={loadingDevices}
                     >
                       {devices.map((device) => (
@@ -715,7 +742,7 @@ function Gpon() {
                   <Radio disabled={deviceType === "GPON MINI HW" || deviceType === "GPON HW" ? false : true} value={"view_info_onu"}>
                     Xem info (GPON MINI HW && GPOM HW)
                   </Radio>
-                 
+
                 </Space>
               </Radio.Group>
               <Form
@@ -746,7 +773,7 @@ function Gpon() {
                 form={form2}
                 style={{ marginTop: 40 }}
               >
-                <Form.Item label="Card" name="card" className="select-item">
+                <Form.Item label="Card" name="card" className="select-item" >
                   <InputNumber placeholder="Nhập Card" />
                 </Form.Item>
                 <Form.Item label="Port" name="port" className="select-item">
