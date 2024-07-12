@@ -276,6 +276,10 @@ const SubmitDevice = () => {
                     value: 'GPON HW',
                 },
                 {
+                    text: 'GPON MINI HW',
+                    value: 'GPON MINI HW',
+                },
+                {
                     text: 'GPON ZTE',
                     value: 'GPON ZTE',
                 },
