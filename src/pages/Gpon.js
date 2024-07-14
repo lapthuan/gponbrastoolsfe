@@ -1,12 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-import {
-  Card,
-  Col,
-  Row,
-  message,
-} from "antd";
-
+import { Card, Col, Row, message } from "antd";
 import { TerminalOutput } from "react-terminal-ui";
 import useAsync from "../hook/useAsync";
 import ServiceIp from "../service/ServiceIp";
