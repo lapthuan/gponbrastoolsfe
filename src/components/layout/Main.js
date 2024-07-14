@@ -5,7 +5,7 @@ import { Layout, Drawer, Affix } from "antd";
 import Sidenav from "./Sidenav";
 import Header from "./Header";
 import Footer from "./Footer";
-import VnptHaNoi from "../../assets/images/vnpt-hanoi.png"
+import VnptVinhLong from "../../assets/images/vnpt-vinhlong.png"
 const { Header: AntHeader, Content, Sider } = Layout;
 
 function Main({ children }) {
@@ -34,7 +34,7 @@ function Main({ children }) {
   return (
     <>
       <div className="header-firt">
-        <img src={VnptHaNoi} style={{ height: "45px", marginLeft: 50 }} />
+        <img src={VnptVinhLong} style={{ height: "45px", marginLeft: 50 }} />
       </div>
       <Layout
         className={`layout-dashboard ${pathname === "profile" ? "layout-profile" : ""
