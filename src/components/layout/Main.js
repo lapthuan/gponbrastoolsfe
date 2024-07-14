@@ -5,7 +5,7 @@ import { Layout, Drawer, Affix } from "antd";
 import Sidenav from "./Sidenav";
 import Header from "./Header";
 import Footer from "./Footer";
-import VnptVinhLong from "../../assets/images/vnpt-vinhlong2.png"
+import VnptVinhLong from "../../assets/images/vnpt-vinhlong3.png"
 const { Header: AntHeader, Content, Sider } = Layout;
 
 function Main({ children }) {
