@@ -1,7 +1,7 @@
 import { Button, Card, Space } from "antd";
 
 const ControlButtons = ({ handleRun, runLoading, handleClear }) => (
-    <Card bordered={false} className="criclebox h-full card-center">
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Space direction="horizontal">
             <Button type="primary" onClick={handleRun} loading={runLoading}>
                 {runLoading ? "Loading" : "Run"}
@@ -10,6 +10,7 @@ const ControlButtons = ({ handleRun, runLoading, handleClear }) => (
                 Clear Terminal
             </Button>
         </Space>
-    </Card>
+    </div>
+
 );
 export default ControlButtons

@@ -1,9 +1,9 @@
 import { Card, Form, InputNumber, Input } from "antd";
 
 const DetailsForm = ({ form2, deviceType, radioValue }) => (
-    <Card bordered={false} className="criclebox h-full">
+  
         <Form
-            labelCol={{ span: 8 }}
+            labelCol={{ span: 6 }}
             initialValues={{
                 size: "small",
             }}
@@ -11,7 +11,7 @@ const DetailsForm = ({ form2, deviceType, radioValue }) => (
             size={"small"}
             className="form-card"
             form={form2}
-            style={{ marginTop: 40 }}
+            style={{ marginTop: 30 }}
         >
             <Form.Item label="Card" name="card" className="select-item" >
                 <InputNumber placeholder="Nhập Card" />
@@ -62,7 +62,7 @@ const DetailsForm = ({ form2, deviceType, radioValue }) => (
 
             }
         </Form>
-    </Card>
+
 );
 
 export default DetailsForm

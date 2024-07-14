@@ -24,6 +24,7 @@ function Gpon() {
   ]);
   const [runLoading, setRunLoading] = useState(false);
   const [deviceType, setDeviceType] = useState("");
+  const [ipAddress, setIpAddress] = useState("");
   const [devices, setDevices] = useState([]);
   const [loadingDevices, setLoadingDevices] = useState(false);
   const [selectDevices, setSelectDevices] = useState();
@@ -33,7 +34,6 @@ function Gpon() {
   const [loadingUserName, setLoadingUserName] = useState(false);
   const [vlanNetOneDevice, setVlanNetOneDevice] = useState([]);
 
-  const terminalRef = useRef(null);
   const { data: dataDevice, loading: loadingDevice } = useAsync(() =>
     ServiceDevice.getAlldevice()
   );
@@ -51,13 +51,7 @@ function Gpon() {
   );
   const [form] = useForm();
   const [form2] = useForm();
-  useEffect(() => {
-    // Cuộn xuống cuối khi lineData thay đổi
-    if (terminalRef.current) {
-      const terminalElement = terminalRef.current;
-      terminalElement.scrollTop = terminalElement.scrollHeight;
-    }
-  }, [lineData]);
+
   const controlGpon = async (mytv, net, ims, ip, loaithietbi, form2Values) => {
     try {
       const data = {
@@ -302,18 +296,16 @@ function Gpon() {
       const getADV = async () => {
         try {
           const res = await ServiceDevice.getADevice(selectDevices);
+
+          const resVlanNet = await ServiceVlanNet.getManyVlanNet(res.tenthietbi)
+          setVlanNetOneDevice(resVlanNet)
           form.setFieldsValue({
             ipaddress: res.ipaddress,
             vlanims: res.vlanims,
             vlanmytv: res.vlanmytv,
             vlannet: res.vlannet,
           });
-          const NameDevices = dataDevice.find(
-            (device) => device._id === selectDevices
-          );
 
-          const resVlanNet = await ServiceVlanNet.getManyVlanNet(NameDevices.tenthietbi)
-          setVlanNetOneDevice(resVlanNet)
         } catch (error) {
           console.error("Error fetching device data:", error);
         }
@@ -322,6 +314,37 @@ function Gpon() {
       getADV();
     }
   }, [selectDevices, form, dataDevice]);
+  useEffect(() => {
+    if (ipAddress) {
+
+      const getADV = async () => {
+        try {
+          const ip = dataIp.find(
+            (ips) => ips._id === ipAddress
+          );
+          const resDevice = await ServiceDevice.getAlldevice();
+          setDevices(resDevice)
+          const res = await ServiceIp.getDeviceByIp(ip.ipaddress);
+
+          const resVlanNet = await ServiceVlanNet.getManyVlanNet(res[0].tenthietbi)
+          setVlanNetOneDevice(resVlanNet)
+          form.setFieldsValue({
+            deviceType: res[0].loaithietbi,
+            deviceName: res[0]._id,
+            ipaddress: res[0].ipaddress._id,
+            vlanims: res[0].vlanims._id,
+            vlanmytv: res[0].vlanmytv._id,
+            vlannet: res[0].vlannet._id,
+          });
+
+        } catch (error) {
+          console.error("Error fetching device data:", error);
+        }
+      };
+
+      getADV();
+    }
+  }, [ipAddress, form, dataDevice]);
 
   const handleClear = () => {
     setLineData([<TerminalOutput>{"typ:isadmin>#"}</TerminalOutput>]);
@@ -407,6 +430,7 @@ function Gpon() {
                   loadingVlanMyTV={loadingVlanMyTV}
                   dataVlanIMS={dataVlanIMS}
                   loadingVlanIMS={loadingVlanIMS}
+                  setIpAddress={setIpAddress}
                 />
               ) : (
                 <UserForm
@@ -431,20 +455,22 @@ function Gpon() {
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={18} className="mb-24">
-            <TerminalComponent lineData={lineData} terminalRef={terminalRef} />
+            <TerminalComponent lineData={lineData} />
           </Col>
         </Row>
 
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
+            <Card bordered={false} className="criclebox h-full">
+              <DetailsForm form2={form2} deviceType={deviceType} radioValue={radioValue} />
+              <ControlButtons handleRun={handleRun} runLoading={runLoading} handleClear={handleClear} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">
             <RadioGroupComponent radioValue={radioValue} setRadioValue={setRadioValue} deviceType={deviceType} />
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
-            <DetailsForm form2={form2} deviceType={deviceType} radioValue={radioValue} />
-          </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
-            <ControlButtons handleRun={handleRun} runLoading={runLoading} handleClear={handleClear} />
-          </Col>
+
+
         </Row>
       </div>
     </>

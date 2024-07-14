@@ -1,6 +1,6 @@
 import { Form, Select } from "antd";
 
-const DeviceForm = ({ form, deviceType, setDeviceType, devices, loadingDevices, setSelectDevices, dataIp, loadingIp, dataVlanNet, vlanNetOneDevice, loadingVlanNet, dataVlanMyTV, loadingVlanMyTV, dataVlanIMS, loadingVlanIMS }) => (
+const DeviceForm = ({ form, deviceType, setDeviceType, devices, loadingDevices, setSelectDevices, dataIp, loadingIp, dataVlanNet, vlanNetOneDevice, loadingVlanNet, dataVlanMyTV, loadingVlanMyTV, dataVlanIMS, loadingVlanIMS, setIpAddress }) => (
     <Form
         form={form}
         labelCol={{ span: 8 }}
@@ -78,6 +78,7 @@ const DeviceForm = ({ form, deviceType, setDeviceType, devices, loadingDevices, 
                 placeholder="Chọn Ip"
                 loading={loadingIp}
                 showSearch
+                onChange={(value) => setIpAddress(value)}
                 optionFilterProp="children"
                 filterOption={(input, option) =>
                     option.children
