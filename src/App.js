@@ -1,5 +1,6 @@
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import Gpon from "./pages/Gpon";
+
 import Main from "./components/layout/Main";
 import SignIn from "./pages/Sigin";
 import "antd/dist/antd.css";
@@ -17,10 +18,14 @@ import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   return (
+
     <div className="App">
+
       <Switch>
         <Route exact path="/login" component={SignIn} />
+
         <Main>
+
           <Switch>
             <PrivateRoute exact path="/" component={Gpon} />
             <PrivateRoute exact path="/gpon" component={Gpon} />

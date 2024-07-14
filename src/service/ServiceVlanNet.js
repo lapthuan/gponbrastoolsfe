@@ -15,6 +15,9 @@ const ServiceVlanNet = {
     },
     deleteVlanNet: async (id) => {
         return requests.delete(`/vlannet/${id}`);
+    },
+    getManyVlanNet: async (device) => {
+        return requests.get(`/thietbi/find/vlannet/${device}`)
     }
 }
 

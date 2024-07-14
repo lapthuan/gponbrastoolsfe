@@ -3014,10 +3014,11 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
 }
 
 .layout-dashboard .ant-affix .ant-layout-header {
-  background: #fff;
+
   box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
   margin: 10px 20px;
   z-index: 10;
+  
 }
 
 aside.ant-layout-sider.ant-layout-sider-light.sider-primary.ant-layout-sider-primary.active-route
@@ -3079,7 +3080,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   display: none !important;
 }
 .react-terminal-wrapper {
-	font-size: 14px !important;
+	font-size: 16px !important;
   padding: 20px 10px !important;
 }
 .react-terminal {
@@ -3093,4 +3094,12 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
 .hover-changepw :hover{
     cursor: pointer;
 
+}
+.header-firt{
+  position: sticky;
+  background-color: #fff;
+  padding: 8px 0;
+  display: flex;
+  z-index: 999;
+  top: 0;
 }

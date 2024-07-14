@@ -44,12 +44,11 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const { setting, toggler, profile, logsetting } = Icon({ color: "#fff" });
+const { setting, toggler, profile } = Icon({ color: "#fff" });
 
 function Header({
   placement,
   name,
-  subName,
   onPress,
   handleSidenavColor,
   handleSidenavType,

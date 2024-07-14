@@ -19,6 +19,9 @@ const ServiceIp = {
   deleteIp: async (id) => {
     return requests.delete(`/ipaddress/${id}`);
   },
+  getDeviceByIp: async (ip) => {
+    return requests.get(`/thietbi/ip/${ip}`)
+  }
 };
 
 export default ServiceIp;

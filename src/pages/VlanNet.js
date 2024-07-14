@@ -3,10 +3,8 @@ import {
   Card,
   Col,
   Form,
-  Input,
   InputNumber,
   Row,
-  Select,
   Space,
   Table,
 } from "antd";

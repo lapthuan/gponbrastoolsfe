@@ -1,29 +1,19 @@
 import { Menu } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
-import logoVnpt from "../../assets/images/logoVnpt.png";
 import { Icon } from "../icon/icon.js";
 function Sidenav({ color }) {
   const { pathname } = useLocation();
   const page = pathname.replace("/", "");
 
   const {
-    vlanims,
-    vlannet,
-    vlanmytv,
     dashboard,
     bras,
-    ipaddress,
     device,
-    sheets,
   } = Icon(color);
 
   return (
     <>
-      <div className="brand">
-        <img src={logoVnpt} alt="" />
-        <span>App Auto Gpon Bras</span>
-      </div>
-      <hr />
+
       <Menu theme="light" mode="inline">
         <Menu.Item key="1">
           <NavLink to="/gpon">

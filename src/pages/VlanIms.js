@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, InputNumber, Row, Select, Space, Table } from 'antd';
+import { Button, Card, Col, Form, InputNumber, Row, Space, Table } from 'antd';
 import SubmitVlanIMS from '../components/submit/submitVlanIMS.js';
 
 

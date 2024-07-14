@@ -250,7 +250,7 @@ const Bras = () => {
     <>
       <div className="layout-content">
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
+          <Col xs={24} sm={24} md={12} lg={12} xl={6} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <div>
                 <Title level={5}>Thông số</Title>
@@ -339,11 +339,11 @@ const Bras = () => {
               </div>
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">
+          <Col xs={24} sm={24} md={12} lg={12} xl={18} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <Terminal
                 style={{ maxWidth: "150px" }}
-                height="45vh"
+                height="50vh"
                 colorMode={ColorMode.Dark}
               >
                 {lineData}
