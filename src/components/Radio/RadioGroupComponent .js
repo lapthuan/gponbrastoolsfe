@@ -6,7 +6,7 @@ const RadioGroupComponent = ({ radioValue, setRadioValue, deviceType }) => (
 
         <div style={{ padding: 0, margin: 0 }}>
             <Divider orientation="left" style={{ marginLeft: 0 }}>
-                <p style={{ color: 'red' }}>CHỨC NĂNG</p>
+                <p style={{ color: '#1f7ed0' }}>CHỨC NĂNG</p>
             </Divider>
         </div>
         <div className="radio-group-container">
