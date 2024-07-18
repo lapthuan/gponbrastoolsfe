@@ -4,7 +4,11 @@ import { Divider, Radio } from "antd";
 const RadioGroupComponent = ({ radioValue, setRadioValue, deviceType }) => (
     <>
 
-        <Divider orientation="left">chức năng</Divider>
+        <div style={{ padding: 0, margin: 0 }}>
+            <Divider orientation="left" style={{ marginLeft: 0 }}>
+                <p style={{ color: 'red' }}>CHỨC NĂNG</p>
+            </Divider>
+        </div>
         <div className="radio-group-container">
             <Radio.Group className="radio-group" onChange={(e) => setRadioValue(e.target.value)} value={radioValue}>
                 <div className="column">
