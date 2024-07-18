@@ -21,7 +21,7 @@
   .layout-dashboard .ant-layout {
     width: auto;
     flex-shrink: 1;
-    margin-left: 230px;
+    margin-left: 200px;
   }
   .layout-dashboard .header-control .sidebar-toggler {
     display: none;

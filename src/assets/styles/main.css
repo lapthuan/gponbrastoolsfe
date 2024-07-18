@@ -3103,3 +3103,6 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   z-index: 999;
   top: 0;
 }
+.ant-input-number{
+  border-radius: 4px !important;
+}

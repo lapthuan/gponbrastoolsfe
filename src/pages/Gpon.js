@@ -410,7 +410,7 @@ function Gpon() {
     <>
       <div className="layout-content">
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={12} lg={12} xl={6} className="mb-24">
+          <Col xs={24} sm={24} md={12} lg={12} xl={5} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <SwitchComponent isChecked={isChecked} handleSwitchChange={handleSwitchChange} />
               {isChecked === false ? (
@@ -452,26 +452,19 @@ function Gpon() {
                   loadingVlanIMS={loadingVlanIMS}
                 />
               )}
-            </Card>
-          </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={18} className="mb-24">
-            <TerminalComponent lineData={lineData} />
-          </Col>
-        </Row>
-
-        <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
-            <Card bordered={false} className="criclebox h-full">
               <DetailsForm form2={form2} deviceType={deviceType} radioValue={radioValue} />
               <ControlButtons handleRun={handleRun} runLoading={runLoading} handleClear={handleClear} />
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">
-            <RadioGroupComponent radioValue={radioValue} setRadioValue={setRadioValue} deviceType={deviceType} />
+          <Col xs={24} sm={24} md={12} lg={12} xl={19} className="mb-24">
+            <Card bordered={false} className="criclebox h-full" >
+              <TerminalComponent lineData={lineData} />
+              <RadioGroupComponent radioValue={radioValue} setRadioValue={setRadioValue} deviceType={deviceType} />
+            </Card>
           </Col>
-
-
         </Row>
+
+
       </div>
     </>
   );

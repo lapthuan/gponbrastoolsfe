@@ -9,7 +9,7 @@ const UserForm = ({ form, handleGetUser, loadingUserName, dataDevice, setUserNam
         </Space>
         <Form
             form={form}
-            labelCol={{ span: 8 }}
+
             initialValues={{ size: "small" }}
             layout="vertical"
             size={"small"}

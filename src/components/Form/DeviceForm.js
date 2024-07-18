@@ -3,7 +3,6 @@ import { Form, Select } from "antd";
 const DeviceForm = ({ form, deviceType, setDeviceType, devices, loadingDevices, setSelectDevices, dataIp, loadingIp, dataVlanNet, vlanNetOneDevice, loadingVlanNet, dataVlanMyTV, loadingVlanMyTV, dataVlanIMS, loadingVlanIMS, setIpAddress }) => (
     <Form
         form={form}
-        labelCol={{ span: 8 }}
         initialValues={{ size: "small" }}
         layout="vertical"
         size={"small"}

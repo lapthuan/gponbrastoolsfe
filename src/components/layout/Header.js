@@ -44,7 +44,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const { setting, toggler, profile } = Icon({ color: "#fff" });
+const { setting, toggler, profile } = Icon({ color: "black" });
 
 function Header({
   placement,
