@@ -3089,7 +3089,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
     white-space: normal;
 }
 .select-item .ant-input-number {
-  width: 200px; 
+  width: 100%;
 }
 .hover-changepw :hover{
     cursor: pointer;
@@ -3105,4 +3105,20 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
 }
 .ant-input-number{
   border-radius: 4px !important;
+}
+.radio-group-container {
+  display: flex;
+  margin-left: 24px;
+  justify-content: space-between;
+}
+
+.radio-group {
+  display: flex;
+}
+
+.column {
+  display: flex;
+  margin-left: 20px;
+  flex-direction: column;
+  gap: 8px; /* khoảng cách giữa các Radio */
 }

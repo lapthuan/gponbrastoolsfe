@@ -127,6 +127,7 @@ const DeviceForm = ({ form, deviceType, setDeviceType, devices, loadingDevices, 
                 style={{ width: "100%" }}
                 placeholder="Chọn Vlan Mytv"
                 loading={loadingVlanMyTV}
+                disabled
             >
                 {dataVlanMyTV?.map((item, i) => (
                     <Select.Option key={item._id} value={item._id}>
@@ -146,7 +147,7 @@ const DeviceForm = ({ form, deviceType, setDeviceType, devices, loadingDevices, 
                 { required: true, message: "Vui lòng chọn Vlan IMS" },
             ]}
         >
-            <Select placeholder="Chọn Vlan IMS">
+            <Select placeholder="Chọn Vlan IMS" disabled>
                 {dataVlanIMS?.map((item, i) => (
                     <Select.Option key={item._id} value={item._id}>
                         {item.number}

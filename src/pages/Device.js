@@ -30,16 +30,16 @@ const Device = () => {
   return (
     <div className="layout-content">
       <Row gutter={[24, 0]}>
-        <Col xs={24} sm={24} md={12} lg={6} xl={6} className="mb-24">
+        <Col xs={24} sm={24} md={12} lg={6} xl={5} className="mb-24">
           {editTab === false ? (
             <Card title="Thêm dữ liệu" bordered={true}>
               <Form
                 form={form}
-                labelCol={{ span: 8 }}
+
                 initialValues={{
                   size: "small",
                 }}
-                layout="horizontal"
+                layout="vertical"
                 size={"small"}
                 className="form-card"
                 onFinish={onFinish}
@@ -50,6 +50,7 @@ const Device = () => {
                   rules={[
                     { required: true, message: "Hãy Chọn loại thiết bị" },
                   ]}
+                  style={{ marginBottom: 10 }}
                   className="select-item"
                 >
                   <Select
@@ -69,14 +70,16 @@ const Device = () => {
                   name="tenthietbi"
                   rules={[{ required: true, message: "Chưa nhập tên TB" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
-                  <Input />
+                  <Input placeholder="Nhập tên TB" />
                 </Form.Item>
                 <Form.Item
                   label="Ip"
                   name="ipaddress"
                   rules={[{ required: true, message: "Hãy Chọn Ip" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
                   <Select
                     showSearch
@@ -103,6 +106,7 @@ const Device = () => {
                   name="vlanims"
                   rules={[{ required: true, message: "Hãy Chọn Vlan IMS" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
                   <Select
                     showSearch
@@ -124,6 +128,7 @@ const Device = () => {
                   name="vlanmytv"
                   rules={[{ required: true, message: "Hãy Chọn Vlan MyTV" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
                   <Select
                     showSearch
@@ -145,6 +150,7 @@ const Device = () => {
                   name="vlannet"
                   rules={[{ required: true, message: "Hãy Chọn Vlan Net" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
                   <Select
                     showSearch
@@ -174,11 +180,11 @@ const Device = () => {
               <i>Sửa dữ liệu của id: {idEdit.slice(-6)}</i>
               <Form
                 form={form}
-                labelCol={{ span: 8 }}
+
                 initialValues={{
                   size: "small",
                 }}
-                layout="horizontal"
+                layout="vertical"
                 size={"small"}
                 className="form-card"
                 onFinish={handleEdit}
@@ -189,6 +195,7 @@ const Device = () => {
                   rules={[
                     { required: true, message: "Hãy Chọn loại thiết bị" },
                   ]}
+                  style={{ marginBottom: 10 }}
                   className="select-item"
                 >
                   <Select
@@ -209,6 +216,7 @@ const Device = () => {
                   name="tenthietbi"
                   rules={[{ required: true, message: "Chưa nhập tên TB" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
                   <Input />
                 </Form.Item>
@@ -217,6 +225,7 @@ const Device = () => {
                   name="ipaddress"
                   rules={[{ required: true, message: "Hãy Chọn Ip" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
                   <Select
                     showSearch
@@ -242,6 +251,7 @@ const Device = () => {
                   name="vlanims"
                   rules={[{ required: true, message: "Hãy Chọn Vlan IMS" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
                   <Select
                     showSearch
@@ -262,6 +272,7 @@ const Device = () => {
                   name="vlanmytv"
                   rules={[{ required: true, message: "Hãy Chọn Vlan MyTV" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
                   <Select
                     showSearch
@@ -282,6 +293,7 @@ const Device = () => {
                   name="vlannet"
                   rules={[{ required: true, message: "Hãy Chọn Vlan Net" }]}
                   className="select-item"
+                  style={{ marginBottom: 10 }}
                 >
                   <Select
                     showSearch
@@ -309,7 +321,7 @@ const Device = () => {
             </Card>
           )}
         </Col>
-        <Col xs={24} sm={24} md={12} lg={18} xl={18} className="mb-24">
+        <Col xs={24} sm={24} md={12} lg={18} xl={19} className="mb-24">
           <Table
             pagination={{ pageSize: 6 }}
             columns={columns}
