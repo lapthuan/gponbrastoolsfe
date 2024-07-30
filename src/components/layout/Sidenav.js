@@ -51,7 +51,7 @@ function Sidenav({ color }) {
             >
               {bras}
             </span>
-            <span className="label">port</span>
+            <span className="label">Port</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item className="menu-item-header" key="5">
