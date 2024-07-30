@@ -1,6 +1,5 @@
 import { Switch, Route } from "react-router-dom";
 import Gpon from "./pages/Gpon";
-
 import Main from "./components/layout/Main";
 import SignIn from "./pages/Sigin";
 import "antd/dist/antd.css";
@@ -15,6 +14,7 @@ import VlanNet from "./pages/VlanNet";
 import SuyHao from "./pages/Suyhao";
 import PrivateRoute from "./privateRouter";
 import PageNotFound from "./pages/PageNotFound";
+import Port from "./pages/Port";
 
 function App() {
   return (
@@ -29,6 +29,7 @@ function App() {
           <Switch>
             <PrivateRoute exact path="/" component={Gpon} />
             <PrivateRoute exact path="/gpon" component={Gpon} />
+            <PrivateRoute exact path="/port" component={Port} />
             <PrivateRoute exact path="/bras" component={Bras} />
             <PrivateRoute exact path="/device" component={Device} />
             <PrivateRoute exact path="/ipaddress" component={IpAddress} />

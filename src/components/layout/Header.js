@@ -122,11 +122,10 @@ function Header({
       }
     }
   }
+
   return (
     <>
-      <div className="setting-drwer" onClick={showDrawer}>
-        {setting}
-      </div>
+
       <Row gutter={[24, 0]}>
         <Col span={24} md={6}>
           <Breadcrumb>
@@ -152,7 +151,7 @@ function Header({
           <Button type="link" onClick={showDrawer}>
             <SettingFilled color="#fff" style={{ color: "white" }} />
           </Button>
-          <Link onClick={showChangePWModal}><RiLockPasswordFill /> <span className="btn-login">Đổi mật khẩu</span></Link>
+          <Button type="link" onClick={showChangePWModal}><RiLockPasswordFill /> <span className="btn-login">Đổi mật khẩu</span></Button>
           <Button
             type="link"
             className="sidebar-toggler"
@@ -253,12 +252,12 @@ function Header({
               <span>Sign in</span>
             </Link>
           ) : (
-            <Link>
+            <Button type="link" onClick={showLogoutModal}>
               {profile}
-              <span className="btn-login" onClick={showLogoutModal}>
+              <span className="btn-login" >
                 Đăng xuất
               </span>
-            </Link>
+            </Button>
           )}
 
         </Col>
