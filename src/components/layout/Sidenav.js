@@ -41,6 +41,19 @@ function Sidenav({ color }) {
             <span className="label">BRAS</span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="7">
+          <NavLink to="/port">
+            <span
+              className="icon"
+              style={{
+                background: page === "port" ? color : "",
+              }}
+            >
+              {bras}
+            </span>
+            <span className="label">port</span>
+          </NavLink>
+        </Menu.Item>
         <Menu.Item className="menu-item-header" key="5">
           Quản lý
         </Menu.Item>
