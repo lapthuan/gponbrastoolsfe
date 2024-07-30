@@ -18,8 +18,8 @@ const Port = () => {
         }));
     };
 
-    const handleSelectAllForService = (service) => {
-        setSelectedServices(prevState => {
+    const handleSelectAllForService = async (service) => {
+        await setSelectedServices(prevState => {
             const allSelected = Object.values(prevState).every(record => record?.[service]);
             const updatedServices = data.reduce((acc, record) => {
                 acc[record.key] = {
@@ -43,43 +43,43 @@ const Port = () => {
         },
         {
             title: 'UserNet',
-            dataIndex: 'userNet',
+            dataIndex: 'usernet',
             key: 'usernet',
         },
         {
             title: 'Old Slot',
-            dataIndex: 'oldSlot',
-            key: 'oldSlot',
+            dataIndex: 'oldslot',
+            key: 'oldslot',
         },
         {
             title: 'Old Port',
-            dataIndex: 'oldPort',
-            key: 'oldPort',
+            dataIndex: 'oldport',
+            key: 'oldport',
         },
         {
             title: 'Old OnuID',
-            dataIndex: 'oldOnuID',
-            key: 'oldOnuID',
+            dataIndex: 'oldonuid',
+            key: 'oldonuid',
         },
         {
             title: 'SLID',
-            dataIndex: 'SLID',
-            key: 'SLID',
+            dataIndex: 'slid',
+            key: 'slid',
         },
         {
             title: 'New Slot',
-            dataIndex: 'newSlot',
-            key: 'newSlot',
+            dataIndex: 'newslot',
+            key: 'newslot',
         },
         {
             title: 'New Port',
-            dataIndex: 'newPort',
-            key: 'newPort',
+            dataIndex: 'newport',
+            key: 'newport',
         },
         {
             title: 'New OnuID',
-            dataIndex: 'newOnuID',
-            key: 'newOnuID',
+            dataIndex: 'newonuid',
+            key: 'newonuid',
         },
         {
             title: "Chức năng",
@@ -114,6 +114,7 @@ const Port = () => {
             ),
         },
     ];
+
     const handleUpload = ({ file }) => {
         if (file.status !== "removed") {
             const reader = new FileReader();
@@ -139,8 +140,27 @@ const Port = () => {
                     message.warning(`Tên cột không khớp:\nThiếu: ${missingColumns.join(', ')}\nThừa: ${extraColumns.join(', ')}`);
                     return;
                 }
+                const columnHeaders = Object.keys(json[0]);
+                const columnMapping = {};
+                columnHeaders.forEach(header => {
+                    columnMapping[header.trim().toLowerCase()] = header;
+                });
 
-                setData(json.map((item, index) => ({ key: index + 1, ...item })));
+                console.log('Column Mapping:', columnMapping);
+
+                // Cập nhật dữ liệu với tên cột mới
+                const updatedJson = json.map(row => {
+                    const updatedRow = {};
+                    Object.keys(row).forEach(header => {
+                        const lowercaseHeader = header.trim().toLowerCase();
+                        if (columnMapping[lowercaseHeader]) {
+                            updatedRow[lowercaseHeader] = row[header];
+                        }
+                    });
+                    return updatedRow;
+                });
+
+                setData(updatedJson.map((item, index) => ({ key: index + 1, ...item })));
             };
             reader.readAsArrayBuffer(file);
         }
