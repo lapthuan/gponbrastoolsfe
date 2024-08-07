@@ -343,7 +343,7 @@ const Bras = () => {
             <Card bordered={false} className="criclebox h-full">
               <Terminal
                 style={{ maxWidth: "150px" }}
-                height="50vh"
+                height="71vh"
                 colorMode={ColorMode.Dark}
               >
                 {lineData}
