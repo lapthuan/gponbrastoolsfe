@@ -253,24 +253,50 @@ const Port = () => {
         <div className="layout-content">
             <Row gutter={[24, 0]}>
 
-                <Col xs={24} sm={24} md={12} lg={6} xl={24} className="mb-24">
-                    <Space direction="horizontal">
-                        <Upload beforeUpload={() => false} onChange={handleUpload}>
-                            <Button type="primary">Upload File Excel</Button>
-                        </Upload>
-                        <DownloadExcelButton />
-                        <Button onClick={() => handleSelectAllFunctions(true)}>Chọn tất cả</Button>
-                        <Button onClick={() => handleSelectAllFunctions(false)}>Bỏ chọn tất cả</Button>
-                        <Button onClick={() => handleSelectAllForService('delete')}> Xóa pass đồng bộ</Button>
-                        <Button onClick={() => handleSelectAllForService('net')}> Net</Button>
-                        <Button onClick={() => handleSelectAllForService('ims')}>IMS</Button>
-                        <Button onClick={() => handleSelectAllForService('mytv')}> MyTV</Button>
-                        <Button onClick={() => handleSelectAllForService('sync')}> Đổi pass đồng bộ</Button>
-                        <Button onClick={() => handleDeleteDataTable()} danger>Xóa dữ liệu bảng</Button>
-                        <Button onClick={() => generateCommands()} type="primary" style={{ borderColor: '#4CAF50' }}>Thực hiện</Button>
 
-                    </Space>
+                <Col xs={24} sm={24} md={12} lg={8} xl={8} className="mb-24" >
+                    <Card bordered={false} className="criclebox h-full " title="Excel">
+
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Space direction="vertical" align="center">
+                                <Upload beforeUpload={() => false} onChange={handleUpload}>
+                                    <Button style={{ borderColor: '#4CAF50', backgroundColor: '#4CAF50' }} type="primary">Upload File Excel</Button>
+                                </Upload>
+                                <DownloadExcelButton />
+                            </Space>
+                        </div>
+                    </Card>
                 </Col>
+                <Col xs={24} sm={24} md={12} lg={8} xl={8} className="mb-24">
+                    <Card bordered={false} className="criclebox h-full" title="Chọn">
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllFunctions(true)}>Chọn tất cả</Button>
+                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllFunctions(false)}>Bỏ chọn tất cả</Button>
+                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('delete')}> Xóa pass đồng bộ</Button>
+                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('net')}> Net</Button>
+                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('ims')}>IMS</Button>
+                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('mytv')}> MyTV</Button>
+                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('sync')}> Đổi pass đồng bộ</Button>
+                            </div>
+                        </div>
+                    </Card>
+                </Col>
+
+                <Col xs={24} sm={24} md={12} lg={8} xl={8} className="mb-24" >
+                    <Card bordered={false} className="criclebox h-full" title="Thực hiện"   >
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+
+                                <Button style={{ margin: '5px' }} onClick={() => handleDeleteDataTable()} danger>Xóa dữ liệu bảng</Button>
+                                <Button onClick={() => generateCommands()} type="primary" style={{ borderColor: '#4CAF50', margin: '5px' }}>Thực hiện</Button>
+                            </div>
+                        </div>
+
+                    </Card>
+                </Col>
+
+
                 <Col xs={24} sm={24} md={12} lg={18} xl={24} className="mb-24">
 
                     <Table
