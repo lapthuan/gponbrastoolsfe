@@ -176,7 +176,7 @@ const Port = () => {
                 message.warning("Chưa chọn loại thiết bị")
                 return
             }
-            if (selectDevices == "") {
+            if (selectDevices == null) {
                 message.warning("Chưa chọn thiết bị")
                 return
             }
