@@ -1,14 +1,29 @@
-import { Button, Card, Checkbox, Col, message, Row, Space, Table, Upload } from "antd";
+import { Button, Card, Checkbox, Col, message, Row, Select, Space, Table, Upload } from "antd";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import DownloadExcelButton from "../components/Button/DownloadExcelButton ";
+import ServiceDevice from "../service/ServiceDevice";
+import ServiceIp from "../service/ServiceIp";
+import useAsync from "../hook/useAsync";
+import ServiceGpon from "../service/ServiceGpon";
 
 const Port = () => {
 
     const [data, setData] = useState([]);
     const [selectedServices, setSelectedServices] = useState({});
+    const [deviceType, setDeviceType] = useState("");
+    const [devices, setDevices] = useState([]);
 
+    const [loadingDevices, setLoadingDevices] = useState(false);
+    const [selectDevices, setSelectDevices] = useState();
+    const [ipAddress, setIpAddress] = useState();
+    const { data: dataIp, loading: loadingIp } = useAsync(() =>
+        ServiceIp.getAllIp()
+    );
+    const { data: dataDevice, loading: loadingDevice } = useAsync(() =>
+        ServiceDevice.getAlldevice()
+    );
     const handleServiceChange = (service, record) => {
         setSelectedServices(prevState => ({
             ...prevState,
@@ -18,7 +33,45 @@ const Port = () => {
             }
         }));
     };
+    useEffect(() => {
+        if (selectDevices) {
 
+            const getADV = async () => {
+                try {
+                    const res = await ServiceDevice.getADevice(selectDevices);
+                    setIpAddress(res.ipaddress)
+
+
+                } catch (error) {
+                    console.error("Error fetching device data:", error);
+                }
+            };
+
+            getADV();
+        }
+    }, [selectDevices]);
+    useEffect(() => {
+
+        if (deviceType) {
+
+            const getDevice = async () => {
+                try {
+
+                    const res = await ServiceDevice.getDevice(deviceType);
+
+                    setDevices(res);
+
+
+                } catch (error) {
+                    console.error("Error fetching device data:", error);
+                    // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
+                } finally {
+                    setLoadingDevices(false);
+                }
+            };
+            getDevice();
+        }
+    }, [deviceType]);
     const handleSelectAllForService = (service) => {
         setSelectedServices(prevState => {
             const allSelected = data.every(record => prevState[record.key]?.[service]);
@@ -106,30 +159,7 @@ const Port = () => {
             key: "action",
             render: (text, record) => (
                 <Space>
-                    <Checkbox
-                        checked={selectedServices[record.key]?.delete || false}
-                        onChange={() => handleServiceChange('delete', record)}
-                    >
-                        Xóa pass đồng bộ
-                    </Checkbox>
-                    <Checkbox
-                        checked={selectedServices[record.key]?.net || false}
-                        onChange={() => handleServiceChange('net', record)}
-                    >
-                        Tạo DV Net
-                    </Checkbox>
-                    <Checkbox
-                        checked={selectedServices[record.key]?.ims || false}
-                        onChange={() => handleServiceChange('ims', record)}
-                    >
-                        Tạo DV IMS
-                    </Checkbox>
-                    <Checkbox
-                        checked={selectedServices[record.key]?.mytv || false}
-                        onChange={() => handleServiceChange('mytv', record)}
-                    >
-                        Tạo DV MyTV
-                    </Checkbox>
+               
                     <Checkbox
                         checked={selectedServices[record.key]?.sync || false}
                         onChange={() => handleServiceChange('sync', record)}
@@ -140,44 +170,46 @@ const Port = () => {
             ),
         },
     ];
-    const generateCommands = () => {
+    const generateCommands = async () => {
+        try {
+            const device = dataDevice.find((item) => item._id === selectDevices);
+            const ip = dataIp.find((item) => item._id === ipAddress);
 
-        const commandsData = data.map(record => {
-            const commands = [];
+            const hasValidRecord = data.some(record => selectedServices[record.key]?.sync);
 
-            if (selectedServices[record.key]?.delete) {
-                commands.push('delete_port');
-            }
-            if (selectedServices[record.key]?.sync) {
-                commands.push('change_sync_password');
-            }
-            if (selectedServices[record.key]?.net) {
-                commands.push('create_dvnet');
-            }
-            if (selectedServices[record.key]?.ims) {
-                commands.push('dv_ims');
-            }
-            if (selectedServices[record.key]?.mytv) {
-                commands.push('create_dvmytv');
+            if (!hasValidRecord) {
+                message.warning("Phải có ít nhất 1 hàng thực thi")
             }
 
+            const listconfig = data
+                .filter(record => selectedServices[record.key]?.sync)
+                .map(record => ({
+                    commands: "change_sync_password",
+                    slid: record.slid,
+                    newcard: record.newslot,
+                    newport: record.newport,
+                    newonu: record.newonuid,
+                }));
 
-            return {
-                commands: `[${commands.join(', ')}]`,
-                card: record.newslot,
-                port: record.newport,
-                onu: record.newonuid,
-                slid: record.slid,
-                vlanims: 1500,
-                vlanmytv: 2400,
-                vlannet: 500,
-            };
-        });
+            const dataObject = [{
+                "deviceType": deviceType,
+                "selectDevices": device.tenthietbi,
+                "ipAddress": ip.ipaddress,
+                "listconfig": listconfig
+            }];
+            const res = await ServiceGpon.ControlMany(dataObject);
+            if (res)
+                message.success("Đổi pass đồng bộ thành công")
 
-        console.log('Commands Data:', commandsData);
+        } catch (error) {
+            console.log(error)
+            message.error("Lỗi")
+        }
 
 
     };
+
+
 
     const handleUpload = ({ file }) => {
         if (file.status !== "removed") {
@@ -271,12 +303,7 @@ const Port = () => {
                     <Card bordered={false} className="criclebox h-full" title="Chọn">
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllFunctions(true)}>Chọn tất cả</Button>
-                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllFunctions(false)}>Bỏ chọn tất cả</Button>
-                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('delete')}> Xóa pass đồng bộ</Button>
-                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('net')}> Net</Button>
-                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('ims')}>IMS</Button>
-                                <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('mytv')}> MyTV</Button>
+                          
                                 <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('sync')}> Đổi pass đồng bộ</Button>
                             </div>
                         </div>
@@ -287,9 +314,61 @@ const Port = () => {
                     <Card bordered={false} className="criclebox h-full" title="Thực hiện"   >
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                <Select
+                                    style={{ width: "100%", margin: 5 }}
+                                    onChange={(value) => setDeviceType(value)}
+                                    placeholder="Chọn loại thiết bị"
+                                >
+                                    <Select.Option value="GPON ALU">GPON ALU</Select.Option>
+                                    <Select.Option value="GPON HW">GPON HW</Select.Option>
+                                    <Select.Option value="GPON MINI HW">GPON Mini HW</Select.Option>
+                                    <Select.Option value="GPON MINI ZTE">
+                                        GPON Mini ZTE
+                                    </Select.Option>
+                                    <Select.Option value="GPON ZTE">GPON ZTE</Select.Option>
+                                </Select>
+                                <Select
+                                    style={{ width: "100%", margin: 5 }}
+                                    placeholder="Chọn thiết bị"
+                                    onChange={(value) => setSelectDevices(value)}
+                                    showSearch
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children
+                                            .toLowerCase()
+                                            .includes(input.toLowerCase())
+                                    }
+                                    loading={loadingDevices}
+                                >
+                                    {devices.map((device) => (
+                                        <Select.Option key={device._id} value={device._id}>
+                                            {device.tenthietbi}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                                <Select
+                                    showSearch
+                                    style={{ width: "100%", margin: 5 }}
+                                    placeholder="Chọn Ip"
+                                    loading={loadingIp}
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children
+                                            .toLowerCase()
+                                            .includes(input.toLowerCase())
+                                    }
+                                    value={ipAddress}
+                                    onChange={(value) => setIpAddress(value)}
+                                >
+                                    {dataIp?.map((item, i) => (
+                                        <Select.Option key={i + 1} value={item._id}>
+                                            {item.ipaddress}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
 
-                                <Button style={{ margin: '5px' }} onClick={() => handleDeleteDataTable()} danger>Xóa dữ liệu bảng</Button>
                                 <Button onClick={() => generateCommands()} type="primary" style={{ borderColor: '#4CAF50', margin: '5px' }}>Thực hiện</Button>
+                                <Button style={{ margin: '5px' }} onClick={() => handleDeleteDataTable()} danger>Xóa dữ liệu bảng</Button>
                             </div>
                         </div>
 
@@ -302,7 +381,7 @@ const Port = () => {
                     <Table
                         columns={columns}
                         dataSource={data}
-                        scroll={{ x: 1600 }}
+                        scroll={{ x: 1200 }}
                         pagination={{ pageSize: 6 }}
                     />
                 </Col>

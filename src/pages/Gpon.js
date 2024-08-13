@@ -20,7 +20,7 @@ import ControlButtons from "../components/Form/ControlButtons";
 
 function Gpon() {
   const [lineData, setLineData] = useState([
-    <TerminalOutput>{"typ:isadmin>#"}</TerminalOutput>,
+    <TerminalOutput key={"12312312312321312"} >{"typ:isadmin>#"}</TerminalOutput>,
   ]);
   const [runLoading, setRunLoading] = useState(false);
   const [deviceType, setDeviceType] = useState("");

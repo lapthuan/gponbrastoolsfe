@@ -24,7 +24,7 @@ const twoColors = {
 const Bras = () => {
   const { Title } = Typography;
   const [lineData, setLineData] = useState([
-    <TerminalOutput>{"bras_vlg_01@inoc2-T3200:~$"}</TerminalOutput>,
+    <TerminalOutput key={"12312312321"}>{"bras_vlg_01@inoc2-T3200:~$"}</TerminalOutput>,
   ]);
 
   const [macAddress, setMacAddress] = useState("");
