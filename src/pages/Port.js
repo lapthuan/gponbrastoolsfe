@@ -159,7 +159,7 @@ const Port = () => {
             key: "action",
             render: (text, record) => (
                 <Space>
-               
+
                     <Checkbox
                         checked={selectedServices[record.key]?.sync || false}
                         onChange={() => handleServiceChange('sync', record)}
@@ -172,6 +172,14 @@ const Port = () => {
     ];
     const generateCommands = async () => {
         try {
+            if (deviceType == "") {
+                message.warning("Chưa chọn loại thiết bị")
+                return
+            }
+            if (selectDevices == "") {
+                message.warning("Chưa chọn thiết bị")
+                return
+            }
             const device = dataDevice.find((item) => item._id === selectDevices);
             const ip = dataIp.find((item) => item._id === ipAddress);
 
@@ -179,6 +187,7 @@ const Port = () => {
 
             if (!hasValidRecord) {
                 message.warning("Phải có ít nhất 1 hàng thực thi")
+                return
             }
 
             const listconfig = data
@@ -303,7 +312,7 @@ const Port = () => {
                     <Card bordered={false} className="criclebox h-full" title="Chọn">
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                          
+
                                 <Button style={{ margin: '5px' }} onClick={() => handleSelectAllForService('sync')}> Đổi pass đồng bộ</Button>
                             </div>
                         </div>
