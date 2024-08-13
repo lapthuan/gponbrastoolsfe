@@ -56,16 +56,7 @@ function Sidenav({ color }) {
               />
             </span>
 
-            {/* <span
-              className="icon"
-              style={{
-                background: page === "port" ? color : "",
-              }}
-            >
-
-              {bras}
-            </span> */}
-            <span className="label">Port</span>
+            <span className="label">Sync</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item className="menu-item-header" key="5">
