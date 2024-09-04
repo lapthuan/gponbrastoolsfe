@@ -205,7 +205,7 @@ const Port = () => {
       const listconfig = data
         .filter((record) => selectedServices[record.key]?.sync)
         .map((record) => ({
-          commands: "change_sync_password_list",
+          commands: "[change_sync_password_list]",
           slid: record.slid,
           newcard: record.newslot,
           newport: record.newport,
