@@ -37,10 +37,11 @@ const SignIn = () => {
         history.push("/"); // Chuyển hướng sau khi đăng nhập thành công
         message.success("Đăng nhập thành công");
       } else {
-        message.error("Đăng nhập thất bại. Vui lòng kiểm tra lại.");
+        message.warning("Sai tên tài khoản hoặc mật khẩu. Vui lòng kiểm tra lại");
       }
     } catch (error) {
-      message.error("Đăng nhập thất bại. Vui lòng kiểm tra lại.");
+      console.error(error.message)
+      message.error("Đã xảy ra lỗi, hãy thử lại");
     }
   };
 
