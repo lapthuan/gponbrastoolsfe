@@ -31,7 +31,9 @@ const SignIn = () => {
     try {
       const res = await ServiceUser.userLogin(data);
       if (res.token.access_token) {
-        cookies.set("token", res.token.access_token);
+        const token = res.token.access_token;
+        console.log(token);
+        await cookies.set("token", token);
         history.push("/"); // Chuyển hướng sau khi đăng nhập thành công
         message.success("Đăng nhập thành công");
       } else {
