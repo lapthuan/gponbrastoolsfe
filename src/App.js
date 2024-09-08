@@ -15,6 +15,7 @@ import SuyHao from "./pages/Suyhao";
 import PrivateRoute from "./privateRouter";
 import PageNotFound from "./pages/PageNotFound";
 import Port from "./pages/Port";
+import CreateList from "./pages/CreateList";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <PrivateRoute exact path="/vlanmytv" component={VlanMyTV} />
             <PrivateRoute exact path="/vlannet" component={VlanNet} />
             <PrivateRoute exact path="/suy-hao" component={SuyHao} />
+            <PrivateRoute exact path="/list" component={CreateList} />
             <Route path="*" component={PageNotFound} />
           </Switch>
         </Main>

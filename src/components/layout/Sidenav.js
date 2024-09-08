@@ -59,6 +59,23 @@ function Sidenav({ color }) {
             <span className="label">Sync</span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="8">
+          <NavLink to="/list">
+            <span
+              className="icon"
+              style={{
+                background: page === "port" ? color : "",
+              }}
+            >
+
+              <FaNetworkWired
+                color={color}
+              />
+            </span>
+
+            <span className="label">List</span>
+          </NavLink>
+        </Menu.Item>
         <Menu.Item className="menu-item-header" key="5">
           Quản lý
         </Menu.Item>

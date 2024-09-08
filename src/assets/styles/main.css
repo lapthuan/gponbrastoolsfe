@@ -3103,3 +3103,17 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   z-index: 999;
   top: 0;
 }
+.radio-group-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.radio-group {
+  display: flex;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* khoảng cách giữa các Radio */
+}
