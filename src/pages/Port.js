@@ -8,6 +8,7 @@ import {
   Select,
   Space,
   Table,
+  Tabs,
   Upload,
 } from "antd";
 
@@ -20,6 +21,7 @@ import useAsync from "../hook/useAsync";
 import ServiceGpon from "../service/ServiceGpon";
 import { TerminalOutput } from "react-terminal-ui";
 import TerminalComponent from "../components/Terminal/TerminalComponent";
+const { TabPane } = Tabs;
 
 const Port = () => {
   const [lineData, setLineData] = useState([
@@ -121,9 +123,9 @@ const Port = () => {
   const columns = [
     {
       title: "STT",
-      dataIndex: "STT",
-      key: "STT",
-      render: (text, record, index) => index + 1,
+      dataIndex: "key",
+      key: "key",
+
     },
     {
       title: "UserNet",
@@ -461,21 +463,25 @@ const Port = () => {
         </Col>
 
         <Col xs={24} sm={24} md={12} lg={18} xl={24} className="mb-24">
-          <Table
-            columns={columns}
-            dataSource={data}
-            scroll={{ x: 1200 }}
-            pagination={{ pageSize: 6 }}
-          />
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Bảng dữ liệu" key="1">
+              <Table
+                columns={columns}
+                dataSource={data}
+                scroll={{ x: 1200 }}
+                pagination={{ pageSize: 6 }}
+              />
+            </TabPane>
+            <TabPane tab="Terminal" key="2">
+              <Card bordered={false} className="criclebox h-full">
+                <TerminalComponent lineData={lineData} />
+              </Card>
+            </TabPane>
+          </Tabs>
+
         </Col>
       </Row>
-      <Row>
-        <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-24">
-          <Card bordered={false} className="criclebox h-full">
-            <TerminalComponent lineData={lineData} />
-          </Card>
-        </Col>
-      </Row>
+
     </div>
   );
 };

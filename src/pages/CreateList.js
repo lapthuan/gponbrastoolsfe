@@ -10,12 +10,12 @@ import {
     Select,
     Space,
     Table,
-    Upload,
+    Tabs,
 } from "antd";
 
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-import DownloadExcelButton from "../components/Button/DownloadExcelButton ";
+
 import ServiceDevice from "../service/ServiceDevice";
 import ServiceIp from "../service/ServiceIp";
 import useAsync from "../hook/useAsync";
@@ -23,6 +23,7 @@ import ServiceGpon from "../service/ServiceGpon";
 import { TerminalOutput } from "react-terminal-ui";
 import TerminalComponent from "../components/Terminal/TerminalComponent";
 import { useForm } from "antd/lib/form/Form";
+const { TabPane } = Tabs;
 
 const CreateList = () => {
     const [form] = useForm();
@@ -109,10 +110,10 @@ const CreateList = () => {
             const updatedServices = data.reduce((acc, record) => {
                 acc[record.key] = {
                     ...prevState[record.key],
-                   
+
                     net: selectAll,
                     ims: selectAll,
-                  
+
                 };
                 return acc;
             }, {});
@@ -125,9 +126,9 @@ const CreateList = () => {
     const columns = [
         {
             title: "STT",
-            dataIndex: "STT",
-            key: "STT",
-            render: (text, record, index) => index + 1,
+            dataIndex: "key",
+            key: "key",
+
         },
 
         {
@@ -174,35 +175,45 @@ const CreateList = () => {
     ];
     const generateCommands = async () => {
         try {
-            if (deviceType == "") {
-                message.warning("Chưa chọn loại thiết bị");
-                return;
-            }
-            if (selectDevices == null) {
-                message.warning("Chưa chọn thiết bị");
-                return;
-            }
+
             const device = dataDevice.find((item) => item._id === selectDevices);
             const ip = dataIp.find((item) => item._id === ipAddress);
 
             const hasValidRecord = data.some(
-                (record) => selectedServices[record.key]?.sync
+                (record) => selectedServices[record.key]?.ims
             );
-
+            const hasValidRecord2 = data.some(
+                (record) => selectedServices[record.key]?.net
+            );
             if (!hasValidRecord) {
+                message.warning("Phải có ít nhất 1 hàng thực thi");
+                return;
+            }
+            if (!hasValidRecord2) {
                 message.warning("Phải có ít nhất 1 hàng thực thi");
                 return;
             }
 
             const listconfig = data
-                .filter((record) => selectedServices[record.key]?.sync)
-                .map((record) => ({
-                    commands: "[change_sync_password_list]",
-                    slid: record.slid,
-                    newcard: record.newslot,
-                    newport: record.newport,
-                    newonu: record.newonuid,
-                }));
+                .map((record) => {
+                    let commands = [];
+
+                    if (selectedServices[record.key].net) {
+                        commands.push("dv_ims_list");
+                    }
+
+                    if (selectedServices[record.key].ims) {
+                        commands.push("create_dvnet_list");
+                    }
+                    return (
+                        {
+                            commands: `[${commands.join(", ")}]`,
+                            slid: record.slid,
+                            newcard: record.slot,
+                            newport: record.port,
+                            newonu: record.onuid,
+                        })
+                });
 
             const dataObject = {
                 devicetype: deviceType,
@@ -308,7 +319,7 @@ const CreateList = () => {
             const SLID = `${formatNumber(newSlot)}${formatNumber(newPort)}0000${formatNumber(onuID)}`;
 
             newRows.push({
-                key: data.length + newRows.length + 1, // Tạo key duy nhất cho mỗi dòng
+                key: data.length + newRows.length + 1,
                 slot: newSlot,
                 port: newPort,
                 onuid: onuID,
@@ -328,6 +339,7 @@ const CreateList = () => {
                     <Card bordered={false} className="criclebox h-full" title="Thực hiện">
                         <Form
                             labelCol={{ span: 6 }}
+                            // labelAlign="left"
                             initialValues={{ size: "small" }}
                             layout="horizontal"
                             size={"small"}
@@ -419,13 +431,25 @@ const CreateList = () => {
                                 </Select>
                             </Form.Item>
 
-                            <Form.Item style={{ marginBottom: 10, width: "100%" }} label="Card" name="card" className="select-item" >
-                                <InputNumber placeholder="Nhập Card" />
+                            <Form.Item style={{ marginBottom: 10, width: "100%" }} rules={[
+                                { required: true, message: "Vui lòng nhập Card" },
+                            ]} label="Card" name="card" className="select-item" >
+                                <InputNumber style={{
+                                    width: "100%",
+                                    margin: "5px"
+                                }} placeholder="Nhập Card" />
                             </Form.Item>
-                            <Form.Item style={{ marginBottom: 10, width: "100%" }} label="Port" name="port" className="select-item">
-                                <InputNumber placeholder="Nhập Port" width={100} />
+                            <Form.Item style={{ marginBottom: 10, width: "100%" }} rules={[
+                                { required: true, message: "Vui lòng nhập Port  " },
+                            ]} label="Port" name="port" className="select-item">
+                                <InputNumber style={{
+                                    width: "100%",
+                                    margin: "5px"
+                                }} placeholder="Nhập Port" width={100} />
                             </Form.Item>
-                            <label>Dãy Onu</label>
+                            <Form.Item style={{ marginBottom: 10, width: "100%" }} label="Dãy Onu" name="onuuu" className="select-item">
+                            </Form.Item>
+
                             <div style={{
                                 display: "flex",
                                 justifyContent: "center",
@@ -435,6 +459,7 @@ const CreateList = () => {
                                 <Row gutter={16}>
                                     <Col>
                                         <Form.Item
+
                                             name="start"
                                             rules={[
                                                 {
@@ -456,6 +481,7 @@ const CreateList = () => {
                                             ]}
                                         >
                                             <InputNumber
+
                                                 placeholder="Số bắt đầu"
                                                 value={startValue}
                                                 onChange={(value) => setStartValue(value)}
@@ -525,7 +551,7 @@ const CreateList = () => {
                                     justifyContent: "center",
                                 }}
                             >
-                                  <Button
+                                <Button
                                     style={{ margin: "5px" }}
                                     onClick={() => handleSelectAllFunctions(true)}
                                 >
@@ -550,16 +576,46 @@ const CreateList = () => {
                         </div>
                     </Card>
                 </Col>
-
-
-                <Col xs={24} sm={24} md={12} lg={18} xl={24} className="mb-24">
-                    <Table
-                        columns={columns}
-                        dataSource={data}
-                        scroll={{ x: 1200 }}
-                        pagination={{ pageSize: 6 }}
-                    />
+                <Col xs={24} sm={24} md={12} lg={8} xl={8} className="mb-24">
+                    <Card bordered={false} className="criclebox h-full" title="Thực hiện">
+                        <Button
+                            style={{ margin: "5px" }}
+                            type="primary"
+                            onClick={generateCommands}
+                            disabled={data.length > 0 ? false : true}
+                        >
+                            Thực hiện
+                        </Button>
+                        <Button
+                            style={{ margin: "5px" }}
+                            type="primary"
+                            onClick={handleDeleteDataTable}
+                            disabled={data.length > 0 ? false : true}
+                            danger
+                        >
+                            Xóa bỏ bảng dữ liệu
+                        </Button>
+                    </Card>
                 </Col>
+                <Col xs={24} sm={24} md={12} lg={18} xl={24} className="mb-24">
+                    <Tabs defaultActiveKey="1">
+                        <TabPane tab="Bảng dữ liệu" key="1">
+                            <Table
+                                columns={columns}
+                                dataSource={data}
+                                scroll={{ x: 1200 }}
+                                pagination={{ pageSize: 6 }}
+                            />
+                        </TabPane>
+                        <TabPane tab="Terminal" key="2">
+                            <Card bordered={false} className="criclebox h-full">
+                                <TerminalComponent lineData={lineData} />
+                            </Card>
+                        </TabPane>
+                    </Tabs>
+
+                </Col>
+
             </Row>
 
         </div>

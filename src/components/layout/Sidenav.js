@@ -2,6 +2,7 @@ import { Menu } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import { Icon } from "../icon/icon.js";
 import { FaNetworkWired } from "react-icons/fa";
+import { FaListCheck } from "react-icons/fa6";
 function Sidenav({ color }) {
   const { pathname } = useLocation();
   const page = pathname.replace("/", "");
@@ -64,11 +65,11 @@ function Sidenav({ color }) {
             <span
               className="icon"
               style={{
-                background: page === "port" ? color : "",
+                background: page === "list" ? color : "",
               }}
             >
 
-              <FaNetworkWired
+              <FaListCheck
                 color={color}
               />
             </span>
