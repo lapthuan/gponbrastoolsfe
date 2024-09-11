@@ -123,8 +123,9 @@ const Port = () => {
   const columns = [
     {
       title: "STT",
-      dataIndex: "key",
-      key: "key",
+      dataIndex: "STT",
+      key: "STT",
+      render: (text, record, index) => index + 1,
 
     },
     {
