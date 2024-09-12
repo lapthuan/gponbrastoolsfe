@@ -33,7 +33,7 @@ const Port = () => {
   const [selectedServices, setSelectedServices] = useState({});
   const [deviceType, setDeviceType] = useState("");
   const [devices, setDevices] = useState([]);
-
+  const [onLoading, setOnLoading] = useState(false);
   const [loadingDevices, setLoadingDevices] = useState(false);
   const [selectDevices, setSelectDevices] = useState();
   const [ipAddress, setIpAddress] = useState();
@@ -126,7 +126,6 @@ const Port = () => {
       dataIndex: "STT",
       key: "STT",
       render: (text, record, index) => index + 1,
-
     },
     {
       title: "UserNet",
@@ -185,12 +184,15 @@ const Port = () => {
   ];
   const generateCommands = async () => {
     try {
+      setOnLoading(true);
       if (deviceType == "") {
         message.warning("Chưa chọn loại thiết bị");
+        setOnLoading(false);
         return;
       }
       if (selectDevices == null) {
         message.warning("Chưa chọn thiết bị");
+        setOnLoading(false);
         return;
       }
       const device = dataDevice.find((item) => item._id === selectDevices);
@@ -202,6 +204,7 @@ const Port = () => {
 
       if (!hasValidRecord) {
         message.warning("Phải có ít nhất 1 hàng thực thi");
+        setOnLoading(false);
         return;
       }
 
@@ -214,8 +217,8 @@ const Port = () => {
           newport: record.newport,
           newonu: record.newonuid,
           vlanims: 0,
-          vlannet:0,
-          vlanmytv:0
+          vlannet: 0,
+          vlanmytv: 0,
         }));
 
       const dataObject = {
@@ -228,6 +231,7 @@ const Port = () => {
 
       const res = await ServiceGpon.ControlMany(dataObject);
       if (res) {
+        setOnLoading(false);
         const newLine = (
           <TerminalOutput key={lineData.length}>
             {" "}
@@ -302,7 +306,7 @@ const Port = () => {
     }
   };
   const handleDeleteDataTable = () => {
-    setData([]);
+    setLineData([<TerminalOutput>{"typ:isadmin>#"}</TerminalOutput>]);
   };
   // const formatNumber = (number) => {
   //     return number < 10 ? `0${number}` : `${number}`;
@@ -450,16 +454,17 @@ const Port = () => {
                 <Button
                   onClick={() => generateCommands()}
                   type="primary"
+                  loading={onLoading}
                   style={{ borderColor: "#4CAF50", margin: "5px" }}
                 >
-                  Thực hiện
+                  {onLoading ? "Loading" : "Run"}
                 </Button>
                 <Button
                   style={{ margin: "5px" }}
                   onClick={() => handleDeleteDataTable()}
                   danger
                 >
-                  Xóa dữ liệu bảng
+                  Clear
                 </Button>
               </div>
             </div>
@@ -482,10 +487,8 @@ const Port = () => {
               </Card>
             </TabPane>
           </Tabs>
-
         </Col>
       </Row>
-
     </div>
   );
 };
