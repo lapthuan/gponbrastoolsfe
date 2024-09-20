@@ -23,6 +23,9 @@ import ServiceGpon from "../service/ServiceGpon";
 import { TerminalOutput } from "react-terminal-ui";
 import TerminalComponent from "../components/Terminal/TerminalComponent";
 import { useForm } from "antd/lib/form/Form";
+import ServiceVlanNet from "../service/ServiceVlanNet";
+import ServiceVlanIMS from "../service/ServiceVlanIMS";
+import ServiceVlanMyTV from "../service/ServiceVlanMyTV";
 const { TabPane } = Tabs;
 
 const CreateList = () => {
@@ -41,27 +44,51 @@ const CreateList = () => {
     const [loadingDevices, setLoadingDevices] = useState(false);
     const [selectDevices, setSelectDevices] = useState();
     const [ipAddress, setIpAddress] = useState();
+    const [vlanNetOneDevice, setVlanNetOneDevice] = useState([]);
+
     const { data: dataIp, loading: loadingIp } = useAsync(() =>
         ServiceIp.getAllIp()
     );
     const { data: dataDevice, loading: loadingDevice } = useAsync(() =>
         ServiceDevice.getAlldevice()
     );
+    const { data: dataVlanIMS, loading: loadingVlanIMS } = useAsync(() =>
+        ServiceVlanIMS.getAllVlanIMS()
+    );
+    const { data: dataVlanMyTV, loading: loadingVlanMyTV } = useAsync(() =>
+        ServiceVlanMyTV.getAllVlanMyTV()
+    );
+
+    const { data: dataVlanNet, loading: loadingVlanNet } = useAsync(() =>
+        ServiceVlanNet.getAllVlanNet()
+    );
     const handleServiceChange = (service, record) => {
-        setSelectedServices((prevState) => ({
-            ...prevState,
-            [record.key]: {
-                ...prevState[record.key],
-                [service]: !prevState[record.key]?.[service],
-            },
-        }));
+        const newSelectedServices = { ...selectedServices };
+
+        if (!newSelectedServices[record.key]) {
+            newSelectedServices[record.key] = {};
+        }
+
+        newSelectedServices[record.key][service] = !newSelectedServices[record.key][service];
+
+        setSelectedServices(newSelectedServices);
     };
+
     useEffect(() => {
         if (selectDevices) {
             const getADV = async () => {
                 try {
                     const res = await ServiceDevice.getADevice(selectDevices);
                     setIpAddress(res.ipaddress);
+
+                    const resVlanNet = await ServiceVlanNet.getManyVlanNet(res.tenthietbi)
+                    setVlanNetOneDevice(resVlanNet)
+                    form.setFieldsValue({
+                        ipaddress: res.ipaddress,
+                        vlanims: res.vlanims,
+                        vlannet: res.vlannet,
+                        vlanmytv: res.vlanmytv
+                    });
                 } catch (error) {
                     console.error("Error fetching device data:", error);
                 }
@@ -71,7 +98,9 @@ const CreateList = () => {
         }
     }, [selectDevices]);
     useEffect(() => {
+
         if (deviceType) {
+
             const getDevice = async () => {
                 try {
                     const res = await ServiceDevice.getDevice(deviceType);
@@ -123,26 +152,97 @@ const CreateList = () => {
             };
         });
     };
+
+    const generateCommands = async () => {
+        try {
+
+
+            const formValues = await form.validateFields();
+
+            const ip = dataIp.find((item) => item._id === formValues.ipaddress);
+
+            const hasValidRecord = data.some(
+                (record) => selectedServices[record.key]?.ims || selectedServices[record.key]?.net
+            );
+
+            if (!hasValidRecord) {
+                message.warning("Phải có ít nhất 1 hàng thực thi");
+                return;
+            }
+
+            const listconfig = data
+
+                .map((record) => {
+                    let commands = [];
+
+                    if (selectedServices[record.key].net) {
+                        commands.push("dv_ims_list");
+                    }
+
+                    if (selectedServices[record.key].ims) {
+                        commands.push("create_dvnet_list");
+                    }
+                    return (
+                        {
+                            commands: commands,
+                            slid: record.slid,
+                            newcard: record.slot,
+                            newport: record.port,
+                            newonu: record.onuid,
+                            vlanims: record.vlanims,
+                            vlanmytv: record.vlanmytv,
+                            vlannet: record.vlannet,
+                            service_portnet: formValues.portvlannet,
+                            service_portgnms: formValues.portgnms,
+                            service_portims: formValues.portims
+                        })
+                });
+
+            const dataObject = {
+                devicetype: deviceType,
+                ipaddress: ip.ipaddress,
+                listconfig: listconfig,
+            };
+
+
+            const res = await ServiceGpon.ControlMany(dataObject);
+            if (res) {
+                const newLine = (
+                    <TerminalOutput key={lineData.length}>
+                        {" "}
+                        {res.detail.map((item) => item)}
+                    </TerminalOutput>
+                );
+                setLineData((prevLineData) => prevLineData.concat(newLine));
+            }
+        } catch (error) {
+            console.log(error);
+            message.error("Lỗi");
+        }
+    };
+    const handleDeleteDataTable = () => {
+        setData([]);
+    };
+
     const columns = [
         {
             title: "STT",
             dataIndex: "key",
             key: "key",
-
+            render: (text, record, index) => index + 1,
         },
-
         {
-            title: " Slot",
+            title: "Slot",
             dataIndex: "slot",
             key: "slot",
         },
         {
-            title: " Port",
+            title: "Port",
             dataIndex: "port",
             key: "port",
         },
         {
-            title: " OnuID",
+            title: "OnuID",
             dataIndex: "onuid",
             key: "onuid",
         },
@@ -151,7 +251,21 @@ const CreateList = () => {
             dataIndex: "slid",
             key: "slid",
         },
-
+        {
+            title: "Vlan Net",
+            dataIndex: "vlannet",
+            key: "vlannet",
+        },
+        {
+            title: "Vlan MyTV",
+            dataIndex: "vlanmytv",
+            key: "vlanmytv",
+        },
+        {
+            title: "Vlan Ims",
+            dataIndex: "vlanims",
+            key: "vlanims",
+        },
         {
             title: "Chức năng",
             key: "action",
@@ -172,148 +286,28 @@ const CreateList = () => {
                 </Space>
             ),
         },
-    ];
-    const generateCommands = async () => {
-        try {
+    ]
 
-            const device = dataDevice.find((item) => item._id === selectDevices);
-            const ip = dataIp.find((item) => item._id === ipAddress);
-
-            const hasValidRecord = data.some(
-                (record) => selectedServices[record.key]?.ims
-            );
-            const hasValidRecord2 = data.some(
-                (record) => selectedServices[record.key]?.net
-            );
-            if (!hasValidRecord) {
-                message.warning("Phải có ít nhất 1 hàng thực thi");
-                return;
-            }
-            if (!hasValidRecord2) {
-                message.warning("Phải có ít nhất 1 hàng thực thi");
-                return;
-            }
-
-            const listconfig = data
-                .map((record) => {
-                    let commands = [];
-
-                    if (selectedServices[record.key].net) {
-                        commands.push("dv_ims_list");
-                    }
-
-                    if (selectedServices[record.key].ims) {
-                        commands.push("create_dvnet_list");
-                    }
-                    return (
-                        {
-                            commands: `[${commands.join(", ")}]`,
-                            slid: record.slid,
-                            newcard: record.slot,
-                            newport: record.port,
-                            newonu: record.onuid,
-                        })
-                });
-
-            const dataObject = {
-                devicetype: deviceType,
-                selectDevices: device.tenthietbi,
-                ipaddress: ip.ipaddress,
-                listconfig: listconfig,
-            };
-            console.log(dataObject);
-
-            const res = await ServiceGpon.ControlMany(dataObject);
-            if (res) {
-                const newLine = (
-                    <TerminalOutput key={lineData.length}>
-                        {" "}
-                        {res.detail.map((item) => item)}
-                    </TerminalOutput>
-                );
-                setLineData((prevLineData) => prevLineData.concat(newLine));
-            }
-        } catch (error) {
-            console.log(error);
-            message.error("Lỗi");
-        }
-    };
-
-    const handleUpload = ({ file }) => {
-        if (file.status !== "removed") {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const arrayBuffer = reader.result;
-                const workbook = XLSX.read(arrayBuffer, { type: "array" });
-                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                const json = XLSX.utils.sheet_to_json(worksheet);
-
-                const excelColumns = Object.keys(json[0]).map((column) =>
-                    column.toLowerCase()
-                );
-
-                const dataIndexes = columns
-                    .filter((column) => column.dataIndex)
-                    .map((column) => column.dataIndex.toLowerCase());
-
-                const missingColumns = dataIndexes.filter(
-                    (index) => !excelColumns.includes(index)
-                );
-                const extraColumns = excelColumns.filter(
-                    (column) => !dataIndexes.includes(column)
-                );
-
-                if (missingColumns.length > 0 || extraColumns.length > 0) {
-                    message.warning(
-                        `Tên cột không khớp:\nThiếu: ${missingColumns.join(
-                            ", "
-                        )}\nThừa: ${extraColumns.join(", ")}`
-                    );
-                    return;
-                }
-                const columnHeaders = Object.keys(json[0]);
-                const columnMapping = {};
-                columnHeaders.forEach((header) => {
-                    columnMapping[header.trim().toLowerCase()] = header;
-                });
-
-                console.log("Column Mapping:", columnMapping);
-
-                // Cập nhật dữ liệu với tên cột mới
-                const updatedJson = json.map((row) => {
-                    const updatedRow = {};
-                    Object.keys(row).forEach((header) => {
-                        const lowercaseHeader = header.trim().toLowerCase();
-                        if (columnMapping[lowercaseHeader]) {
-                            updatedRow[lowercaseHeader] = row[header];
-                        }
-                    });
-                    return updatedRow;
-                });
-
-                setData(
-                    updatedJson.map((item, index) => ({ key: index + 1, ...item }))
-                );
-            };
-            reader.readAsArrayBuffer(file);
-        }
-    };
-    const handleDeleteDataTable = () => {
-        setData([]);
-    };
     const formatNumber = (number) => {
         return number < 10 ? `0${number}` : `${number}`;
     };
-
-
     const onFinish = (values) => {
+        setData([])
+
+
 
         const newSlot = values.card;
         const newPort = values.port;
         const startOnuID = values.start;
         const endOnuID = values.end;
+        const vlanmytv = dataVlanMyTV.find(
+            (item) => item._id === values.vlanmytv
+        );
+        const vlannet = dataVlanNet.find((item) => item._id === values.vlannet);
+        const vlanims = dataVlanIMS.find((item) => item._id === values.vlanims);
 
         const newRows = [];
+        console.log(vlannet);
 
         for (let onuID = startOnuID; onuID <= endOnuID; onuID++) {
             const SLID = `${formatNumber(newSlot)}${formatNumber(newPort)}0000${formatNumber(onuID)}`;
@@ -324,11 +318,16 @@ const CreateList = () => {
                 port: newPort,
                 onuid: onuID,
                 slid: SLID,
+                vlanmytv: vlanmytv.number,
+                vlanims: vlanims.number,
+                vlannet: vlannet.number
+
             });
         }
 
 
         setData(newRows);
+
 
     };
     return (
@@ -338,7 +337,7 @@ const CreateList = () => {
                 <Col xs={24} sm={24} md={12} lg={8} xl={8} className="mb-24">
                     <Card bordered={false} className="criclebox h-full" title="Thực hiện">
                         <Form
-                            labelCol={{ span: 6 }}
+                            labelCol={{ span: 8 }}
                             // labelAlign="left"
                             initialValues={{ size: "small" }}
                             layout="horizontal"
@@ -361,7 +360,7 @@ const CreateList = () => {
                                 ]}
                             >
                                 <Select
-                                    style={{ width: "100%", margin: 5 }}
+                                    style={{ width: "100%" }}
                                     onChange={(value) => setDeviceType(value)}
                                     placeholder="Chọn loại thiết bị"
                                 >
@@ -387,7 +386,7 @@ const CreateList = () => {
                                 ]}
                             >
                                 <Select
-                                    style={{ width: "100%", margin: 5 }}
+                                    style={{ width: "100%" }}
                                     placeholder="Chọn thiết bị"
                                     onChange={(value) => setSelectDevices(value)}
                                     showSearch
@@ -413,7 +412,7 @@ const CreateList = () => {
                             >
                                 <Select
                                     showSearch
-                                    style={{ width: "100%", margin: 5 }}
+                                    style={{ width: "100%" }}
                                     placeholder="Chọn Ip"
                                     loading={loadingIp}
                                     optionFilterProp="children"
@@ -430,24 +429,85 @@ const CreateList = () => {
                                     ))}
                                 </Select>
                             </Form.Item>
+                            <Form.Item
+                                label="Vlan Net"
+                                name="vlannet"
+                                className="select-item"
+                                style={{ marginBottom: 10 }}
+                                rules={[
+                                    { required: true, message: "Vui lòng chọn Vlan Net" },
+                                ]}
+                            >
+                                <Select
+                                    style={{ width: "100%" }}
+                                    placeholder="Chọn Vlan Net"
+                                    loading={loadingVlanNet}
+                                >
+                                    {vlanNetOneDevice?.map((item, i) => (
+                                        <Select.Option key={item._id} value={item._id}>
+                                            {item.number}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Vlan Mytv"
+                                name="vlanmytv"
+                                className="select-item"
+                                style={{ marginBottom: 10 }}
+                                rules={[
+                                    { required: true, message: "Vui lòng chọn Vlan Mytv" },
+                                ]}
+                            >
+                                <Select
+                                    style={{ width: "100%" }}
+                                    placeholder="Chọn Vlan Mytv"
+                                    loading={loadingVlanMyTV}
+                                    disabled
+                                >
+                                    {dataVlanMyTV?.map((item, i) => (
+                                        <Select.Option key={item._id} value={item._id}>
+                                            {item.number}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
 
-                            <Form.Item style={{ marginBottom: 10, width: "100%" }} rules={[
+                            <Form.Item
+                                label="Vlan IMS"
+                                name="vlanims"
+                                className="select-item"
+                                loading={loadingVlanIMS}
+                                style={{ marginBottom: 10 }}
+                                rules={[
+                                    { required: true, message: "Vui lòng chọn Vlan IMS" },
+                                ]}
+                            >
+                                <Select style={{ width: "100%" }} placeholder="Chọn Vlan IMS" disabled>
+                                    {dataVlanIMS?.map((item, i) => (
+                                        <Select.Option key={item._id} value={item._id}>
+                                            {item.number}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item style={{ marginBottom: 10 }} rules={[
                                 { required: true, message: "Vui lòng nhập Card" },
                             ]} label="Card" name="card" className="select-item" >
                                 <InputNumber style={{
                                     width: "100%",
-                                    margin: "5px"
+
                                 }} placeholder="Nhập Card" />
                             </Form.Item>
-                            <Form.Item style={{ marginBottom: 10, width: "100%" }} rules={[
+                            <Form.Item style={{ marginBottom: 10 }} rules={[
                                 { required: true, message: "Vui lòng nhập Port  " },
                             ]} label="Port" name="port" className="select-item">
                                 <InputNumber style={{
                                     width: "100%",
-                                    margin: "5px"
+
                                 }} placeholder="Nhập Port" width={100} />
                             </Form.Item>
-                            <Form.Item style={{ marginBottom: 10, width: "100%" }} label="Dãy Onu" name="onuuu" className="select-item">
+                            <Form.Item style={{ marginBottom: 10 }} label="Dãy Onu" name="onuuu" className="select-item">
                             </Form.Item>
 
                             <div style={{
@@ -516,10 +576,55 @@ const CreateList = () => {
                                                 onChange={(value) => setEndValue(value)}
                                             />
                                         </Form.Item>
+
                                     </Col>
+
                                 </Row>
                             </div>
+                            {deviceType === "GPON HW" &&
+                                <>
+                                    <Form.Item label="Port Vlan Net" style={{ marginBottom: 10, width: "100%" }} name="portvlannet" className="select-item" rules={[
+                                        {
+                                            required: true,
+                                            message: "Vui lòng nhập Port Vlan Net",
+                                        },
+                                    ]}>
+                                        <InputNumber style={{
+                                            width: "100%",
 
+                                        }} placeholder="Nhập Port Vlan Net" />
+                                    </Form.Item>
+                                    <Form.Item label="Port GNMS" style={{ marginBottom: 10, width: "100%" }} name="portgnms" className="select-item" rules={[
+                                        {
+                                            required: true,
+                                            message: "Vui lòng nhập Port GNMS",
+                                        },
+                                    ]}>
+                                        <InputNumber style={{
+                                            width: "100%",
+
+                                        }} placeholder="Nhập Port GNMS" />
+                                    </Form.Item>
+                                </>
+
+                            }
+                            {deviceType === "GPON HW" &&
+                                <>
+                                    <Form.Item label="Port IMS" style={{ marginBottom: 10, width: "100%" }} name="portims" className="select-item" rules={[
+                                        {
+                                            required: true,
+                                            message: "Vui lòng nhập Port IMS",
+                                        },
+                                    ]}>
+                                        <InputNumber style={{
+                                            width: "100%",
+
+                                        }} placeholder="Nhập Port IMS" />
+                                    </Form.Item>
+
+                                </>
+
+                            }
                             <Button
                                 htmlType="submit"
                                 type="primary"
@@ -563,7 +668,7 @@ const CreateList = () => {
                                     onClick={() => handleSelectAllForService("ims")}
                                 >
                                     {" "}
-                                    Tạo DV ims
+                                    Tạo DV IMS
                                 </Button>
                                 <Button
                                     style={{ margin: "5px" }}
