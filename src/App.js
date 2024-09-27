@@ -16,6 +16,8 @@ import PrivateRoute from "./privateRouter";
 import PageNotFound from "./pages/PageNotFound";
 import Port from "./pages/Port";
 import CreateList from "./pages/CreateList";
+import Register from "./pages/Register";
+import User from "./pages/User";
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
 
       <Switch>
         <Route exact path="/login" component={SignIn} />
+        <Route exact path="/register" component={Register} />
 
         <Main>
 
@@ -39,6 +42,8 @@ function App() {
             <PrivateRoute exact path="/vlannet" component={VlanNet} />
             <PrivateRoute exact path="/suy-hao" component={SuyHao} />
             <PrivateRoute exact path="/list" component={CreateList} />
+            <PrivateRoute exact path="/user" component={User} />
+
             <Route path="*" component={PageNotFound} />
           </Switch>
         </Main>

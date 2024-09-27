@@ -1,7 +1,7 @@
 import { Menu } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import { Icon } from "../icon/icon.js";
-import { FaNetworkWired } from "react-icons/fa";
+import { FaNetworkWired, FaUser } from "react-icons/fa";
 import { FaListCheck } from "react-icons/fa6";
 function Sidenav({ color }) {
   const { pathname } = useLocation();
@@ -104,6 +104,21 @@ function Sidenav({ color }) {
               {device}
             </span>
             <span className="label">Thiết bị</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="8">
+          <NavLink to="/user">
+            <span
+              className="icon"
+              style={{
+                background: page === "user" ? color : "",
+              }}
+            >
+              <FaUser
+                color={color}
+              />
+            </span>
+            <span className="label">User</span>
           </NavLink>
         </Menu.Item>
         {/* <Menu.Item key="5">

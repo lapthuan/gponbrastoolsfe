@@ -45,7 +45,7 @@ const CreateList = () => {
     const [selectDevices, setSelectDevices] = useState();
     const [ipAddress, setIpAddress] = useState();
     const [vlanNetOneDevice, setVlanNetOneDevice] = useState([]);
-
+    const [loading, setLoading] = useState(false);
     const { data: dataIp, loading: loadingIp } = useAsync(() =>
         ServiceIp.getAllIp()
     );
@@ -154,6 +154,7 @@ const CreateList = () => {
     };
 
     const generateCommands = async () => {
+        setLoading(true)
         try {
 
 
@@ -192,9 +193,7 @@ const CreateList = () => {
                             vlanims: record.vlanims,
                             vlanmytv: record.vlanmytv,
                             vlannet: record.vlannet,
-                            service_portnet: formValues.portvlannet,
-                            service_portgnms: formValues.portgnms,
-                            service_portims: formValues.portims
+
                         })
                 });
 
@@ -207,6 +206,8 @@ const CreateList = () => {
 
             const res = await ServiceGpon.ControlMany(dataObject);
             if (res) {
+                setLoading(false)
+
                 const newLine = (
                     <TerminalOutput key={lineData.length}>
                         {" "}
@@ -216,6 +217,7 @@ const CreateList = () => {
                 setLineData((prevLineData) => prevLineData.concat(newLine));
             }
         } catch (error) {
+            setLoading(false)
             console.log(error);
             message.error("Lỗi");
         }
@@ -365,7 +367,7 @@ const CreateList = () => {
                                     placeholder="Chọn loại thiết bị"
                                 >
                                     <Select.Option value="GPON ALU">GPON ALU</Select.Option>
-                                    <Select.Option value="GPON HW">GPON HW</Select.Option>
+
                                     <Select.Option value="GPON MINI HW">
                                         GPON Mini HW
                                     </Select.Option>
@@ -581,50 +583,8 @@ const CreateList = () => {
 
                                 </Row>
                             </div>
-                            {deviceType === "GPON HW" &&
-                                <>
-                                    <Form.Item label="Port Vlan Net" style={{ marginBottom: 10, width: "100%" }} name="portvlannet" className="select-item" rules={[
-                                        {
-                                            required: true,
-                                            message: "Vui lòng nhập Port Vlan Net",
-                                        },
-                                    ]}>
-                                        <InputNumber style={{
-                                            width: "100%",
 
-                                        }} placeholder="Nhập Port Vlan Net" />
-                                    </Form.Item>
-                                    <Form.Item label="Port GNMS" style={{ marginBottom: 10, width: "100%" }} name="portgnms" className="select-item" rules={[
-                                        {
-                                            required: true,
-                                            message: "Vui lòng nhập Port GNMS",
-                                        },
-                                    ]}>
-                                        <InputNumber style={{
-                                            width: "100%",
 
-                                        }} placeholder="Nhập Port GNMS" />
-                                    </Form.Item>
-                                </>
-
-                            }
-                            {deviceType === "GPON HW" &&
-                                <>
-                                    <Form.Item label="Port IMS" style={{ marginBottom: 10, width: "100%" }} name="portims" className="select-item" rules={[
-                                        {
-                                            required: true,
-                                            message: "Vui lòng nhập Port IMS",
-                                        },
-                                    ]}>
-                                        <InputNumber style={{
-                                            width: "100%",
-
-                                        }} placeholder="Nhập Port IMS" />
-                                    </Form.Item>
-
-                                </>
-
-                            }
                             <Button
                                 htmlType="submit"
                                 type="primary"
@@ -687,6 +647,7 @@ const CreateList = () => {
                             style={{ margin: "5px" }}
                             type="primary"
                             onClick={generateCommands}
+                            loading={loading}
                             disabled={data.length > 0 ? false : true}
                         >
                             Thực hiện
@@ -694,6 +655,7 @@ const CreateList = () => {
                         <Button
                             style={{ margin: "5px" }}
                             type="primary"
+                            loading={loading}
                             onClick={handleDeleteDataTable}
                             disabled={data.length > 0 ? false : true}
                             danger

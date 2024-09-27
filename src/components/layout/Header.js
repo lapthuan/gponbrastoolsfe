@@ -21,8 +21,11 @@ import { Icon } from "../icon/icon";
 import { RiLockPasswordFill } from "react-icons/ri";
 import ServiceUser from "../../service/ServiceUser";
 import { SettingFilled } from "@ant-design/icons";
+import { jwtDecode } from "jwt-decode";
+
 
 const cookies = new Cookies();
+
 const ButtonContainer = styled.div`
   .ant-btn-primary {
     background-color: #1890ff;
@@ -122,7 +125,12 @@ function Header({
       }
     }
   }
+  const myCookieValue = cookies.get('token');
 
+  // In ra giá trị cookie
+
+  const decodedToken = jwtDecode(myCookieValue);
+  console.log(decodedToken);
   return (
     <>
 
@@ -252,16 +260,20 @@ function Header({
               <span>Sign in</span>
             </Link>
           ) : (
-            <Button type="link" onClick={showLogoutModal}>
-              {profile}
-              <span className="btn-login" >
-                Đăng xuất
-              </span>
-            </Button>
+            <>
+              < Button type="link" onClick={showLogoutModal}>
+                {profile}
+
+                <span className="btn-login" >
+                  Đăng xuất
+                </span>
+              </Button>
+              <Text style={{ color: "white" }}>{decodedToken.fullname}</Text>
+            </>
           )}
 
         </Col>
-      </Row>
+      </Row >
       <Modal
         title="Đổi mật khẩu"
         visible={changePWModalVisible}
