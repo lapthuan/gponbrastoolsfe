@@ -1,5 +1,9 @@
 const User = () => {
-    return (<></>);
+    return (
+    <div className="layout-content">
+
+
+    </div >);
 }
 
 export default User;

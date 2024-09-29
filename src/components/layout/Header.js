@@ -62,6 +62,7 @@ function Header({
   const [visible, setVisible] = useState(false);
   const [sidenavType, setSidenavType] = useState("transparent");
   const [token, setToken] = useState("");
+  const [decodedToken, setDecodedToken] = useState("");
   const [oldPassWord, setOldPassWord] = useState("");
   const [newPassWord, setNewPassWord] = useState("");
   const [rpNewPassWord, setRpNewPassWord] = useState("");
@@ -69,7 +70,15 @@ function Header({
   const [changePWModalVisible, setchangePWModalVisible] = useState(false);
   const [loadingChangePassword, setLoadingChangePassword] = useState(false)
   useEffect(() => window.scrollTo(0, 0));
-  useEffect(() => setToken(cookies.get("token")), []);
+  useEffect(() => {
+    const myCookieValue = cookies.get("token")
+    setToken(myCookieValue)
+
+    if (myCookieValue) {
+      const decodedToken = jwtDecode(myCookieValue);
+      setDecodedToken(decodedToken)
+    }
+  }, []);
 
   const showDrawer = () => setVisible(true);
   const hideDrawer = () => setVisible(false);
@@ -125,12 +134,8 @@ function Header({
       }
     }
   }
-  const myCookieValue = cookies.get('token');
 
-  // In ra giá trị cookie
 
-  const decodedToken = jwtDecode(myCookieValue);
-  console.log(decodedToken);
   return (
     <>
 
