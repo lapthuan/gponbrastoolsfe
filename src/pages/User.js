@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, message, Modal, Row } from "antd";
+import { Button, Card, Col, Form, Input, message, Modal, Row, Table } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { useState } from "react";
 import ServiceUser from "../service/ServiceUser";
@@ -35,6 +35,34 @@ const User = () => {
 
         }
     }
+    const columns = [
+        {
+            title: "STT",
+            dataIndex: "key",
+            key: "key",
+            render: (text, record, index) => index + 1,
+        },
+        {
+            title: "Họ tên",
+            dataIndex: "fullname",
+            key: "fullname",
+
+        },
+        {
+            title: "Tài khoản",
+            dataIndex: "username",
+            key: "username",
+
+        },
+        {
+            title: "Chức năng",
+            dataIndex: "action",
+            key: "action",
+            render: (text, record) => (
+                <Button >Xóa tài khoản</Button>
+            )
+        },
+    ]
     return (
         <div className="layout-content">
             <Row gutter={[24, 0]}>
@@ -43,6 +71,10 @@ const User = () => {
                     <Card bordered={false} className="criclebox h-full" title="Chức năng">
                         <Button onClick={() => setOpenModal(true)}> Thêm tài khoản</Button>
                     </Card>
+                </Col>
+
+                <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-24">
+                    <Table columns={columns} />
                 </Col>
             </Row>
             <Modal title="Thêm tài khoản" onCancel={() => setOpenModal(false)} visible={openModal} footer={null}>
