@@ -8,7 +8,7 @@ const User = () => {
     const [openModal, setOpenModal] = useState(false)
     const [loading, setLoading] = useState(false)
     const onFinish = async (values) => {
-
+        setLoading(true)
         try {
             const data =
             {
@@ -22,12 +22,17 @@ const User = () => {
 
             if (res) {
                 message.success("Tạo tài khoản thành công");
+                setLoading(false)
+
             }
 
         } catch (error) {
             console.log(error)
-            if (error.response.data.detail.msg === "Không thể tạo người dùng mới")
+            if (error.response.data.detail.msg === "Không thể tạo người dùng mới") {
                 message.warning("Tài khoản đã tồn tại");
+                setLoading(false)
+            }
+
         }
     }
     return (
