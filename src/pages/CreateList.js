@@ -655,7 +655,6 @@ const CreateList = () => {
                         <Button
                             style={{ margin: "5px" }}
                             type="primary"
-                            loading={loading}
                             onClick={handleDeleteDataTable}
                             disabled={data.length > 0 ? false : true}
                             danger
