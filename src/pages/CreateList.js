@@ -168,6 +168,7 @@ const CreateList = () => {
 
             if (!hasValidRecord) {
                 message.warning("Phải có ít nhất 1 hàng thực thi");
+                setLoading(false)
                 return;
             }
 
@@ -177,11 +178,11 @@ const CreateList = () => {
                     let commands = [];
 
                     if (selectedServices[record.key].net) {
-                        commands.push("dv_ims_list");
+                        commands.push("create_dvnet_list");
                     }
 
                     if (selectedServices[record.key].ims) {
-                        commands.push("create_dvnet_list");
+                        commands.push("dv_ims_list");
                     }
                     return (
                         {
@@ -655,7 +656,6 @@ const CreateList = () => {
                         <Button
                             style={{ margin: "5px" }}
                             type="primary"
-                            loading={loading}
                             onClick={handleDeleteDataTable}
                             disabled={data.length > 0 ? false : true}
                             danger
