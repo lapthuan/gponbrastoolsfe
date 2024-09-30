@@ -168,6 +168,7 @@ const CreateList = () => {
 
             if (!hasValidRecord) {
                 message.warning("Phải có ít nhất 1 hàng thực thi");
+                setLoading(false)
                 return;
             }
 
