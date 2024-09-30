@@ -10,8 +10,14 @@ const ServiceUser = {
   userSignup: async (body) => {
     return requests.post(`/user/`, body);
   },
+  getAllUser: async (body) => {
+    return requests.get(`/user/`);
+  },
   getUser: async (body) => {
     return requests.post(`/cts`, body)
+  },
+  delectUser: async (body) => {
+    return requests.delete(`/user/${body}`)
   }
 };
 

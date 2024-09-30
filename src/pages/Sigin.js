@@ -32,7 +32,11 @@ const SignIn = () => {
       const res = await ServiceUser.userLogin(data);
       if (res.access_token) {
         cookies.set("token", res.access_token);
-        history.push("/"); // Chuyển hướng sau khi đăng nhập thành công
+        if (res.role === 'user bras') {
+          history.push('/bras'); // Chuyển hướng đến trang Bras
+        } else {
+          history.push('/'); // Chuyển hướng đến trang chủ hoặc trang khác
+        }
         message.success("Đăng nhập thành công");
       } else {
         message.warning("Sai tên tài khoản hoặc mật khẩu. Vui lòng kiểm tra lại");
@@ -59,7 +63,7 @@ const SignIn = () => {
             <Form layout="vertical" className="row-col">
               <Form.Item
                 className="username"
-                label="User name"
+                label="Tài khoản"
                 name="username"
                 onChange={(e) => setUsername(e.target.value)}
                 rules={[
@@ -73,15 +77,10 @@ const SignIn = () => {
               </Form.Item>
 
               <Form.Item
-                label="Password"
+                label="Mật khẩu"
                 name="password"
                 onChange={(e) => setPassword(e.target.value)}
-                rules={[
-                  {
-                    required: true,
-                    message: "vui lòng nhập mật khẩu!",
-                  },
-                ]}
+
               >
                 <Input.Password
                   placeholder="Password"

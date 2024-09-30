@@ -26,23 +26,23 @@ function App() {
 
       <Switch>
         <Route exact path="/login" component={SignIn} />
-       
+
 
         <Main>
 
           <Switch>
-            <PrivateRoute exact path="/" component={Gpon} />
-            <PrivateRoute exact path="/gpon" component={Gpon} />
-            <PrivateRoute exact path="/port" component={Port} />
-            <PrivateRoute exact path="/bras" component={Bras} />
-            <PrivateRoute exact path="/device" component={Device} />
-            <PrivateRoute exact path="/ipaddress" component={IpAddress} />
-            <PrivateRoute exact path="/vlanims" component={VlanIms} />
-            <PrivateRoute exact path="/vlanmytv" component={VlanMyTV} />
-            <PrivateRoute exact path="/vlannet" component={VlanNet} />
-            <PrivateRoute exact path="/suy-hao" component={SuyHao} />
-            <PrivateRoute exact path="/list" component={CreateList} />
-            <PrivateRoute exact path="/user" component={User} />
+            <PrivateRoute exact path="/" component={Gpon} allowedRoles={["admin", "user", "user gpon"]} />
+            <PrivateRoute exact path="/gpon" component={Gpon} allowedRoles={["admin", "user", "user gpon"]} />
+            <PrivateRoute exact path="/port" component={Port} allowedRoles={["admin", "user", "user gpon"]} />
+            <PrivateRoute exact path="/bras" component={Bras} allowedRoles={["admin", "user bras", "user"]} />
+            <PrivateRoute exact path="/device" component={Device} allowedRoles={["admin"]} />
+            <PrivateRoute exact path="/ipaddress" component={IpAddress} allowedRoles={["admin"]} />
+            <PrivateRoute exact path="/vlanims" component={VlanIms} allowedRoles={["admin"]} />
+            <PrivateRoute exact path="/vlanmytv" component={VlanMyTV} allowedRoles={["admin"]} />
+            <PrivateRoute exact path="/vlannet" component={VlanNet} allowedRoles={["admin"]} />
+            <PrivateRoute exact path="/suy-hao" component={SuyHao} allowedRoles={["admin"]} />
+            <PrivateRoute exact path="/list" component={CreateList} allowedRoles={["admin", "user", "user gpon"]} />
+            <PrivateRoute exact path="/user" component={User} allowedRoles={["admin"]} />
 
             <Route path="*" component={PageNotFound} />
           </Switch>

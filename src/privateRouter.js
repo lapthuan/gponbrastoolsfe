@@ -1,16 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 import Cookies from "universal-cookie";
 import ServiceIp from "./service/ServiceIp";
+import { jwtDecode } from "jwt-decode";
 
 const cookies = new Cookies();
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const PrivateRoute = ({ component: Component, allowedRoles, ...rest }) => {
   const isLogin = cookies.get("token");
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     const checkToken = async () => {
       try {
+        const decodedToken = jwtDecode(isLogin);
+        setRole(decodedToken?.role);
         await ServiceIp.getAllIp();
       } catch (error) {
         // Lỗi sẽ được xử lý bởi interceptor
@@ -25,8 +29,20 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={(props) =>
-        isLogin ? <Component {...props} /> : <Redirect to="/login" />
+      render={(props) => {
+        if (!isLogin) {
+
+          return <Redirect to="/login" />;
+
+        }
+        else if (role && !allowedRoles.includes(role)) {
+
+          return <Redirect to="/PageNotFound" />;
+        } else {
+
+          return <Component {...props} />;
+        }
+      }
       }
     />
   );
