@@ -177,11 +177,11 @@ const CreateList = () => {
                     let commands = [];
 
                     if (selectedServices[record.key].net) {
-                        commands.push("dv_ims_list");
+                        commands.push("create_dvnet_list");
                     }
 
                     if (selectedServices[record.key].ims) {
-                        commands.push("create_dvnet_list");
+                        commands.push("dv_ims_list");
                     }
                     return (
                         {
