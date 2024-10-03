@@ -366,7 +366,7 @@ const User = () => {
                 visible={isModalVisible2}
                 onOk={handleChange}
                 onCancel={handleCancel2}
-                okText="Xóa"
+                okText="Đặt"
                 cancelText="Hủy"
             >
                 <p>Bạn có chắc chắn đặt lại mật khẩu cho tài khoản <b>{selectedRecord?.username}</b> không?</p>
