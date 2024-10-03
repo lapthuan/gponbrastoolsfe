@@ -18,7 +18,13 @@ const ServiceUser = {
   },
   delectUser: async (body) => {
     return requests.delete(`/user/${body}`)
-  }
+  },
+  editUser: async (id,body) => {
+    return requests.put(`/user/edit/${id}`, body);
+  },
+  changePasswordDefault: async (body) => {
+    return requests.put(`/user/reset-password/${body}`)
+  },
 };
 
 export default ServiceUser;

@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, message, Modal, Row, Select, Switch, Table } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, message, Modal, Row, Select, Space, Switch, Table } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { useEffect, useState } from "react";
 import ServiceUser from "../service/ServiceUser";
@@ -6,11 +6,15 @@ import useAsync from "../hook/useAsync";
 
 const User = () => {
     const [form] = useForm()
+    const [form2] = useForm()
     const [openModal, setOpenModal] = useState(false)
     const [loading, setLoading] = useState(false)
     const [checked, setChecked] = useState(true)
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalVisible2, setIsModalVisible2] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [currentRecord, setCurrentRecord] = useState(null);
     const [data, setData] = useState([]);
     const onFinish = async (values) => {
         setLoading(true)
@@ -78,9 +82,17 @@ const User = () => {
             dataIndex: "action",
             key: "action",
             render: (text, record) => (
-                <Button danger onClick={() => showDeleteModal(record)}>
-                    Xóa tài khoản
-                </Button>
+                <Space>
+                    <Button style={{ backgroundColor: "green" }} type="primary" onClick={() => openEditDrawer(record)}>
+                        Sửa
+                    </Button>
+                    <Button danger onClick={() => showDeleteModal(record)}>
+                        Xóa tài khoản
+                    </Button>
+                    <Button onClick={() => changePasswordDefault(record)} type="dashed">
+                        Đặt lại mật khẩu
+                    </Button>
+                </Space>
             ),
         },
     ]
@@ -89,7 +101,22 @@ const User = () => {
         setSelectedRecord(record);
         setIsModalVisible(true);
     };
+    const handleChange = async () => {
+        try {
 
+            const res = await ServiceUser.changePasswordDefault(selectedRecord._id)
+            console.log(res);
+            if (res) {
+                message.success("Đã đặt lại mật khẩu mặt định")
+                setIsModalVisible2(false)
+            }
+        } catch (error) {
+            console.log(error);
+            message.error("Lỗi")
+            setIsModalVisible2(false)
+
+        }
+    }
     // Xác nhận xóa tài khoản
     const handleDelete = async () => {
         if (selectedRecord.role === "admin") {
@@ -117,7 +144,48 @@ const User = () => {
     const handleCancel = () => {
         setIsModalVisible(false);
     };
+    const handleCancel2 = () => {
+        setIsModalVisible2(false);
+    };
+    const openEditDrawer = (record) => {
+        console.log(record);
 
+        setCurrentRecord(record);
+        form2.setFieldsValue(record);
+        setOpenDrawer(true);
+    };
+
+    const closeDrawer = () => {
+        setOpenDrawer(false);
+        form2.resetFields();
+    };
+    const onFinish2 = async (values) => {
+        setLoading(true);
+        try {
+            const data = {
+                role: values.role,
+                fullname: values.fullname
+            }
+            const res = await ServiceUser.editUser(currentRecord._id, data)
+            if (res) {
+
+                message.success("Sửa thông tin thành công")
+                setData(res.detail.data)
+                setLoading(false);
+                closeDrawer();
+            }
+        } catch (error) {
+            console.log(error);
+
+            setLoading(false);
+            closeDrawer();
+        }
+
+    };
+    const changePasswordDefault = async (record) => {
+        setSelectedRecord(record);
+        setIsModalVisible2(true)
+    }
     return (
         <div className="layout-content">
             <Row gutter={[24, 0]}>
@@ -129,7 +197,7 @@ const User = () => {
                 </Col>
 
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-24">
-                    <Table loading={loadingUser} dataSource={data} columns={columns} />
+                    <Table pagination={{ pageSize: 6 }} loading={loadingUser} dataSource={data} columns={columns} />
                 </Col>
             </Row>
             <Modal title="Thêm tài khoản" onCancel={() => setOpenModal(false)} visible={openModal} footer={null}>
@@ -199,7 +267,7 @@ const User = () => {
 
                     <Switch checkedChildren="Mật khẩu mặc định" unCheckedChildren="Mặt khẩu khác" onChange={(checked) => setChecked(checked)} style={{ marginBottom: 10 }} defaultChecked />
 
-                    {checked === true ? (<><p>Mật khẩu mặc định là <strong><i>vnptvlg</i></strong></p></>) : (<Form.Item
+                    {checked === false && (<Form.Item
                         label="Mật khẩu"
                         name="password"
 
@@ -234,6 +302,57 @@ const User = () => {
                     </Form.Item>
                 </Form>
             </Modal>
+            <Drawer
+                title="Sửa tài khoản"
+                width={400}
+                onClose={closeDrawer}
+
+                visible={openDrawer}
+                footer={null}
+            >
+                <Form
+                    form={form2}
+                    onFinish={onFinish2}
+                    layout="vertical"
+                >
+                    <Form.Item
+                        label="Họ tên"
+                        name="fullname"
+                        rules={[{ required: true, message: 'Vui lòng nhập họ tên!' }]}
+                    >
+                        <Input placeholder="Nhập họ tên" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Quyền"
+                        name="role"
+                        initialValue={'user'}
+                        rules={[{ required: true, message: 'Vui lòng chọn quyền!' }]}
+                    >
+                        <Select placeholder="Chọn quyền">
+                            <Select.Option value="user">User</Select.Option>
+                            <Select.Option value="user bras">User Bras</Select.Option>
+                            <Select.Option value="user gpon">User Gpon</Select.Option>
+                            <Select.Option value="admin">Admin</Select.Option>
+                        </Select>
+                    </Form.Item>
+
+
+
+
+
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ width: '100%' }}
+                            loading={loading}
+                        >
+                            Lưu thay đổi
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Drawer>
             <Modal
                 title="Xác nhận xóa tài khoản"
                 visible={isModalVisible}
@@ -243,6 +362,16 @@ const User = () => {
                 cancelText="Hủy"
             >
                 <p>Bạn có chắc chắn muốn xóa tài khoản <b>{selectedRecord?.username}</b> không?</p>
+            </Modal>
+            <Modal
+                title="Xác nhận đặt lại mật khẩu"
+                visible={isModalVisible2}
+                onOk={handleChange}
+                onCancel={handleCancel2}
+                okText="Xóa"
+                cancelText="Hủy"
+            >
+                <p>Bạn có chắc chắn đặt lại mật khẩu cho tài khoản <b>{selectedRecord?.username}</b> không?</p>
             </Modal>
         </div >);
 }
