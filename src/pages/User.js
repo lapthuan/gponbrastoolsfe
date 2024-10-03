@@ -250,9 +250,7 @@ const User = () => {
 
                         >
 
-                            <Select.Option value={'user'}>
-                                User
-                            </Select.Option>
+                        
                             <Select.Option value={'user bras'}>
                                 User Bras
                             </Select.Option>
@@ -330,7 +328,7 @@ const User = () => {
                         rules={[{ required: true, message: 'Vui lòng chọn quyền!' }]}
                     >
                         <Select placeholder="Chọn quyền">
-                            <Select.Option value="user">User</Select.Option>
+                         
                             <Select.Option value="user bras">User Bras</Select.Option>
                             <Select.Option value="user gpon">User Gpon</Select.Option>
                             <Select.Option value="admin">Admin</Select.Option>
