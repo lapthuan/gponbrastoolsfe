@@ -54,6 +54,7 @@ const User = () => {
         setData(dataUser)
     }, [dataUser])
 
+    console.log(dataUser);
     const columns = [
         {
             title: "STT",
@@ -76,6 +77,19 @@ const User = () => {
             title: "Quyền",
             dataIndex: "role",
             key: "role",
+        },
+        {
+            title: "Ngày đăng ký",
+            dataIndex:"created_at",
+            key: "created_at",
+            render: (text, record) => {
+                const date = new Date(record.created_at);
+                return date.toLocaleDateString('vi-VN', {  year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit' });
+            }
         },
         {
             title: "Chức năng",
