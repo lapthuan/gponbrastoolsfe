@@ -16,7 +16,7 @@ import PrivateRoute from "./privateRouter";
 import PageNotFound from "./pages/PageNotFound";
 import Port from "./pages/Port";
 import CreateList from "./pages/CreateList";
-import Register from "./pages/Register";
+import HistoryLog from "./pages/HistoryLog";
 import User from "./pages/User";
 
 function App() {
@@ -43,6 +43,7 @@ function App() {
             <PrivateRoute exact path="/suy-hao" component={SuyHao} allowedRoles={["admin"]} />
             <PrivateRoute exact path="/list" component={CreateList} allowedRoles={["admin", "user", "user gpon"]} />
             <PrivateRoute exact path="/user" component={User} allowedRoles={["admin"]} />
+            <PrivateRoute exact path="/log" component={HistoryLog} allowedRoles={["admin"]} />
 
             <Route path="*" component={PageNotFound} />
           </Switch>
