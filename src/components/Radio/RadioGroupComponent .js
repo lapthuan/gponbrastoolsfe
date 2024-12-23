@@ -23,6 +23,15 @@ const RadioGroupComponent = ({ radioValue, setRadioValue, deviceType }) => (
                     <Radio disabled={deviceType === "GPON HW" || deviceType === "GPON MINI HW" ? false : true} value={"check_service_port"}>
                         Kiểm tra service port cho OLT HW
                     </Radio>
+                    <Radio disabled={deviceType === "GPON HW" || deviceType === "GPON MINI HW" ? false : true} value={"reboot_hw"}>
+                        Reboot Modem HW & MINI HW
+                    </Radio>
+                    <Radio disabled={deviceType === "GPON ZTE" || deviceType === "GPON MINI ZTE" ? false : true} value={"reboot_zte"}>
+                        Reboot Modem ZTE & MINI ZTE
+                    </Radio>
+                    <Radio disabled={deviceType === "GPON ZTE" || deviceType === "GPON MINI ZTE" ? false : true} value={"delete_wan_ip_zte"}>
+                        Xóa wan ip cho onu loại ZTE 
+                    </Radio>
                 </div>
                 <div className="column">
                     <Radio value={"change_sync_password"}>Đổi Password đồng bộ</Radio>
