@@ -22,11 +22,22 @@ const Device = () => {
     loadingVlanMyTV,
     loadingVlanNet,
   } = SubmitDevice();
+
+  const [pagination, setPagination] = useState({
+    pageSize: 6,
+    current: 1,
+  });
+
+  const handleTableChange = (pagination) => {
+    setPagination(pagination);
+  };
+
   const filterOption = (input, option) => {
     return option.children
       ? option.children.toString().toLowerCase().includes(input.toLowerCase())
       : false;
   };
+
   return (
     <div className="layout-content">
       <Row gutter={[24, 0]}>
@@ -325,10 +336,11 @@ const Device = () => {
         <Col xs={24} sm={24} md={12} lg={18} xl={19} className="mb-24">
           <Table
             pagination={{
-              pageSize: 6,
+              ...pagination,
               showSizeChanger: true,
-              pageSizeOptions: ['5', '10', '20', '50', '100'],
+              pageSizeOptions: ["5", "6", "10", "20", "50", "100"],
             }}
+            onChange={handleTableChange}
             columns={columns}
             dataSource={dataTable.slice().reverse()}
             loading={loading}

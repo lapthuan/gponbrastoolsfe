@@ -6,8 +6,18 @@ const { TextArea } = Input;
 
 const HistoryNote = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [pagination, setPagination] = useState({
+    pageSize: 6,
+    current: 1,
+  });
   const [data, setData] = useState([]);
   const { data: dataHistory, loading: loadingHistory } = useAsync(() => ServiceHistory.getAllHistory())
+
+  const handleTableChange = (pagination) => {
+    setPagination(pagination);
+  };
+
+  
   useEffect(() => {
     setData(dataHistory)
   }, [dataHistory])
@@ -114,10 +124,11 @@ const HistoryNote = () => {
 
         <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-24">
           <Table pagination={{
-            pageSize: 6,
+            ...pagination,
             showSizeChanger: true,
-            pageSizeOptions: ['5', '10', '20', '50', '100'],
+            pageSizeOptions: ["5", "6", "10", "20", "50", "100"],
           }}
+            onChange={handleTableChange}
             loading={loadingHistory}
             dataSource={data}
             columns={columns} />
