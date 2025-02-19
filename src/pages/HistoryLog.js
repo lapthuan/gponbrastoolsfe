@@ -14,9 +14,11 @@ const HistoryNote = () => {
   const { data: dataHistory, loading: loadingHistory } = useAsync(() => ServiceHistory.getAllHistory())
 
   const handleTableChange = (pagination) => {
-    setPagination(pagination);
+    setPagination((prev) => ({
+      ...pagination,
+      current: pagination.pageSize !== prev.pageSize ? 1 : pagination.current, // Reset về trang 1 nếu đổi pageSize
+    }));
   };
-
   
   useEffect(() => {
     setData(dataHistory)

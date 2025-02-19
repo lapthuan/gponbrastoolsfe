@@ -29,7 +29,10 @@ const Device = () => {
   });
 
   const handleTableChange = (pagination) => {
-    setPagination(pagination);
+    setPagination((prev) => ({
+      ...pagination,
+      current: pagination.pageSize !== prev.pageSize ? 1 : pagination.current, // Reset về trang 1 nếu đổi pageSize
+    }));
   };
 
   const filterOption = (input, option) => {
