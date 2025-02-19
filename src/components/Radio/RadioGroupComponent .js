@@ -27,7 +27,7 @@ const RadioGroupComponent = ({ radioValue, setRadioValue, deviceType }) => (
             }
             value={"view_info_onu"}
           >
-            Xem info (GPON MINI HW && GPOM HW)
+            Xem info (GPON MINI HW & GPON HW)
           </Radio>
           <Radio
             disabled={deviceType === "GPON ALU" ? false : true}

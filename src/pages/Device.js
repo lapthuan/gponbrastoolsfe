@@ -324,7 +324,11 @@ const Device = () => {
         </Col>
         <Col xs={24} sm={24} md={12} lg={18} xl={19} className="mb-24">
           <Table
-            pagination={{ pageSize: 6 }}
+            pagination={{
+              pageSize: 6,
+              showSizeChanger: true,
+              pageSizeOptions: ['5', '10', '20', '50', '100'],
+            }}
             columns={columns}
             dataSource={dataTable.slice().reverse()}
             loading={loading}
