@@ -1,5 +1,6 @@
 import { Button, Card, Col, Form, Input, Row, Select, Table } from "antd";
 import SubmitDevice from "../components/submit/submitDevice.js";
+import { useState } from "react";
 
 const Device = () => {
   const {
@@ -49,7 +50,6 @@ const Device = () => {
             <Card title="Thêm dữ liệu" bordered={true}>
               <Form
                 form={form}
-
                 initialValues={{
                   size: "small",
                 }}
@@ -73,7 +73,9 @@ const Device = () => {
                   >
                     <Select.Option value="GPON ALU">GPON ALU</Select.Option>
                     <Select.Option value="GPON HW">GPON HW</Select.Option>
-                    <Select.Option value="GPON MINI HW">GPON Mini HW</Select.Option>
+                    <Select.Option value="GPON MINI HW">
+                      GPON Mini HW
+                    </Select.Option>
                     <Select.Option value="GPON MINI ZTE">
                       GPON Mini ZTE
                     </Select.Option>
@@ -195,7 +197,6 @@ const Device = () => {
               <i>Sửa dữ liệu của id: {idEdit.slice(-6)}</i>
               <Form
                 form={form}
-
                 initialValues={{
                   size: "small",
                 }}
@@ -219,7 +220,9 @@ const Device = () => {
                   >
                     <Select.Option value="GPON ALU">GPON ALU</Select.Option>
                     <Select.Option value="GPON HW">GPON HW</Select.Option>
-                    <Select.Option value="GPON MINI HW">GPON Mini HW</Select.Option>
+                    <Select.Option value="GPON MINI HW">
+                      GPON Mini HW
+                    </Select.Option>
                     <Select.Option value="GPON MINI ZTE">
                       GPON Mini ZTE
                     </Select.Option>

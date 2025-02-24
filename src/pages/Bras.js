@@ -11,6 +11,7 @@ import {
   message,
   Upload,
   Progress,
+  Select,
 } from "antd";
 import { useState } from "react";
 import Terminal, { ColorMode, TerminalOutput } from "react-terminal-ui";
@@ -18,23 +19,30 @@ import ServiceBras from "../service/ServiceBras";
 import { useForm } from "antd/es/form/Form";
 import { UploadOutlined } from "@ant-design/icons";
 const twoColors = {
-  '0%': '#108ee9',
-  '100%': '#87d068',
+  "0%": "#108ee9",
+  "100%": "#87d068",
 };
 const Bras = () => {
   const { Title } = Typography;
   const [lineData, setLineData] = useState([
-    <TerminalOutput key={"12312312321"}>{"bras_vlg_01@inoc2-T3200:~$"}</TerminalOutput>,
+    <TerminalOutput key={"12312312321"}>
+      {"bras_vlg_01@inoc2-T3200:~$"}
+    </TerminalOutput>,
   ]);
 
   const [macAddress, setMacAddress] = useState("");
   const [userBras, setUserBras] = useState("");
   const [convertedMacAddress, setConvertedMacAddress] = useState("");
   const [fileUserBras, setFileUserBras] = useState("");
+  const [ipaddress, setIpaddress] = useState("");
+  const [svlan, setSvlan] = useState("");
+  const [cvlan, setCvlan] = useState("");
   const [radioValue, setRadioValue] = useState(null);
   const [macDisabled, setMacDisabled] = useState(true);
   const [userDisabled, setUserDisabled] = useState(true);
   const [userFileDisabled, setUserFileDisabled] = useState(true);
+  const [openInputSCVlan, setOpenInputSCVlan] = useState(false);
+  const [openInputMacAndUsername, setOpenInputMacAndUsername] = useState(true);
   const [onLoading, setOnLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [form] = useForm();
@@ -90,11 +98,13 @@ const Bras = () => {
 
         // Format lại data body từ danh sách username trong file
         const formattedUsernames = `[${usernames.join(",")}]`;
-        const arr = formattedUsernames.replace('[', '').replace(']', '').split(',');
-        setProgress(0)
+        const arr = formattedUsernames
+          .replace("[", "")
+          .replace("]", "")
+          .split(",");
+        setProgress(0);
         const totalItems = arr.length;
         const timePerItem = 6 * 1000; // 6 giây cho mỗi phần tử
-
 
         if (totalItems > 0) {
           let currentProgress = 0;
@@ -111,7 +121,6 @@ const Bras = () => {
           username_bras: formattedUsernames,
         };
       } else {
-
         if (
           radioValue === "check_auth_mac" ||
           radioValue === "check_lock_mac"
@@ -164,6 +173,18 @@ const Bras = () => {
             command: "clear_user_bras",
             username_bras: formattedUsernames,
           };
+        } else if (radioValue === "sho_sub_scvlan") {
+          if (svlan === "" || cvlan === "") {
+            message.error("Vui lòng nhập SVLAN và CVLAN.");
+            setOnLoading(false);
+            return;
+          }
+          data = {
+            command: radioValue,
+            svlan: svlan,
+            cvlan: cvlan,
+            ip_address: ipaddress,
+          };
         } else {
           data = { command: radioValue };
         }
@@ -196,6 +217,17 @@ const Bras = () => {
   const handleRadioChange = (e) => {
     const value = e.target.value;
     setRadioValue(value);
+
+    if (value === "sho_sub_scvlan") {
+      setOpenInputSCVlan(true);
+      setOpenInputMacAndUsername(false);
+      setUserFileDisabled(true);
+    } else {
+      setOpenInputSCVlan(false);
+      setOpenInputMacAndUsername(true);
+      setUserFileDisabled(true);
+    }
+
     if (value === "check_auth_mac" || value === "check_lock_mac") {
       setUserBras("");
       setMacDisabled(false);
@@ -218,6 +250,7 @@ const Bras = () => {
       setUserDisabled(true);
     }
   };
+
   const convertMacAddress = (mac) => {
     const cleanMac = mac.replace(/[^a-zA-Z0-9]/g, "");
     const formattedMac = cleanMac.match(/.{1,2}/g).join(":");
@@ -226,7 +259,9 @@ const Bras = () => {
 
   const handleClear = () => {
     setLineData([
-      <TerminalOutput key={lineData.length + 1}>{"bras_vlg_01@inoc2-T3200:~$"}</TerminalOutput>,
+      <TerminalOutput key={lineData.length + 1}>
+        {"bras_vlg_01@inoc2-T3200:~$"}
+      </TerminalOutput>,
     ]);
   };
 
@@ -245,6 +280,7 @@ const Bras = () => {
     }, 0);
   };
   // Xử lý đọc file txt
+  console.log(cvlan);
 
   return (
     <>
@@ -279,52 +315,139 @@ const Bras = () => {
                       Clear xác thực user trên BRAS <strong>(File)</strong>
                     </Radio>
                     <Radio value="clear_in_bras">Clear BRAS</Radio>
+                    <Radio value="sho_sub_scvlan">Kiểm tra SVLAN/CVLAN</Radio>
                   </Space>
                 </Radio.Group>
 
-                <Space size="middle" style={{ paddingTop: 10 }}>
-                  <div>
-                    <p>Địa chỉ MAC:</p>
-
-                    <Input
-                      type="text"
-                      placeholder="Nhập chuỗi 12 ký tự "
-                      value={macAddress}
-                      onChange={handleChange}
-                      disabled={macDisabled}
-                    />
-                  </div>
-                  <div>
-                    <p>Username:</p>
-                    <Input
-                      type="text"
-                      placeholder="Nhập username"
-                      value={userBras}
-                      onChange={(e) => setUserBras(e.target.value)}
-                      disabled={userDisabled}
-                    />
-                  </div>
-                </Space>
-                {!userFileDisabled && <> <Space size="left" style={{ paddingTop: 10 }}>
-                  <div>
-                    <p>Chọn file chứa danh sách tên người dùng</p>
-                    <Upload
-                      customRequest={customRequest}
-                      maxCount={1}
-
+                {openInputSCVlan === true ? (
+                  <Col style={{ marginTop: 5 }}>
+                    <Typography.Text
+                      style={{
+                        marginBottom: 1,
+                        fontSize: 13,
+                        fontWeight: "bold",
+                      }}
                     >
-                      <Button icon={<UploadOutlined />}>Upload</Button>
-                    </Upload>
-                  </div>
+                      Chọn IP thiết bị
+                    </Typography.Text>
+                    <Select
+                      style={{ width: "100%", marginTop: 5 }}
+                      onChange={(value) => setIpaddress(value)}
+                      placeholder="Chọn IP thiết bị"
+                    >
+                      <Select.Option value="123.29.12.185">
+                        VLG-PE1: 123.29.12.185
+                      </Select.Option>
+                      <Select.Option value="123.29.12.186">
+                        VLG-PE2: 123.29.12.186
+                      </Select.Option>
+                    </Select>
+                    <Space size="middle" style={{ paddingTop: 5 }}>
+                      <div>
+                        <Typography.Text
+                          style={{
+                            marginBottom: 1,
+                            fontSize: 13,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Nhập SVLAN
+                        </Typography.Text>
+                        <Input
+                          type="text"
+                          placeholder="Nhập svlan"
+                          value={svlan}
+                          onChange={(e) => setSvlan(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Typography.Text
+                          style={{
+                            marginBottom: 1,
+                            fontSize: 13,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Nhập CVLAN
+                        </Typography.Text>
+                        <Input
+                          style={{ width: "100%" }}
+                          type="text"
+                          placeholder="Nhập cvlan"
+                          value={cvlan}
+                          onChange={(e) => setCvlan(e.target.value)}
+                        />
+                      </div>
+                    </Space>
+                  </Col>
+                ) : (
+                  <></>
+                )}
 
-                </Space>
-                  {onLoading && <Progress strokeLinecap="butt" percent={progress} strokeColor={twoColors} />}
-                </>
-                }
+                {openInputMacAndUsername === true ? (
+                  <Space size="middle" style={{ paddingTop: 10 }}>
+                    <div>
+                      <Typography.Text
+                        style={{
+                          marginBottom: 1,
+                          fontSize: 13,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        <span>Địa chỉ MAC:</span>
+                      </Typography.Text>
 
-
+                      <Input
+                        type="text"
+                        placeholder="Nhập chuỗi 12 ký tự "
+                        value={macAddress}
+                        onChange={handleChange}
+                        disabled={macDisabled}
+                      />
+                    </div>
+                    <div>
+                      <Typography.Text
+                        style={{
+                          marginBottom: 1,
+                          fontSize: 13,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Username:
+                      </Typography.Text>
+                      <Input
+                        type="text"
+                        placeholder="Nhập username"
+                        value={userBras}
+                        onChange={(e) => setUserBras(e.target.value)}
+                        disabled={userDisabled}
+                      />
+                    </div>
+                  </Space>
+                ) : (
+                  <> </>
+                )}
+                {!userFileDisabled && (
+                  <>
+                    {" "}
+                    <Space size="left" style={{ paddingTop: 10 }}>
+                      <div>
+                        <p>Chọn file chứa danh sách tên người dùng</p>
+                        <Upload customRequest={customRequest} maxCount={1}>
+                          <Button icon={<UploadOutlined />}>Upload</Button>
+                        </Upload>
+                      </div>
+                    </Space>
+                    {onLoading && (
+                      <Progress
+                        strokeLinecap="butt"
+                        percent={progress}
+                        strokeColor={twoColors}
+                      />
+                    )}
+                  </>
+                )}
               </Form>
-
 
               <div style={{ marginTop: 10 }}>
                 <Button type="primary" onClick={handleRun} loading={onLoading}>

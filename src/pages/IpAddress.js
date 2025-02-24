@@ -87,7 +87,7 @@ const IpAddress = () => {
         <Col xs={24} sm={24} md={12} lg={18} xl={18} className="mb-24">
           <Card bordered={true}>
             <Table
-              pagination={{ pageSize: 5 }}
+     
               columns={columns}
               dataSource={dataTable.slice().reverse()}
               loading={loading}
