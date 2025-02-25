@@ -3072,6 +3072,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   height: 100%;
 }
 .react-terminal-line {
+  font-size: 14px !important;
   white-space: pre-wrap !important;
   color: #2bff2b;
 
@@ -3080,7 +3081,7 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   display: none !important;
 }
 .react-terminal-wrapper {
-	font-size: 16px !important;
+	font-size: 15px !important;
   padding: 20px 10px !important;
 }
 .react-terminal {
