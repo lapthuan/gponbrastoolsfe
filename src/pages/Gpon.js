@@ -434,7 +434,7 @@ function Gpon() {
           message.error(res.detail.data.message);
         } else if (res?.detail?.data?.message === "Thay đổi thành công") {
           // Sửa lỗi truy cập
-          message.success(res.detail.data.message);
+          message.success("Thay đổi thành công");
         }
 
         setOpenModalCGNAT(false);
