@@ -428,11 +428,11 @@ function Gpon() {
           status: statusCGNAT,
         });
 
-        console.log("Response:", res);
+        console.log(res);
 
         if (res?.detail?.data?.message === "Không có sự thay đổi") {
           message.error(res.detail.data.message);
-        } else if (res?.detail?.data?.message === "Thay đổi thành công") {
+        } else if (res?.message === "Thay đổi thành công") {
           // Sửa lỗi truy cập
           message.success("Thay đổi thành công");
         }
