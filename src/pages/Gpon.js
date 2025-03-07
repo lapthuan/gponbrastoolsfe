@@ -430,13 +430,14 @@ function Gpon() {
 
         console.log(res);
 
-        if (res?.detail?.data?.message === "Không có sự thay đổi") {
-          message.error(res.detail.data.message);
+        if (res?.detail === "Không có sự thay đổi") {
+          message.error(res?.detail);
         } else if (res?.message === "Thay đổi thành công") {
           // Sửa lỗi truy cập
-          message.success("Thay đổi thành công");
+          message.success(res?.message);
+        } else {
+          message.success("Không tìm thấy tài khoản người dùng");
         }
-
         setOpenModalCGNAT(false);
       }
     } catch (error) {
