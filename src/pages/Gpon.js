@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Card, Col, Row, message } from "antd";
+import { Card, Col, Row, message, Modal, Select } from "antd";
 import { TerminalOutput } from "react-terminal-ui";
 import useAsync from "../hook/useAsync";
 import ServiceIp from "../service/ServiceIp";
@@ -17,10 +17,13 @@ import TerminalComponent from "../components/Terminal/TerminalComponent";
 import RadioGroupComponent from "../components/Radio/RadioGroupComponent ";
 import DetailsForm from "../components/Form/DetailsForm";
 import ControlButtons from "../components/Form/ControlButtons";
+import ServiceVisa from "../service/ServiceVisa";
 
 function Gpon() {
   const [lineData, setLineData] = useState([
-    <TerminalOutput key={"12312312312321312"} >{"typ:isadmin>#"}</TerminalOutput>,
+    <TerminalOutput key={"12312312312321312"}>
+      {"typ:isadmin>#"}
+    </TerminalOutput>,
   ]);
   const [runLoading, setRunLoading] = useState(false);
   const [deviceType, setDeviceType] = useState("");
@@ -31,9 +34,10 @@ function Gpon() {
   const [radioValue, setRadioValue] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [userName, setUserName] = useState(false);
+  const [openModalCGNAT, setOpenModalCGNAT] = useState(false);
   const [loadingUserName, setLoadingUserName] = useState(false);
   const [vlanNetOneDevice, setVlanNetOneDevice] = useState([]);
-
+  const [statusCGNAT, setStatusCGNAT] = useState("");
   const { data: dataDevice, loading: loadingDevice } = useAsync(() =>
     ServiceDevice.getAlldevice()
   );
@@ -82,16 +86,22 @@ function Gpon() {
     } catch (error) {
       setRunLoading(false);
       if (error.response.data.detail)
-        message.warning(error.response.data.detail)
-      else
-        message.warning("Max Sessions Reached")
+        message.warning(error.response.data.detail);
+      else message.warning("Max Sessions Reached");
       console.error("Error controlling GPON:", error);
       // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
     } finally {
       setRunLoading(false);
     }
   };
-  const controlGponHW = async (mytv, net, ims, ip, loaithietbi, form2Values) => {
+  const controlGponHW = async (
+    mytv,
+    net,
+    ims,
+    ip,
+    loaithietbi,
+    form2Values
+  ) => {
     try {
       const data = {
         ipaddress: ip,
@@ -121,9 +131,8 @@ function Gpon() {
     } catch (error) {
       setRunLoading(false);
       if (error.response.data.detail)
-        message.warning(error.response.data.detail)
-      else
-        message.warning("Max Sessions Reached")
+        message.warning(error.response.data.detail);
+      else message.warning("Max Sessions Reached");
 
       console.error("Error controlling GPON:", error);
       // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
@@ -246,8 +255,8 @@ function Gpon() {
     }
   };
   const handleSelectDeviceType = (value) => {
-    setDeviceType(value)
-  }
+    setDeviceType(value);
+  };
   useEffect(() => {
     if (isChecked === false)
       if (deviceType) {
@@ -265,20 +274,17 @@ function Gpon() {
           onuId: null,
         });
         if (deviceType === "GPON MINI ZTE") {
-          form2.setFieldsValue({ card: 3 })
+          form2.setFieldsValue({ card: 3 });
         }
         if (deviceType === "GPON MINI HW") {
-          form2.setFieldsValue({ card: 1 })
+          form2.setFieldsValue({ card: 1 });
         }
         setLoadingDevices(true);
         const getDevice = async () => {
           try {
-
             const res = await ServiceDevice.getDevice(deviceType);
-            setRadioValue(null)
+            setRadioValue(null);
             setDevices(res);
-
-
           } catch (error) {
             console.error("Error fetching device data:", error);
             // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
@@ -292,20 +298,20 @@ function Gpon() {
 
   useEffect(() => {
     if (selectDevices) {
-
       const getADV = async () => {
         try {
           const res = await ServiceDevice.getADevice(selectDevices);
 
-          const resVlanNet = await ServiceVlanNet.getManyVlanNet(res.tenthietbi)
-          setVlanNetOneDevice(resVlanNet)
+          const resVlanNet = await ServiceVlanNet.getManyVlanNet(
+            res.tenthietbi
+          );
+          setVlanNetOneDevice(resVlanNet);
           form.setFieldsValue({
             ipaddress: res.ipaddress,
             vlanims: res.vlanims,
             vlanmytv: res.vlanmytv,
             vlannet: res.vlannet,
           });
-
         } catch (error) {
           console.error("Error fetching device data:", error);
         }
@@ -316,18 +322,17 @@ function Gpon() {
   }, [selectDevices, form, dataDevice]);
   useEffect(() => {
     if (ipAddress) {
-
       const getADV = async () => {
         try {
-          const ip = dataIp.find(
-            (ips) => ips._id === ipAddress
-          );
+          const ip = dataIp.find((ips) => ips._id === ipAddress);
           const resDevice = await ServiceDevice.getAlldevice();
-          setDevices(resDevice)
+          setDevices(resDevice);
           const res = await ServiceIp.getDeviceByIp(ip.ipaddress);
 
-          const resVlanNet = await ServiceVlanNet.getManyVlanNet(res[0].tenthietbi)
-          setVlanNetOneDevice(resVlanNet)
+          const resVlanNet = await ServiceVlanNet.getManyVlanNet(
+            res[0].tenthietbi
+          );
+          setVlanNetOneDevice(resVlanNet);
           form.setFieldsValue({
             deviceType: res[0].loaithietbi,
             deviceName: res[0]._id,
@@ -336,7 +341,6 @@ function Gpon() {
             vlanmytv: res[0].vlanmytv._id,
             vlannet: res[0].vlannet._id,
           });
-
         } catch (error) {
           console.error("Error fetching device data:", error);
         }
@@ -351,14 +355,14 @@ function Gpon() {
   };
   const handleSwitchChange = (checked) => {
     setIsChecked(checked);
-    setDeviceType("")
-    setRadioValue(null)
+    setDeviceType("");
+    setRadioValue(null);
     form.resetFields();
     form2.resetFields();
   };
 
   const handleGetUser = async () => {
-    setLoadingUserName(true)
+    setLoadingUserName(true);
     try {
       form.setFieldsValue({
         deviceName: null,
@@ -373,14 +377,15 @@ function Gpon() {
         card: null,
         onuId: null,
       });
-      const rs = await ServiceUser.getUser({ username: userName });
+      const rs = await ServiceVisa.getUser({ username: userName });
       const idDevice = dataDevice.find(
         (device) => device.tenthietbi === rs.detail.data[0].SystemName
       );
 
-
-      const resVlanNet = await ServiceVlanNet.getManyVlanNet(rs.detail.data[0].SystemName)
-      setVlanNetOneDevice(resVlanNet)
+      const resVlanNet = await ServiceVlanNet.getManyVlanNet(
+        rs.detail.data[0].SystemName
+      );
+      setVlanNetOneDevice(resVlanNet);
       const res = await ServiceDevice.getADevice(idDevice._id);
 
       form.setFieldsValue({
@@ -397,22 +402,54 @@ function Gpon() {
         card: rs.detail.data[0].SlotNo,
         onuId: rs.detail.data[0].OnuIndex,
       });
-      setDeviceType(res.loaithietbi)
-      setLoadingUserName(false)
+      setDeviceType(res.loaithietbi);
+      setLoadingUserName(false);
     } catch (error) {
-      message.warning("Không tìm thấy người dùng")
-      setLoadingUserName(false)
+      message.warning("Không tìm thấy người dùng");
+      setLoadingUserName(false);
     }
-
   };
 
+  const handleOpenModal = () => {
+    setOpenModalCGNAT(true);
+  };
+
+  const hideModalCGNAT = () => {
+    setOpenModalCGNAT(false);
+  };
+
+  const handleChaneCGNAT = async () => {
+    try {
+      if (statusCGNAT != null && userName != null) {
+        const res = await ServiceVisa.change_cgnat({
+          accountName: userName,
+          status: statusCGNAT,
+        });
+        console.log(res);
+        if(res.detail.data.message==="Không có sự thay đổi"){
+          message.error(res.detail.data.message);
+          setOpenModalCGNAT(false);
+        }
+        else{
+          message.success(res.detail.data.message);
+          setOpenModalCGNAT(false);
+        }
+      }
+    } catch (error) {
+      message.error("Không tìm thấy tài khoản người dùng");
+      setOpenModalCGNAT(false);
+    }
+  };
   return (
     <>
       <div className="layout-content">
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={5} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
-              <SwitchComponent isChecked={isChecked} handleSwitchChange={handleSwitchChange} />
+              <SwitchComponent
+                isChecked={isChecked}
+                handleSwitchChange={handleSwitchChange}
+              />
               {isChecked === false ? (
                 <DeviceForm
                   form={form}
@@ -435,6 +472,7 @@ function Gpon() {
               ) : (
                 <UserForm
                   form={form}
+                  handleOpenModal={handleOpenModal}
                   handleGetUser={handleGetUser}
                   loadingUserName={loadingUserName}
                   dataDevice={dataDevice}
@@ -452,19 +490,47 @@ function Gpon() {
                   loadingVlanIMS={loadingVlanIMS}
                 />
               )}
-              <DetailsForm form2={form2} deviceType={deviceType} radioValue={radioValue} />
-              <ControlButtons handleRun={handleRun} runLoading={runLoading} handleClear={handleClear} />
+              <DetailsForm
+                form2={form2}
+                deviceType={deviceType}
+                radioValue={radioValue}
+              />
+              <ControlButtons
+                handleRun={handleRun}
+                runLoading={runLoading}
+                handleClear={handleClear}
+              />
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={19} className="mb-24">
-            <Card bordered={false} className="criclebox h-full" >
+            <Card bordered={false} className="criclebox h-full">
               <TerminalComponent lineData={lineData} />
-              <RadioGroupComponent radioValue={radioValue} setRadioValue={setRadioValue} deviceType={deviceType} />
+              <RadioGroupComponent
+                radioValue={radioValue}
+                setRadioValue={setRadioValue}
+                deviceType={deviceType}
+              />
             </Card>
           </Col>
         </Row>
 
-
+        <Modal
+          title="Thay đổi CGNAT"
+          visible={openModalCGNAT}
+          onOk={handleChaneCGNAT}
+          onCancel={hideModalCGNAT}
+          okText="Thay đổi"
+          cancelText="Hủy"
+        >
+          <Select
+            style={{ width: "100%", marginTop: 5 }}
+            onChange={(value) => setStatusCGNAT(value)}
+            placeholder="Lựa chọn thay đổi"
+          >
+            <Select.Option value="1">IP động public {"=>"} CGNAT</Select.Option>
+            <Select.Option value="0">CGNAT {"=>"} IP động public</Select.Option>
+          </Select>
+        </Modal>
       </div>
     </>
   );

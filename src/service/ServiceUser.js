@@ -25,6 +25,7 @@ const ServiceUser = {
   changePasswordDefault: async (body) => {
     return requests.put(`/user/reset-password/${body}`)
   },
+  
 };
 
 export default ServiceUser;
