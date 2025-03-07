@@ -3,7 +3,6 @@ import { Button, Form, Input, Select, Space } from "antd";
 
 const UserForm = ({
   form,
-  handleOpenModal,
   handleGetUser,
   loadingUserName,
   dataDevice,
@@ -21,33 +20,23 @@ const UserForm = ({
   loadingVlanIMS,
 }) => (
   <>
-    <div style={{ padding: 10 }}>
+    <Space direction="vertical">
       <Input
         placeholder="Tài khoản"
         onChange={(value) => setUserName(value.target.value)}
         prefix={<UserOutlined />}
       />
-    </div>
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <div style={{ marginRight: 10 }}>
-        <Button
-          onClick={handleGetUser}
-          loading={loadingUserName}
-          type="primary"
-        >
-          Tìm kiếm
-        </Button>
-      </div>
-      <div>
-        <Button onClick={handleOpenModal}>CGNAT</Button>
-      </div>
-    </div>
+      <Button
+        onClick={handleGetUser}
+        loading={loadingUserName}
+        type="primary"
+        ghost
+        style={{ width: "100%" }}
+      >
+        <SearchOutlined />
+        Tìm kiếm
+      </Button>
+    </Space>
 
     <Form
       form={form}

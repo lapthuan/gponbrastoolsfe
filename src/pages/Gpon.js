@@ -1,5 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { Card, Col, Row, message, Modal, Select } from "antd";
+import {
+  Card,
+  Col,
+  Row,
+  message,
+  Modal,
+  Select,
+  Space,
+  Tag,
+  Button,
+} from "antd";
 import { TerminalOutput } from "react-terminal-ui";
 import useAsync from "../hook/useAsync";
 import ServiceIp from "../service/ServiceIp";
@@ -18,6 +28,8 @@ import RadioGroupComponent from "../components/Radio/RadioGroupComponent ";
 import DetailsForm from "../components/Form/DetailsForm";
 import ControlButtons from "../components/Form/ControlButtons";
 import ServiceVisa from "../service/ServiceVisa";
+import Title from "antd/lib/typography/Title";
+import { RiSafariLine } from "react-icons/ri";
 
 function Gpon() {
   const [lineData, setLineData] = useState([
@@ -27,6 +39,7 @@ function Gpon() {
   ]);
 
   const [runLoading, setRunLoading] = useState(false);
+  const [checkCGNAT, setCheckCGNAT] = useState("");
   const [deviceType, setDeviceType] = useState("");
   const [ipAddress, setIpAddress] = useState("");
   const [devices, setDevices] = useState([]);
@@ -358,6 +371,7 @@ function Gpon() {
     setIsChecked(checked);
     setDeviceType("");
     setRadioValue(null);
+    setCheckCGNAT(null);
     form.resetFields();
     form2.resetFields();
   };
@@ -379,6 +393,15 @@ function Gpon() {
         onuId: null,
       });
       const rs = await ServiceVisa.getUser({ username: userName });
+
+      if (rs.detail.data[0] && rs.detail.data[0].CGNAT === "CGNAT") {
+        setStatusCGNAT("0");
+        setCheckCGNAT(rs.detail.data[0].CGNAT);
+      } else {
+        setStatusCGNAT("1");
+        setCheckCGNAT("UnCGNAT");
+      }
+
       const idDevice = dataDevice.find(
         (device) => device.tenthietbi === rs.detail.data[0].SystemName
       );
@@ -421,14 +444,15 @@ function Gpon() {
 
   const handleChaneCGNAT = async () => {
     try {
+      console.log(statusCGNAT);
+      console.log(userName);
+
       setRunLoading(true);
       if (statusCGNAT != null && userName != null) {
         const res = await ServiceVisa.change_cgnat({
           accountName: userName,
           status: statusCGNAT,
         });
-
-        console.log(res);
 
         if (res?.detail === "Không có sự thay đổi") {
           message.error(res?.detail);
@@ -437,6 +461,15 @@ function Gpon() {
           message.success(res?.message);
         } else {
           message.error("Không tìm thấy tài khoản người dùng");
+        }
+        const rs = await ServiceVisa.getUser({ username: userName });
+        console.log(rs);
+        if (rs.detail.data[0] && rs.detail.data[0].CGNAT === "CGNAT") {
+          setStatusCGNAT("0");
+          setCheckCGNAT(rs.detail.data[0].CGNAT);
+        } else {
+          setStatusCGNAT("1");
+          setCheckCGNAT("UnCGNAT");
         }
         setOpenModalCGNAT(false);
       }
@@ -455,10 +488,41 @@ function Gpon() {
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={5} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
-              <SwitchComponent
-                isChecked={isChecked}
-                handleSwitchChange={handleSwitchChange}
-              />
+              <Space direction="horizontal">
+                <SwitchComponent
+                  isChecked={isChecked}
+                  handleSwitchChange={handleSwitchChange}
+                />
+              </Space>
+              {checkCGNAT === "CGNAT" ? (
+                <Space direction="horizontal" style={{ padding: 5 }}>
+                  <Tag
+                    color="green"
+                    style={{ fontWeight: "bold", fontSize: "14px" }}
+                  >
+                    {checkCGNAT}
+                  </Tag>
+                  {"=>"}
+                  <Button onClick={handleOpenModal} style={{ color: "red" }}>
+                    IP động public
+                  </Button>
+                </Space>
+              ) : checkCGNAT === "UnCGNAT" ? (
+                <Space direction="horizontal" style={{ padding: 5 }}>
+                  <Tag color="red" style={{ fontWeight: "bold" }}>
+                    IP động public
+                  </Tag>
+                  {"=>"}
+                  <Button
+                    onClick={handleOpenModal}
+                    style={{ color: "#4cd137" }}
+                  >
+                    CGNAT
+                  </Button>
+                </Space>
+              ) : (
+                <></>
+              )}
               {isChecked === false ? (
                 <DeviceForm
                   form={form}
@@ -532,14 +596,21 @@ function Gpon() {
           cancelText="Hủy"
           confirmLoading={runLoading}
         >
-          <Select
-            style={{ width: "100%", marginTop: 5 }}
-            onChange={(value) => setStatusCGNAT(value)}
-            placeholder="Lựa chọn thay đổi"
-          >
-            <Select.Option value="1">IP động public {"=>"} CGNAT</Select.Option>
-            <Select.Option value="0">CGNAT {"=>"} IP động public</Select.Option>
-          </Select>
+          {checkCGNAT === "CGNAT" ? (
+            <Title level={5}>
+              Xác nhận thay đổi sang{" "}
+              <Tag color="red" style={{ fontSize: "16px" }}>
+                Ip động public
+              </Tag>
+            </Title>
+          ) : (
+            <Title level={5}>
+              Xác nhận thay đổi sang{" "}
+              <Tag color="green" style={{ fontSize: "16px" }}>
+                CGNAT
+              </Tag>
+            </Title>
+          )}
         </Modal>
       </div>
     </>
