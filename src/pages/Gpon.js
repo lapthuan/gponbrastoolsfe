@@ -488,41 +488,40 @@ function Gpon() {
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={5} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
-              <Space direction="horizontal">
+              <Space direction="horizontal" style={{ padding: 5 }}>
                 <SwitchComponent
                   isChecked={isChecked}
                   handleSwitchChange={handleSwitchChange}
                 />
-              </Space>
-              {checkCGNAT === "CGNAT" ? (
-                <Space direction="horizontal" style={{ padding: 5 }}>
+                {checkCGNAT === "CGNAT" ? (
                   <Tag
                     color="green"
-                    style={{ fontWeight: "bold", fontSize: "14px" }}
-                  >
-                    {checkCGNAT}
-                  </Tag>
-                  {"=>"}
-                  <Button onClick={handleOpenModal} style={{ color: "red" }}>
-                    IP động public
-                  </Button>
-                </Space>
-              ) : checkCGNAT === "UnCGNAT" ? (
-                <Space direction="horizontal" style={{ padding: 5 }}>
-                  <Tag color="red" style={{ fontWeight: "bold" }}>
-                    IP động public
-                  </Tag>
-                  {"=>"}
-                  <Button
                     onClick={handleOpenModal}
-                    style={{ color: "#4cd137" }}
+                    style={{
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                      fontSize: "14px",
+                    }}
                   >
-                    CGNAT
-                  </Button>
-                </Space>
-              ) : (
-                <></>
-              )}
+                    &#10004; CGNAT
+                  </Tag>
+                ) : checkCGNAT === "UnCGNAT" ? (
+                  <Tag
+                    color="red"
+                    onClick={handleOpenModal}
+                    style={{
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                      fontSize: "14px",
+                    }}
+                  >
+                    &#10006; CGNAT
+                  </Tag>
+                ) : (
+                  <></>
+                )}
+              </Space>
+
               {isChecked === false ? (
                 <DeviceForm
                   form={form}
@@ -598,14 +597,14 @@ function Gpon() {
         >
           {checkCGNAT === "CGNAT" ? (
             <Title level={5}>
-              Xác nhận thay đổi sang{" "}
+              Xác nhận chuyển đổi sang{" "}
               <Tag color="red" style={{ fontSize: "16px" }}>
                 Ip động public
               </Tag>
             </Title>
           ) : (
             <Title level={5}>
-              Xác nhận thay đổi sang{" "}
+              Xác nhận chuyển đổi sang{" "}
               <Tag color="green" style={{ fontSize: "16px" }}>
                 CGNAT
               </Tag>
