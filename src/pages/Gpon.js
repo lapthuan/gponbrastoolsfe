@@ -427,22 +427,27 @@ function Gpon() {
           accountName: userName,
           status: statusCGNAT,
         });
-        console.log(res);
-        if (res.detail.data.message === "Không có sự thay đổi") {
+
+        console.log("Response:", res);
+
+        if (res?.detail?.data?.message === "Không có sự thay đổi") {
           message.error(res.detail.data.message);
-          setOpenModalCGNAT(false);
-        } else {
+        } else if (res?.detail?.data?.message === "Thay đổi thành công") {
+          // Sửa lỗi truy cập
           message.success(res.detail.data.message);
-          setOpenModalCGNAT(false);
         }
+
+        setOpenModalCGNAT(false);
       }
     } catch (error) {
+      console.error("Lỗi API:", error);
       message.error("Không tìm thấy tài khoản người dùng");
       setOpenModalCGNAT(false);
     } finally {
       setRunLoading(false);
     }
   };
+
   return (
     <>
       <div className="layout-content">
