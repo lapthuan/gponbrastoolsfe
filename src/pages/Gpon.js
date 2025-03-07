@@ -421,7 +421,7 @@ function Gpon() {
 
   const handleChaneCGNAT = async () => {
     try {
-      runLoading(true);
+      setRunLoading(true);
       if (statusCGNAT != null && userName != null) {
         const res = await ServiceVisa.change_cgnat({
           accountName: userName,
@@ -440,7 +440,7 @@ function Gpon() {
       message.error("Không tìm thấy tài khoản người dùng");
       setOpenModalCGNAT(false);
     } finally {
-      runLoading(false);
+      setRunLoading(false);
     }
   };
   return (
