@@ -25,6 +25,7 @@ function Gpon() {
       {"typ:isadmin>#"}
     </TerminalOutput>,
   ]);
+
   const [runLoading, setRunLoading] = useState(false);
   const [deviceType, setDeviceType] = useState("");
   const [ipAddress, setIpAddress] = useState("");
@@ -420,17 +421,17 @@ function Gpon() {
 
   const handleChaneCGNAT = async () => {
     try {
+      runLoading(true);
       if (statusCGNAT != null && userName != null) {
         const res = await ServiceVisa.change_cgnat({
           accountName: userName,
           status: statusCGNAT,
         });
         console.log(res);
-        if(res.detail.data.message==="Không có sự thay đổi"){
+        if (res.detail.data.message === "Không có sự thay đổi") {
           message.error(res.detail.data.message);
           setOpenModalCGNAT(false);
-        }
-        else{
+        } else {
           message.success(res.detail.data.message);
           setOpenModalCGNAT(false);
         }
@@ -438,6 +439,8 @@ function Gpon() {
     } catch (error) {
       message.error("Không tìm thấy tài khoản người dùng");
       setOpenModalCGNAT(false);
+    } finally {
+      runLoading(false);
     }
   };
   return (
@@ -521,6 +524,7 @@ function Gpon() {
           onCancel={hideModalCGNAT}
           okText="Thay đổi"
           cancelText="Hủy"
+          confirmLoading={runLoading}
         >
           <Select
             style={{ width: "100%", marginTop: 5 }}
