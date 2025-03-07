@@ -436,7 +436,7 @@ function Gpon() {
           // Sửa lỗi truy cập
           message.success(res?.message);
         } else {
-          message.success("Không tìm thấy tài khoản người dùng");
+          message.error("Không tìm thấy tài khoản người dùng");
         }
         setOpenModalCGNAT(false);
       }
