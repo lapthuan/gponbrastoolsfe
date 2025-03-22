@@ -444,9 +444,6 @@ function Gpon() {
 
   const handleChaneCGNAT = async () => {
     try {
-      console.log(statusCGNAT);
-      console.log(userName);
-
       setRunLoading(true);
       if (statusCGNAT != null && userName != null) {
         const res = await ServiceVisa.change_cgnat({
@@ -463,7 +460,6 @@ function Gpon() {
           message.error("Không tìm thấy tài khoản người dùng");
         }
         const rs = await ServiceVisa.getUser({ username: userName });
-        console.log(rs);
         if (rs.detail.data[0] && rs.detail.data[0].CGNAT === "CGNAT") {
           setStatusCGNAT("0");
           setCheckCGNAT(rs.detail.data[0].CGNAT);
@@ -486,7 +482,7 @@ function Gpon() {
     <>
       <div className="layout-content">
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={12} lg={12} xl={5} className="mb-24">
+          <Col xs={24} sm={24} md={8} lg={12} xl={5} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <Space direction="horizontal" style={{ padding: 5 }}>
                 <SwitchComponent
@@ -574,7 +570,7 @@ function Gpon() {
               />
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={19} className="mb-24">
+          <Col xs={24} sm={24} md={16} lg={12} xl={19} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <TerminalComponent lineData={lineData} />
               <RadioGroupComponent
