@@ -46,6 +46,7 @@ function Gpon() {
   const [loadingDevices, setLoadingDevices] = useState(false);
   const [selectDevices, setSelectDevices] = useState();
   const [radioValue, setRadioValue] = useState(null);
+  const [xgsponChecked, setXgsponChecked] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [userName, setUserName] = useState(false);
   const [openModalCGNAT, setOpenModalCGNAT] = useState(false);
@@ -72,22 +73,30 @@ function Gpon() {
 
   const controlGpon = async (mytv, net, ims, ip, loaithietbi, form2Values) => {
     try {
+      let command = radioValue;
+      if (
+        loaithietbi === "GPON ALU" &&
+        radioValue === "create_dvnet" &&
+        xgsponChecked === true
+      ) {
+        command = "create_dvnet_xgspon";
+      }
+
       const data = {
         ipaddress: ip,
-        commands: radioValue,
+        commands: command,
         device_types: loaithietbi,
-        card: form2Values.card ? form2Values.card : 0,
-        port: form2Values.port ? form2Values.port : 0,
-        onu: form2Values.onuId ? form2Values.onuId : 0,
-        slid: form2Values.slId ? form2Values.slId : 0,
+        card: form2Values.card || 0,
+        port: form2Values.port || 0,
+        onu: form2Values.onuId || 0,
+        slid: form2Values.slId || 0,
         vlanims: ims,
         vlanmytv: mytv,
         vlannet: net,
-        service_portnet: form2Values.portvlannet ? form2Values.portvlannet : 0,
-        service_portgnms: form2Values.portgnms ? form2Values.portgnms : 0,
-        service_portims: form2Values.portims ? form2Values.portims : 0,
+        service_portnet: form2Values.portvlannet || 0,
+        service_portgnms: form2Values.portgnms || 0,
+        service_portims: form2Values.portims || 0,
       };
-
       const res = await ServiceGpon.ControlGpon(data);
 
       const newLine = (
@@ -162,7 +171,7 @@ function Gpon() {
         message.error("Vui lòng chọn một chức năng.");
         return;
       }
-      console.log(form2Values);
+
       if (radioValue !== "sync_password") {
         if (
           form2Values.card === undefined ||
@@ -576,6 +585,8 @@ function Gpon() {
               <RadioGroupComponent
                 radioValue={radioValue}
                 setRadioValue={setRadioValue}
+                xgsponChecked={xgsponChecked}
+                setXgsponChecked={setXgsponChecked}
                 deviceType={deviceType}
               />
             </Card>
