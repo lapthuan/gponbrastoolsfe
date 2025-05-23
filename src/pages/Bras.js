@@ -335,12 +335,18 @@ const Bras = () => {
                       onChange={(value) => setIpaddress(value)}
                       placeholder="Chọn IP thiết bị"
                     >
-                      <Select.Option value="123.29.12.185">
+                      <Select.Option value="123.29.12.187">
+                        BNG1: 123.29.12.187
+                      </Select.Option>
+                      <Select.Option value="123.29.12.188">
+                        BNG2: 123.29.12.188
+                      </Select.Option>
+                      {/* <Select.Option value="123.29.12.185">
                         VLG-PE1: 123.29.12.185
                       </Select.Option>
                       <Select.Option value="123.29.12.186">
                         VLG-PE2: 123.29.12.186
-                      </Select.Option>
+                      </Select.Option> */}
                     </Select>
                     <Space size="middle" style={{ paddingTop: 5 }}>
                       <div>
