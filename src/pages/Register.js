@@ -21,7 +21,6 @@ const Register = () => {
   const [form] = useForm();
   const history = useHistory();
   const onFinish = async (values) => {
-    console.log(values);
     try {
       const data =
       {
@@ -38,7 +37,6 @@ const Register = () => {
       }
 
     } catch (error) {
-      console.log(error)
       if (error.response.data.detail.msg === "Không thể tạo người dùng mới")
         message.warning("Tài khoản đã tồn tại");
     }

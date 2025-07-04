@@ -10,18 +10,20 @@ import {
   Table,
   Tabs,
   Upload,
+  Typography,
 } from "antd";
-
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import DownloadExcelButton from "../components/Button/DownloadExcelButton ";
 import ServiceDevice from "../service/ServiceDevice";
-import ServiceIp from "../service/ServiceIp";
 import useAsync from "../hook/useAsync";
 import ServiceGpon from "../service/ServiceGpon";
 import { TerminalOutput } from "react-terminal-ui";
 import TerminalComponent from "../components/Terminal/TerminalComponent";
+import ServiceDeviceType from "../service/ServiceDeviceType";
+
 const { TabPane } = Tabs;
+const { Title } = Typography;
 
 const Port = () => {
   const [lineData, setLineData] = useState([
@@ -32,17 +34,20 @@ const Port = () => {
   const [data, setData] = useState([]);
   const [selectedServices, setSelectedServices] = useState({});
   const [deviceType, setDeviceType] = useState("");
-  const [devices, setDevices] = useState([]);
   const [onLoading, setOnLoading] = useState(false);
-  const [loadingDevices, setLoadingDevices] = useState(false);
-  const [selectDevices, setSelectDevices] = useState();
   const [ipAddress, setIpAddress] = useState();
-  const { data: dataIp, loading: loadingIp } = useAsync(() =>
-    ServiceIp.getAllIp()
+  const [deviceNames, setDeviceNames] = useState([]); // danh sách tên thiết bị theo loại
+  const [selectedDeviceName, setSelectedDeviceName] = useState(); // tên thiết bị đã chọn
+  const [deviceIps, setDeviceIps] = useState([]); // danh sách IP lấy được từ thiết bị
+
+  //Load loại thiết bị
+  const { data: dataDeviceType } = useAsync(() =>
+    ServiceDeviceType.getAllDeviceType()
   );
   const { data: dataDevice, loading: loadingDevice } = useAsync(() =>
     ServiceDevice.getAlldevice()
   );
+
   const handleServiceChange = (service, record) => {
     setSelectedServices((prevState) => ({
       ...prevState,
@@ -52,37 +57,48 @@ const Port = () => {
       },
     }));
   };
-  useEffect(() => {
-    if (selectDevices) {
-      const getADV = async () => {
-        try {
-          const res = await ServiceDevice.getADevice(selectDevices);
-          setIpAddress(res.ipaddress);
-        } catch (error) {
-          console.error("Error fetching device data:", error);
-        }
-      };
 
-      getADV();
-    }
-  }, [selectDevices]);
   useEffect(() => {
-    if (deviceType) {
-      const getDevice = async () => {
-        try {
-          const res = await ServiceDevice.getDevice(deviceType);
+    if (!deviceType) return;
+    setDeviceNames([]);
+    setSelectedDeviceName(undefined);
+    setIpAddress(undefined);
 
-          setDevices(res);
-        } catch (error) {
-          console.error("Error fetching device data:", error);
-          // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo cho người dùng
-        } finally {
-          setLoadingDevices(false);
-        }
-      };
-      getDevice();
-    }
+    const fetchByType = async () => {
+      try {
+        const res = await ServiceDevice.getAllDeviceByType({
+          loaithietbi: deviceType,
+        });
+        setDeviceNames(res); // Lưu danh sách thiết bị theo loại
+      } catch {
+        message.error("Không thể tải tên thiết bị theo loại");
+      }
+    };
+
+    fetchByType();
   }, [deviceType]);
+
+  useEffect(() => {
+    if (!selectedDeviceName) return;
+
+    const fetchByName = async () => {
+      try {
+        const res = await ServiceDevice.getAllDeviceByName({
+          name: selectedDeviceName,
+        });
+        const firstDevice = res[0];
+        if (firstDevice) {
+          setDeviceIps([firstDevice]); // bạn có thể dùng mảng hoặc 1 IP tùy
+          setIpAddress(firstDevice.ipaddress); // auto set IP lên giao diện
+        }
+      } catch {
+        message.error("Không thể tải IP theo tên thiết bị");
+      }
+    };
+
+    fetchByName();
+  }, [selectedDeviceName]);
+
   const handleSelectAllForService = (service) => {
     setSelectedServices((prevState) => {
       const allSelected = data.every(
@@ -101,25 +117,27 @@ const Port = () => {
       };
     });
   };
-  const handleSelectAllFunctions = (selectAll) => {
-    setSelectedServices((prevState) => {
-      const updatedServices = data.reduce((acc, record) => {
-        acc[record.key] = {
-          ...prevState[record.key],
-          delete: selectAll,
-          net: selectAll,
-          ims: selectAll,
-          mytv: selectAll,
-          sync: selectAll,
-        };
-        return acc;
-      }, {});
-      return {
-        ...prevState,
-        ...updatedServices,
-      };
-    });
-  };
+
+  // const handleSelectAllFunctions = (selectAll) => {
+  //   setSelectedServices((prevState) => {
+  //     const updatedServices = data.reduce((acc, record) => {
+  //       acc[record.key] = {
+  //         ...prevState[record.key],
+  //         delete: selectAll,
+  //         net: selectAll,
+  //         ims: selectAll,
+  //         mytv: selectAll,
+  //         sync: selectAll,
+  //       };
+  //       return acc;
+  //     }, {});
+  //     return {
+  //       ...prevState,
+  //       ...updatedServices,
+  //     };
+  //   });
+  // };
+
   const columns = [
     {
       title: "STT",
@@ -182,6 +200,7 @@ const Port = () => {
       ),
     },
   ];
+
   const generateCommands = async () => {
     try {
       setOnLoading(true);
@@ -190,13 +209,11 @@ const Port = () => {
         setOnLoading(false);
         return;
       }
-      if (selectDevices == null) {
+      if (deviceNames == null) {
         message.warning("Chưa chọn thiết bị");
         setOnLoading(false);
         return;
       }
-      const device = dataDevice.find((item) => item._id === selectDevices);
-      const ip = dataIp.find((item) => item._id === ipAddress);
 
       const hasValidRecord = data.some(
         (record) => selectedServices[record.key]?.sync
@@ -223,11 +240,10 @@ const Port = () => {
 
       const dataObject = {
         devicetype: deviceType,
-        selectDevices: device.tenthietbi,
-        ipaddress: ip.ipaddress,
+        selectDevices: deviceNames,
+        ipaddress: deviceIps,
         listconfig: listconfig,
       };
-      console.log(dataObject);
 
       const res = await ServiceGpon.ControlMany(dataObject);
       if (res) {
@@ -241,7 +257,6 @@ const Port = () => {
         setLineData((prevLineData) => prevLineData.concat(newLine));
       }
     } catch (error) {
-      console.log(error);
       message.error("Lỗi");
     }
   };
@@ -283,9 +298,6 @@ const Port = () => {
         columnHeaders.forEach((header) => {
           columnMapping[header.trim().toLowerCase()] = header;
         });
-
-        console.log("Column Mapping:", columnMapping);
-
         // Cập nhật dữ liệu với tên cột mới
         const updatedJson = json.map((row) => {
           const updatedRow = {};
@@ -305,9 +317,11 @@ const Port = () => {
       reader.readAsArrayBuffer(file);
     }
   };
+
   const handleDeleteDataTable = () => {
     setLineData([<TerminalOutput>{"typ:isadmin>#"}</TerminalOutput>]);
   };
+
   // const formatNumber = (number) => {
   //     return number < 10 ? `0${number}` : `${number}`;
   // };
@@ -325,168 +339,141 @@ const Port = () => {
 
   //     });
   // };
+
   return (
-    <div className="layout-content">
-      <Row gutter={[24, 0]}>
-        <Col xs={24} sm={24} md={12} lg={8} xl={8} className="mb-24">
-          <Card bordered={false} className="criclebox h-full " title="Excel">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+    <div className="layout-content" style={{ padding: "20px" }}>
+      <Row gutter={[24, 24]}>
+        {/* Card Excel */}
+        <Col xs={24} md={8}>
+          <Card
+            bordered={false}
+            title="Excel"
+            style={{
+              height: "100%",
+              borderRadius: "12px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+              padding: "20px",
+            }}
+          >
+            <Space
+              direction="horizontal"
+              style={{ width: "100%" }}
+              align="center"
             >
-              <Space direction="vertical" align="center">
-                <Upload beforeUpload={() => false} onChange={handleUpload}>
-                  <Button
-                    style={{
-                      borderColor: "#4CAF50",
-                      backgroundColor: "#4CAF50",
-                    }}
-                    type="primary"
-                  >
-                    Upload File Excel
-                  </Button>
-                </Upload>
-                <DownloadExcelButton />
-              </Space>
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={8} xl={8} className="mb-24">
-          <Card bordered={false} className="criclebox h-full" title="Chọn">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
+              <Upload beforeUpload={() => false} onChange={handleUpload}>
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: "#4CAF50",
+                    borderColor: "#4CAF50",
+                  }}
+                >
+                  Upload File Excel
+                </Button>
+              </Upload>
+              <DownloadExcelButton />
+            </Space>
+
+            <Space
+              direction="vertical"
+              style={{ marginTop: 16, width: "100%" }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                }}
+              <Title level={5}>Thiết bị: </Title>
+              <Select
+                style={{ width: "100%", marginBottom: 10 }}
+                onChange={(value) => setDeviceType(value)}
+                placeholder="Chọn loại thiết bị"
               >
+                {dataDeviceType?.map((device) => (
+                  <Select.Option key={device._id} value={device.typename}>
+                    {device.typename}
+                  </Select.Option>
+                ))}
+              </Select>
+
+              <Select
+                style={{ width: "100%", marginBottom: 10 }}
+                placeholder="Chọn thiết bị"
+                onChange={(value) => setSelectedDeviceName(value)}
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().includes(input.toLowerCase())
+                }
+              >
+                {deviceNames.map((device, i) => (
+                  <Select.Option key={i} value={device.tenthietbi}>
+                    {device.tenthietbi}
+                  </Select.Option>
+                ))}
+              </Select>
+
+              <Select
+                style={{ width: "100%", marginBottom: 10 }}
+                placeholder="Chọn IP"
+                value={ipAddress}
+                disabled
+              >
+                {deviceIps.map((device, i) => (
+                  <Select.Option key={i} value={device.ipaddress}>
+                    {device.ipaddress}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Space>
+            <Space>
+              <div style={{ textAlign: "center" }}>
                 <Button
                   style={{ margin: "5px" }}
                   onClick={() => handleSelectAllForService("sync")}
                 >
-                  {" "}
                   Đổi pass đồng bộ
                 </Button>
               </div>
-            </div>
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={24} md={12} lg={8} xl={8} className="mb-24">
-          <Card bordered={false} className="criclebox h-full" title="Thực hiện">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                }}
+              <Button
+                type="primary"
+                onClick={generateCommands}
+                loading={onLoading}
+                style={{ backgroundColor: "#1890ff", borderColor: "#4CAF50" }}
               >
-                <Select
-                  style={{ width: "100%", margin: 5 }}
-                  onChange={(value) => setDeviceType(value)}
-                  placeholder="Chọn loại thiết bị"
-                >
-                  <Select.Option value="GPON ALU">GPON ALU</Select.Option>
-                  <Select.Option value="GPON HW">GPON HW</Select.Option>
-                  <Select.Option value="GPON MINI HW">
-                    GPON Mini HW
-                  </Select.Option>
-                  <Select.Option value="GPON MINI ZTE">
-                    GPON Mini ZTE
-                  </Select.Option>
-                  <Select.Option value="GPON ZTE">GPON ZTE</Select.Option>
-                </Select>
-                <Select
-                  style={{ width: "100%", margin: 5 }}
-                  placeholder="Chọn thiết bị"
-                  onChange={(value) => setSelectDevices(value)}
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().includes(input.toLowerCase())
-                  }
-                  loading={loadingDevices}
-                >
-                  {devices.map((device) => (
-                    <Select.Option key={device._id} value={device._id}>
-                      {device.tenthietbi}
-                    </Select.Option>
-                  ))}
-                </Select>
-                <Select
-                  showSearch
-                  style={{ width: "100%", margin: 5 }}
-                  placeholder="Chọn Ip"
-                  loading={loadingIp}
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().includes(input.toLowerCase())
-                  }
-                  value={ipAddress}
-                  onChange={(value) => setIpAddress(value)}
-                >
-                  {dataIp?.map((item, i) => (
-                    <Select.Option key={i + 1} value={item._id}>
-                      {item.ipaddress}
-                    </Select.Option>
-                  ))}
-                </Select>
-
-                <Button
-                  onClick={() => generateCommands()}
-                  type="primary"
-                  loading={onLoading}
-                  style={{ borderColor: "#4CAF50", margin: "5px" }}
-                >
-                  {onLoading ? "Loading" : "Run"}
-                </Button>
-                <Button
-                  style={{ margin: "5px" }}
-                  onClick={() => handleDeleteDataTable()}
-                  danger
-                >
-                  Clear
-                </Button>
-              </div>
-            </div>
+                {onLoading ? "Loading" : "Run"}
+              </Button>
+              <Button danger onClick={handleDeleteDataTable}>
+                Clear
+              </Button>
+            </Space>
           </Card>
         </Col>
 
-        <Col xs={24} sm={24} md={12} lg={18} xl={24} className="mb-24">
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="Bảng dữ liệu" key="1">
-              <Table
-                columns={columns}
-                dataSource={data}
-                scroll={{ x: 1200 }}
-                pagination={{ pageSize: 6 }}
-              />
-            </TabPane>
-            <TabPane tab="Terminal" key="2">
-              <Card bordered={false} className="criclebox h-full">
-                <TerminalComponent lineData={lineData} />
-              </Card>
-            </TabPane>
-          </Tabs>
+        {/* Card Table + Terminal */}
+        <Col xs={24} md={16}>
+          <Card
+            bordered={false}
+            style={{
+              borderRadius: "12px",
+              height: "100%",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+            }}
+          >
+            <Tabs
+              defaultActiveKey="1"
+              style={{ height: "100%", overflowY: "auto" }}
+            >
+              <Tabs.TabPane tab="Bảng dữ liệu" key="1">
+                <Table
+                  columns={columns}
+                  dataSource={data}
+                  scroll={{ x: 1200 }}
+                  pagination={{ pageSize: 6 }}
+                />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Terminal" key="2">
+                <Card bordered={false} style={{ background: "#f9f9f9" }}>
+                  <TerminalComponent lineData={lineData} />
+                </Card>
+              </Tabs.TabPane>
+            </Tabs>
+          </Card>
         </Col>
       </Row>
     </div>

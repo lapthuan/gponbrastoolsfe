@@ -74,8 +74,10 @@ function Gpon() {
         service_portgnms: form2Values.portgnms || 0,
         service_portims: form2Values.portims || 0,
       };
+      console.log(data);
 
       const res = await ServiceGpon.ControlGpon(data);
+      console.log(res);
 
       const newLine = (
         <TerminalOutput key={lineData.length}>
@@ -274,17 +276,10 @@ function Gpon() {
         const resDevice = res[0];
         setDeviceIps(Array(resDevice));
         //Gán thông tin để lấy được 2 VLANnet
-        const vlanims = res[0].vlanims;
-        const vlanmytv = res[0].vlanmytv;
-        setVlanImsParam(res[0].vlanims);
-        setVlanMytvParam(res[0].vlanmytv);
-        setSelectedVlannet(res[0].vlannet);
         setDeviceVlans(res);
 
         form.setFieldsValue({
           ipaddress: resDevice.ipaddress,
-          vlanims,
-          vlanmytv,
         });
       } catch {
         message.error("Không thể tải IP theo tên thiết bị");
@@ -292,6 +287,23 @@ function Gpon() {
     };
     fetchByName();
   }, [selectedDeviceName]);
+
+  // 3. Khi chọn IP → load VlanNet (và VlanIMS, VlanMyTV nếu có 1 VlanNet)
+  // useEffect(() => {
+  //   if (!selectedIp) return;
+  //   form.resetFields(["vlannet", "vlanims", "vlanmytv"]);
+  //   setDeviceVlans([]);
+
+  //   const fetchByIp = async () => {
+  //     try {
+  //       const res = await ServiceDevice.getAllDeviceByIp({ ip: selectedIp });
+  //       setDeviceVlans(res);
+  //     } catch {
+  //       message.error("Không thể tải VlanNet theo IP");
+  //     }
+  //   };
+  //   fetchByIp();
+  // }, [selectedIp]);
 
   // 3. Khi chọn VlanNet -> Load VlanIMS, VlanMyTV
   useEffect(() => {
@@ -301,11 +313,13 @@ function Gpon() {
         const res = await ServiceDevice.getAllDeviceByVlannet({
           vlannet: selectedVlannet,
         });
-        //Gán thông tin để lấy được 2 VLANnet
         const vlanims = res[0].vlanims;
         const vlanmytv = res[0].vlanmytv;
+
         setVlanImsParam(res[0].vlanims);
         setVlanMytvParam(res[0].vlanmytv);
+
+        // Cập nhật Form sau khi có dữ liệu
         form.setFieldsValue({
           vlanims,
           vlanmytv,
@@ -315,6 +329,8 @@ function Gpon() {
       }
     };
     fetchByVlannet();
+    console.log(vlanMytvParam);
+    console.log(vlanimsParam);
   }, [selectedVlannet]);
 
   //Clear terminal output
@@ -358,6 +374,8 @@ function Gpon() {
         setLoadingUserName(false);
         return;
       }
+      console.log(user);
+
       // CGNAT check
       if (user.CGNAT === "CGNAT") {
         setStatusCGNAT("0");

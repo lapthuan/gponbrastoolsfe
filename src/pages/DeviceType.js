@@ -1,10 +1,17 @@
-import React from "react";
-import { Button, Card, Col, Form, Input, Row, Space, Table } from "antd";
-import SubmitIP from "../components/submit/submitIp.js";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Space,
+  Table,
+} from "antd";
+import SubmitDeviceType from "../components/submit/submitDeviceType.js";
 
-const { Search } = Input;
-
-const IpAddress = () => {
+const DeviceType = () => {
   const {
     form,
     columns,
@@ -15,8 +22,7 @@ const IpAddress = () => {
     loading,
     handleEdit,
     handleSubmit,
-    handleSearch, // Import the handleSearch function
-  } = SubmitIP();
+  } = SubmitDeviceType();
 
   return (
     <div className="layout-content">
@@ -26,20 +32,22 @@ const IpAddress = () => {
             <Card title="Thêm dữ liệu" bordered={true}>
               <Form
                 form={form}
-                labelCol={{ span: 6 }}
-                initialValues={{ size: "small" }}
-                layout="horizontal"
+                labelCol={{ span: 8 }}
+                initialValues={{
+                  size: "small",
+                }}
+                layout="vertical"
                 size={"small"}
                 className="form-card"
               >
                 <Form.Item
-                  label="IP :"
-                  name="ipaddress"
-                  tooltip="Nhập đúng định dạng IPv4"
-                  rules={[{ required: true, message: "Vui lòng nhập Ip!" }]}
-                  className="select-item"
+                  label="Tên loại TB:"
+                  name="typename"
+                  rules={[
+                    { required: true, message: "Chưa nhập loại thiết bị" },
+                  ]}
                 >
-                  <Input />
+                  <Input placeholder="Nhập loại thiết bị" />
                 </Form.Item>
 
                 <Button type="primary" onClick={handleSubmit}>
@@ -52,20 +60,23 @@ const IpAddress = () => {
               <i>Sửa dữ liệu của id: {idEdit.slice(-6)}</i>
               <Form
                 form={form}
-                labelCol={{ span: 6 }}
-                initialValues={{ size: "small" }}
-                layout="horizontal"
+                labelCol={{ span: 8 }}
+                initialValues={{
+                  size: "small",
+                }}
+                layout="vertical"
                 size={"small"}
                 className="form-card"
               >
                 <Form.Item
-                  label="IP :"
-                  tooltip="Nhập đúng định dạng IPv4"
-                  name="ipaddress"
-                  rules={[{ required: true, message: "Vui lòng nhập Ip!" }]}
+                  label="Tên loại TB :"
+                  name="typename"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập loại thiết bị!" },
+                  ]}
                   className="select-item"
                 >
-                  <Input />
+                  <Input placeholder="Nhập loại thiết bị" />
                 </Form.Item>
                 <Space size="middle">
                   <Button type="primary" onClick={handleEdit}>
@@ -76,18 +87,11 @@ const IpAddress = () => {
               </Form>
             </Card>
           )}
-          <Card title="Tìm kiếm" bordered={true} style={{ marginTop: "10px" }}>
-            <Search
-              placeholder="Nhập ip cần tìm"
-              onChange={(e) => handleSearch(e.target.value)}
-              enterButton
-            />
-          </Card>
         </Col>
         <Col xs={24} sm={24} md={12} lg={18} xl={18} className="mb-24">
           <Card bordered={true}>
             <Table
-     
+              pagination={{ pageSize: 5 }}
               columns={columns}
               dataSource={dataTable.slice().reverse()}
               loading={loading}
@@ -99,4 +103,4 @@ const IpAddress = () => {
   );
 };
 
-export default IpAddress;
+export default DeviceType;

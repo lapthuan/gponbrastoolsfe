@@ -102,6 +102,19 @@ function Sidenav({ color }) {
               Quản lý
             </Menu.Item>
             <Menu.Item key="4">
+              <NavLink to="/device-type">
+                <span
+                  className="icon"
+                  style={{
+                    background: page === "device-type" ? color : "",
+                  }}
+                >
+                  {device}
+                </span>
+                <span className="label">Loại thiết bị</span>
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="4">
               <NavLink to="/device">
                 <span
                   className="icon"

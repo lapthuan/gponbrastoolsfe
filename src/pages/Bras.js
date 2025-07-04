@@ -196,7 +196,6 @@ const Bras = () => {
         </TerminalOutput>
       );
       setLineData((prevLineData) => prevLineData.concat(newLine));
-      console.log(data);
       controlBras(data);
     } catch (error) {
       console.error("Validation failed:", error);
@@ -274,14 +273,11 @@ const Bras = () => {
       };
       reader.readAsText(file);
     }
-    console.log(fileUserBras);
     setTimeout(() => {
       onSuccess("ok");
     }, 0);
   };
   // Xử lý đọc file txt
-  console.log(cvlan);
-
   return (
     <>
       <div className="layout-content">

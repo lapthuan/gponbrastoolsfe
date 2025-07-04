@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Input, Spin, Button, Modal, message, Card, Col, Table, Row, Tag } from "antd";
+import {
+  Input,
+  Spin,
+  Button,
+  Modal,
+  message,
+  Card,
+  Col,
+  Table,
+  Row,
+  Tag,
+} from "antd";
 import ServiceHistory from "../service/serviceHistory";
 import useAsync from "../hook/useAsync";
 const { TextArea } = Input;
@@ -11,7 +22,9 @@ const HistoryNote = () => {
     current: 1,
   });
   const [data, setData] = useState([]);
-  const { data: dataHistory, loading: loadingHistory } = useAsync(() => ServiceHistory.getAllHistory())
+  const { data: dataHistory, loading: loadingHistory } = useAsync(() =>
+    ServiceHistory.getAllHistory()
+  );
 
   const handleTableChange = (pagination) => {
     setPagination((prev) => ({
@@ -19,10 +32,10 @@ const HistoryNote = () => {
       current: pagination.pageSize !== prev.pageSize ? 1 : pagination.current, // Reset về trang 1 nếu đổi pageSize
     }));
   };
-  
+
   useEffect(() => {
-    setData(dataHistory)
-  }, [dataHistory])
+    setData(dataHistory);
+  }, [dataHistory]);
   console.log(data);
 
   const columns = [
@@ -36,13 +49,11 @@ const HistoryNote = () => {
       title: "Thời gian",
       dataIndex: "use_time",
       key: "use_time",
-
     },
     {
       title: "Người dùng",
       dataIndex: "user_gpon",
       key: "user_gpon",
-
     },
     {
       title: "Khai thác GPON",
@@ -51,11 +62,20 @@ const HistoryNote = () => {
       render: (gpon_type) => {
         return (
           <Tag
-            color={gpon_type === "GPON ALU" ? "green" : gpon_type === "GPON HW" || gpon_type === "GPON MINI HW" ? "blue" : gpon_type === "GPON ZTE" || gpon_type === "GPON MINI ZTE" ? "yellow" : "red"}>
+            color={
+              gpon_type === "GPON ALU"
+                ? "green"
+                : gpon_type === "GPON HW" || gpon_type === "GPON MINI HW"
+                ? "blue"
+                : gpon_type === "GPON ZTE" || gpon_type === "GPON MINI ZTE"
+                ? "yellow"
+                : "red"
+            }
+          >
             {gpon_type}
           </Tag>
-        )
-      }
+        );
+      },
     },
     {
       title: "Sử dụng chức năng",
@@ -67,8 +87,7 @@ const HistoryNote = () => {
       dataIndex: "ip_gpon",
       key: "ip_gpon",
     },
-
-  ]
+  ];
   // Hàm gọi API để lấy dữ liệu lịch sử
   //   const fetchHistory = async () => {
   //     try {
@@ -90,9 +109,7 @@ const HistoryNote = () => {
   // Hàm gọi API để xóa lịch sử
   const deleteHistory = async () => {
     try {
-      const response = await ServiceHistory.deleteAllHistory()
-      console.log(response);
-
+      const response = await ServiceHistory.deleteAllHistory();
       if (response.detail.msg === "success") {
         message.success("Xóa lịch sử thành công!");
         setData(response.detail.data); // Xóa lịch sử trên giao diện
@@ -113,27 +130,29 @@ const HistoryNote = () => {
   //   }, []);
 
   return (
-
-
     <div className="layout-content">
       <Row gutter={[24, 0]}>
-
         <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-24">
           <Card bordered={false} className="criclebox h-full" title="Chức năng">
-            <Button type="danger" onClick={() => setIsModalVisible(true)}> Xóa lịch sử</Button>
+            <Button type="danger" onClick={() => setIsModalVisible(true)}>
+              {" "}
+              Xóa lịch sử
+            </Button>
           </Card>
         </Col>
 
         <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-24">
-          <Table pagination={{
-            ...pagination,
-            showSizeChanger: true,
-            pageSizeOptions: ["5", "6", "10", "20", "50", "100"],
-          }}
+          <Table
+            pagination={{
+              ...pagination,
+              showSizeChanger: true,
+              pageSizeOptions: ["5", "6", "10", "20", "50", "100"],
+            }}
             onChange={handleTableChange}
             loading={loadingHistory}
             dataSource={data}
-            columns={columns} />
+            columns={columns}
+          />
         </Col>
       </Row>
       <Modal
@@ -147,7 +166,6 @@ const HistoryNote = () => {
         <p>Bạn có chắc chắn muốn xóa toàn bộ lịch sử?</p>
       </Modal>
     </div>
-
   );
 };
 

@@ -51,7 +51,7 @@ const User = () => {
         setOpenModal(false);
       }
     } catch (error) {
-      console.log(error);
+
       if (error.response.data.detail.msg === "Không thể tạo người dùng mới") {
         message.warning("Tài khoản đã tồn tại");
         setLoading(false);
@@ -66,7 +66,6 @@ const User = () => {
     setData(dataUser);
   }, [dataUser]);
 
-  console.log(dataUser);
   const columns = [
     {
       title: "STT",
@@ -135,13 +134,13 @@ const User = () => {
   const handleChange = async () => {
     try {
       const res = await ServiceUser.changePasswordDefault(selectedRecord._id);
-      console.log(res);
+
       if (res) {
         message.success("Đã đặt lại mật khẩu mặt định");
         setIsModalVisible2(false);
       }
     } catch (error) {
-      console.log(error);
+
       message.error("Lỗi");
       setIsModalVisible2(false);
     }
@@ -160,8 +159,6 @@ const User = () => {
         setIsModalVisible(false);
       }
     } catch (error) {
-      console.log(error);
-
       message.error("Lỗi");
     }
   };
@@ -174,8 +171,6 @@ const User = () => {
     setIsModalVisible2(false);
   };
   const openEditDrawer = (record) => {
-    console.log(record);
-
     setCurrentRecord(record);
     form2.setFieldsValue(record);
     setOpenDrawer(true);
@@ -200,8 +195,6 @@ const User = () => {
         closeDrawer();
       }
     } catch (error) {
-      console.log(error);
-
       setLoading(false);
       closeDrawer();
     }

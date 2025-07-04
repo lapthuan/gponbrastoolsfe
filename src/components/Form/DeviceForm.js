@@ -1,161 +1,161 @@
-import { Form, Select } from "antd";
+import { Form, Input, Select, Space } from "antd";
+import { useEffect } from "react";
+import ServiceDeviceType from "../../service/ServiceDeviceType";
+import useAsync from "../../hook/useAsync";
 
-const DeviceForm = ({ form, deviceType, setDeviceType, devices, loadingDevices, setSelectDevices, dataIp, loadingIp, dataVlanNet, vlanNetOneDevice, loadingVlanNet, dataVlanMyTV, loadingVlanMyTV, dataVlanIMS, loadingVlanIMS, setIpAddress }) => (
+const DeviceForm = ({
+  form,
+  setDeviceType,
+  deviceType,
+  deviceNames,
+  deviceIps,
+  deviceVlans,
+  setSelectedDeviceName,
+  setSelectedIp,
+  vlanMytvParam,
+  vlanImsParam,
+  setSelectedVlannet,
+}) => {
+  //Load loại thiết bị
+  const { data: dataDeviceType } = useAsync(() =>
+    ServiceDeviceType.getAllDeviceType()
+  );
+
+  useEffect(() => {
+    form.setFieldsValue({
+      vlanims: vlanImsParam,
+      vlanmytv: vlanMytvParam,
+    });
+  }, [vlanImsParam, vlanMytvParam]);
+
+  return (
     <Form
-        form={form}
-        initialValues={{ size: "small" }}
-        layout="vertical"
-        size={"small"}
-        className="form-card"
-        style={{ marginTop: 10 }}
+      form={form}
+      initialValues={{ size: "small" }}
+      layout="vertical"
+      size="small"
+      className="form-card"
+      style={{ marginTop: 10 }}
     >
-        <Form.Item
-            label="Loại thiết bị"
-            className="select-item"
-            name="deviceType"
-            style={{ marginBottom: 10 }}
-            rules={[
-                {
-                    required: true,
-                    message: "Vui lòng chọn loại thiết bị",
-                },
-            ]}
+      {/* Loại thiết bị */}
+      <Form.Item
+        label="Loại thiết bị"
+        name="deviceType"
+        style={{ marginBottom: 10 }}
+        rules={[{ required: true, message: "Vui lòng chọn loại thiết bị" }]}
+      >
+        <Select
+          placeholder="Chọn loại thiết bị"
+          style={{ width: "100%" }}
+          onChange={(value) => setDeviceType(value)}
+          allowClear
         >
-            <Select
-                style={{ width: "100%" }}
-                onChange={(value) => setDeviceType(value)}
-                placeholder="Chọn loại thiết bị"
-            >
-                <Select.Option value="GPON ALU">GPON ALU</Select.Option>
-                <Select.Option value="GPON HW">GPON HW</Select.Option>
-                <Select.Option value="GPON MINI HW">GPON Mini HW</Select.Option>
-                <Select.Option value="GPON MINI ZTE">
-                    GPON Mini ZTE
-                </Select.Option>
-                <Select.Option value="GPON ZTE">GPON ZTE</Select.Option>
-            </Select>
-        </Form.Item>
-        <Form.Item
-            label="Thiết bị"
-            className="select-item"
-            name="deviceName"
-            style={{ marginBottom: 10 }}
-            rules={[
-                { required: true, message: "Vui lòng chọn thiết bị" },
-            ]}
+          {dataDeviceType?.map((device) => (
+            <Select.Option key={device._id} value={device.typename}>
+              {device.typename}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      {/* Tên thiết bị */}
+      <Form.Item
+        label="Thiết bị"
+        name="deviceName"
+        style={{ marginBottom: 10 }}
+        rules={[{ required: true, message: "Vui lòng chọn thiết bị" }]}
+      >
+        <Select
+          placeholder="Chọn thiết bị"
+          style={{ width: "100%" }}
+          onChange={(value) => setSelectedDeviceName(value)}
+          allowClear
+          showSearch
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            option?.children?.toLowerCase().includes(input.toLowerCase())
+          }
         >
-            <Select
-                style={{ width: "100%" }}
-                placeholder="Chọn thiết bị"
-                onChange={(value) => setSelectDevices(value)}
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                    option.children
-                        .toLowerCase()
-                        .includes(input.toLowerCase())
-                }
-                loading={loadingDevices}
-            >
-                {devices.map((device) => (
-                    <Select.Option key={device._id} value={device._id}>
-                        {device.tenthietbi}
-                    </Select.Option>
-                ))}
-            </Select>
+          {deviceNames?.map((device) => (
+            <Select.Option key={device._id} value={device.tenthietbi}>
+              {device.tenthietbi}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      {/* IP */}
+      <Form.Item
+        label="IP"
+        name="ipaddress"
+        style={{ marginBottom: 10 }}
+        rules={[{ required: true, message: "Vui lòng chọn IP" }]}
+      >
+        <Select
+          placeholder="Chọn IP"
+          style={{ width: "100%" }}
+          onChange={(value) => setSelectedIp(value)}
+          allowClear
+          showSearch
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            option?.children?.toLowerCase().includes(input.toLowerCase())
+          }
+        >
+          {deviceIps?.map((item) => (
+            <Select.Option key={item._id} value={item.ipaddress}>
+              {item.ipaddress}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      {/* Vlan Net */}
+      <Form.Item
+        label="Vlan Net"
+        name="vlannet"
+        style={{ marginBottom: 10 }}
+        rules={[{ required: true, message: "Vui lòng chọn Vlan Net" }]}
+      >
+        <Select
+          placeholder="Chọn Vlan Net"
+          style={{ width: "100%" }}
+          onChange={(value) => setSelectedVlannet(value)}
+          allowClear
+          showSearch
+          optionFilterProp="children"
+          value={deviceVlans.vlannet}
+        >
+          {deviceVlans?.map((item) => (
+            <Select.Option key={item._id} value={item.vlannet}>
+              {item.vlannet}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Space direction="horizontal" style={{ width: "100%" }}>
+        {/* Vlan MyTV */}
+        <Form.Item
+          label="Vlan MyTV"
+          name="vlanmytv"
+          style={{ marginBottom: 5 }}
+          rules={[{ required: true, message: "Vui lòng chọn Vlan MyTV" }]}
+        >
+          <Input style={{ width: "100%", height: "24px" }} disabled />
         </Form.Item>
 
+        {/* Vlan IMS */}
         <Form.Item
-            label="Ip"
-            name="ipaddress"
-            className="select-item"
-            style={{ marginBottom: 10 }}
-            rules={[{ required: true, message: "Vui lòng chọn Ip" }]}
+          label="Vlan IMS"
+          name="vlanims"
+          style={{ marginBottom: 5 }}
+          rules={[{ required: true, message: "Vui lòng chọn Vlan IMS" }]}
         >
-            <Select
-                style={{ width: "100%" }}
-                placeholder="Chọn Ip"
-                loading={loadingIp}
-                showSearch
-                onChange={(value) => setIpAddress(value)}
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                    option.children
-                        .toLowerCase()
-                        .includes(input.toLowerCase())
-                }
-            >
-                {dataIp?.map((item, i) => (
-                    <Select.Option key={item._id} value={item._id}>
-                        {item.ipaddress}
-                    </Select.Option>
-                ))}
-            </Select>
+          <Input style={{ width: "100%", height: "24px" }} disabled />
         </Form.Item>
-
-        <Form.Item
-            label="Vlan Net"
-            name="vlannet"
-            className="select-item"
-            style={{ marginBottom: 10 }}
-            rules={[
-                { required: true, message: "Vui lòng chọn Vlan Net" },
-            ]}
-        >
-            <Select
-                style={{ width: "100%" }}
-                placeholder="Chọn Vlan Net"
-                loading={loadingVlanNet}
-            >
-                {vlanNetOneDevice?.map((item, i) => (
-                    <Select.Option key={item._id} value={item._id}>
-                        {item.number}
-                    </Select.Option>
-                ))}
-            </Select>
-        </Form.Item>
-        <Form.Item
-            label="Vlan Mytv"
-            name="vlanmytv"
-            className="select-item"
-            style={{ marginBottom: 10 }}
-            rules={[
-                { required: true, message: "Vui lòng chọn Vlan Mytv" },
-            ]}
-        >
-            <Select
-                style={{ width: "100%" }}
-                placeholder="Chọn Vlan Mytv"
-                loading={loadingVlanMyTV}
-                disabled
-            >
-                {dataVlanMyTV?.map((item, i) => (
-                    <Select.Option key={item._id} value={item._id}>
-                        {item.number}
-                    </Select.Option>
-                ))}
-            </Select>
-        </Form.Item>
-
-        <Form.Item
-            label="Vlan IMS"
-            name="vlanims"
-            className="select-item"
-            loading={loadingVlanIMS}
-            style={{ marginBottom: 10 }}
-            rules={[
-                { required: true, message: "Vui lòng chọn Vlan IMS" },
-            ]}
-        >
-            <Select placeholder="Chọn Vlan IMS" disabled>
-                {dataVlanIMS?.map((item, i) => (
-                    <Select.Option key={item._id} value={item._id}>
-                        {item.number}
-                    </Select.Option>
-                ))}
-            </Select>
-        </Form.Item>
+      </Space>
     </Form>
-);
-
+  );
+};
 export default DeviceForm;

@@ -19,7 +19,12 @@ body {
   font-weight: 400;
   font-family: open sans, Helvetica, Arial, sans-serif;
 }
-
+.ant-form-vertical .ant-form-item-label{
+  padding: 0;
+}
+.ant-btn svg{
+  margin-right: 0px !important;
+}
 .ant-layout.ant-layout-has-sider {
   flex-direction: row;
 }
