@@ -1,4 +1,14 @@
-import { Button, Card, Col, Form, Input, Row, Select, Table } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Row,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import SubmitDevice from "../components/submit/submitDevice.js";
 import { useState } from "react";
 import useAsync from "../hook/useAsync.js";
@@ -83,28 +93,33 @@ const Device = () => {
               </Form.Item>
 
               <Form.Item
-                label="VLAN IMS"
-                name="vlanims"
-                rules={[{ required: true, message: "Chưa nhập VLAN IMS" }]}
-              >
-                <Input placeholder="Nhập VLAN IMS" />
-              </Form.Item>
-
-              <Form.Item
-                label="VLAN MyTV"
-                name="vlanmytv"
-                rules={[{ required: true, message: "Chưa nhập VLAN MyTV" }]}
-              >
-                <Input placeholder="Nhập VLAN MyTV" />
-              </Form.Item>
-
-              <Form.Item
                 label="VLAN Net"
                 name="vlannet"
                 rules={[{ required: true, message: "Chưa nhập VLAN Net" }]}
               >
                 <Input placeholder="Nhập VLAN Net" />
               </Form.Item>
+
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item
+                    label="VLAN IMS"
+                    name="vlanims"
+                    rules={[{ required: true, message: "Chưa nhập VLAN IMS" }]}
+                  >
+                    <Input placeholder="Nhập VLAN IMS" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="VLAN MyTV"
+                    name="vlanmytv"
+                    rules={[{ required: true, message: "Chưa nhập VLAN MyTV" }]}
+                  >
+                    <Input placeholder="Nhập VLAN MyTV" />
+                  </Form.Item>
+                </Col>
+              </Row>
 
               <Form.Item>
                 <Button

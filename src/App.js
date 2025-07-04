@@ -1,6 +1,5 @@
 import { Switch, Route } from "react-router-dom";
 import Gpon from "./pages/Gpon";
-import GponTest from "./pages/GponTest";
 import Main from "./components/layout/Main";
 import SignIn from "./pages/Sigin";
 import "antd/dist/antd.css";
