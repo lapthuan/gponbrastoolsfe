@@ -34,7 +34,7 @@ function App() {
             <PrivateRoute
               exact
               path="/gpon"
-              component={GponTest}
+              component={Gpon}
               allowedRoles={["admin", "user", "user gpon"]}
             />
             <PrivateRoute
