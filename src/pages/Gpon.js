@@ -49,6 +49,8 @@ function Gpon() {
 
   //Điều khiển các gpon thông thường
   const controlGpon = async (formValues, form2Values) => {
+    console.log("aaaaaaaaaaaaa222222");
+
     try {
       let command = radioValue;
       if (
@@ -83,7 +85,9 @@ function Gpon() {
         service_portgnms: form2Values.portgnms || 0,
         service_portims: form2Values.portims || 0,
       };
+      console.log(data);
 
+      return;
       const res = await ServiceGpon.ControlGpon(data);
 
       const newLine = (
@@ -107,6 +111,8 @@ function Gpon() {
 
   //Điều khiển gpon HW
   const controlGponHW = async (formValues, form2Values) => {
+    console.log("aaaaaaaaaaaaa1111");
+
     try {
       const data = {
         ipaddress: formValues.ipaddress,
@@ -211,8 +217,6 @@ function Gpon() {
       setRunLoading(true);
       const newLine = <TerminalOutput>{"typ:isadmin># ..."}</TerminalOutput>;
       setLineData((prevLineData) => prevLineData.concat(newLine));
-
-      controlGpon(formValues, form2Values);
 
       if (
         formValues.deviceType === "GPON HW" ||
