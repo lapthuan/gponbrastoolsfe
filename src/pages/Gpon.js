@@ -49,8 +49,6 @@ function Gpon() {
 
   //Điều khiển các gpon thông thường
   const controlGpon = async (formValues, form2Values) => {
-    console.log("aaaaaaaaaaaaa222222");
-
     try {
       let command = radioValue;
       if (
@@ -85,11 +83,9 @@ function Gpon() {
         service_portgnms: form2Values.portgnms || 0,
         service_portims: form2Values.portims || 0,
       };
-      console.log(data);
 
-      return;
+      //Kết quả điều khiển gpon
       const res = await ServiceGpon.ControlGpon(data);
-
       const newLine = (
         <TerminalOutput key={lineData.length}>
           {" "}
