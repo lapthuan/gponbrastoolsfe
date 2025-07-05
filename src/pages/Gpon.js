@@ -310,15 +310,15 @@ function Gpon() {
         const res = await ServiceDevice.getAllDeviceByVlannet({
           vlannet: selectedVlannet,
         });
-        //Gán thông tin để lấy được 2 VLANnet
-        const vlanims = res[0].vlanims;
-        const vlanmytv = res[0].vlanmytv;
-        setVlanImsParam(res[0].vlanims);
-        setVlanMytvParam(res[0].vlanmytv);
-        form.setFieldsValue({
-          vlanims,
-          vlanmytv,
-        });
+        // //Gán thông tin để lấy được 2 VLANnet
+        // const vlanims = res[0].vlanims;
+        // const vlanmytv = res[0].vlanmytv;
+        // setVlanImsParam(res[0].vlanims);
+        // setVlanMytvParam(res[0].vlanmytv);
+        // form.setFieldsValue({
+        //   vlanims,
+        //   vlanmytv,
+        // });
       } catch {
         message.error("Không thể tải VlanNet theo IP");
       }
