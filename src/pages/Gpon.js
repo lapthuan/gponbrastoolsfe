@@ -58,6 +58,15 @@ function Gpon() {
       ) {
         command = "create_dvnet_xgspon";
       }
+
+      //Kiểm tra cho gpon hw xgspon
+      if (
+        formValues.deviceType === "GPON HW XGSPON" &&
+        radioValue === "create_dvnet" &&
+        xgsponChecked === true
+      ) {
+        command = "create_dvnet_xgspon";
+      }
       //body gửi đến server
       const data = {
         ipaddress: formValues.ipaddress,
@@ -452,7 +461,7 @@ function Gpon() {
     <>
       <div className="layout-content">
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={8} lg={12} xl={5} className="mb-24">
+          <Col xs={24} sm={24} md={9} lg={12} xl={5}>
             <Card bordered={false} className="criclebox h-full">
               <Space direction="horizontal" style={{ padding: 5 }}>
                 <SwitchComponent
@@ -520,6 +529,7 @@ function Gpon() {
                     setSelectedVlannet={setSelectedVlannet}
                     vlanImsParam={vlanimsParam}
                     vlanMytvParam={vlanMytvParam}
+                    inforUserVisa={inforUserVisa}
                   />
                 </>
               )}
@@ -535,12 +545,9 @@ function Gpon() {
               />
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={16} lg={12} xl={19} className="mb-24">
+          <Col xs={24} sm={24} md={15} lg={12} xl={19} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
-              <TerminalComponent
-                lineData={lineData}
-                inforUserVisa={inforUserVisa}
-              />
+              <TerminalComponent lineData={lineData} />
               <RadioGroupComponent
                 radioValue={radioValue}
                 setRadioValue={setRadioValue}

@@ -89,7 +89,7 @@ const RadioGroupComponent = ({
           <Radio value={"change_sync_password"}>Đổi Password đồng bộ</Radio>
           <Radio value={"delete_port"}>Xóa Port</Radio>
           <Radio value={"create_dvnet"}>Tạo DV_NET</Radio>
-          {deviceType === "GPON ALU" && radioValue === "create_dvnet" && (
+          {deviceType === "GPON ALU" && radioValue === "create_dvnet" ? (
             <div style={{ marginTop: 8, marginLeft: 24 }}>
               <Checkbox
                 checked={xgsponChecked}
@@ -98,6 +98,18 @@ const RadioGroupComponent = ({
                 XGSPON
               </Checkbox>
             </div>
+          ) : deviceType === "GPON HW XGSPON" &&
+            radioValue === "create_dvnet" ? (
+            <div style={{ marginTop: 8, marginLeft: 24 }}>
+              <Checkbox
+                checked={xgsponChecked}
+                onChange={(e) => setXgsponChecked(e.target.checked)}
+              >
+                XGSPON
+              </Checkbox>
+            </div>
+          ) : (
+            <></>
           )}
           <Radio value={"dv_mytv"}>Tạo DV_MYTV</Radio>
           <Radio value={"dv_ims"}>Tạo DV_IMS</Radio>

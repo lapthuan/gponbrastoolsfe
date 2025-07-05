@@ -52,6 +52,28 @@ const UserForm = ({
         </Button>
       </Space>
 
+      <Space direction="vertical" style={{ width: "100%", marginTop: "10px" }}>
+        <Descriptions
+          bordered
+          column={1}
+          size="small"
+          labelStyle={{ fontWeight: "bold", fontSize: 11 }}
+        >
+          <Descriptions.Item label="Type ID" style={{ fontSize: 11 }}>
+            {inforUserVisa?.TypeId || "N/A"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Framed Pool" style={{ fontSize: 11 }}>
+            {inforUserVisa?.FramedPool || "N/A"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Framed Route" style={{ fontSize: 11 }}>
+            {inforUserVisa?.FramedRoute || "N/A"}
+          </Descriptions.Item>
+          <Descriptions.Item label="framed IP Address" style={{ fontSize: 11 }}>
+            {inforUserVisa?.FrameIpAddress || "N/A"}
+          </Descriptions.Item>
+        </Descriptions>
+      </Space>
+
       <Space direction="vertical" style={{ width: "100%", marginTop: 10 }}>
         <Form
           form={form}
