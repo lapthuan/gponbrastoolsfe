@@ -461,7 +461,7 @@ function Gpon() {
     <>
       <div className="layout-content">
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={9} lg={12} xl={5}>
+          <Col xs={24} sm={24} md={10} lg={14} xl={6} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <Space direction="horizontal" style={{ padding: 5 }}>
                 <SwitchComponent
@@ -545,7 +545,7 @@ function Gpon() {
               />
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={15} lg={12} xl={19} className="mb-24">
+          <Col xs={24} sm={24} md={15} lg={12} xl={18} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <TerminalComponent lineData={lineData} />
               <RadioGroupComponent

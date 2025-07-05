@@ -1,4 +1,4 @@
-import { Form, Input, Select, Space } from "antd";
+import { Col, Form, Input, Row, Select, Space } from "antd";
 import { useEffect } from "react";
 import ServiceDeviceType from "../../service/ServiceDeviceType";
 import useAsync from "../../hook/useAsync";
@@ -84,55 +84,58 @@ const DeviceForm = ({
         </Select>
       </Form.Item>
 
-      {/* IP */}
-      <Form.Item
-        label="IP"
-        name="ipaddress"
-        style={{ marginBottom: 10 }}
-        rules={[{ required: true, message: "Vui lòng chọn IP" }]}
-      >
-        <Select
-          placeholder="Chọn IP"
-          style={{ width: "100%" }}
-          onChange={(value) => setSelectedIp(value)}
-          allowClear
-          showSearch
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            option?.children?.toLowerCase().includes(input.toLowerCase())
-          }
-        >
-          {deviceIps?.map((item) => (
-            <Select.Option key={item._id} value={item.ipaddress}>
-              {item.ipaddress}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
-
-      {/* Vlan Net */}
-      <Form.Item
-        label="Vlan Net"
-        name="vlannet"
-        style={{ marginBottom: 10 }}
-        rules={[{ required: true, message: "Vui lòng chọn Vlan Net" }]}
-      >
-        <Select
-          placeholder="Chọn Vlan Net"
-          style={{ width: "100%" }}
-          onChange={(value) => setSelectedVlannet(value)}
-          allowClear
-          showSearch
-          optionFilterProp="children"
-          value={deviceVlans.vlannet}
-        >
-          {deviceVlans?.map((item) => (
-            <Select.Option key={item._id} value={item.vlannet}>
-              {item.vlannet}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="IP"
+            name="ipaddress"
+            style={{ marginBottom: 10 }}
+            rules={[{ required: true, message: "Vui lòng chọn IP" }]}
+          >
+            <Select
+              placeholder="Chọn IP"
+              style={{ width: "100%" }}
+              onChange={(value) => setSelectedIp(value)}
+              allowClear
+              showSearch
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option?.children?.toLowerCase().includes(input.toLowerCase())
+              }
+            >
+              {deviceIps?.map((item) => (
+                <Select.Option key={item._id} value={item.ipaddress}>
+                  {item.ipaddress}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          {/* Vlan Net */}
+          <Form.Item
+            label="Vlan Net"
+            name="vlannet"
+            style={{ marginBottom: 10 }}
+            rules={[{ required: true, message: "Vui lòng chọn Vlan Net" }]}
+          >
+            <Select
+              placeholder="Chọn Vlan Net"
+              style={{ width: "100%" }}
+              onChange={(value) => setSelectedVlannet(value)}
+              allowClear
+              showSearch
+              optionFilterProp="children"
+            >
+              {deviceVlans?.map((item) => (
+                <Select.Option key={item._id} value={item.vlannet}>
+                  {item.vlannet}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
 
       <Space direction="horizontal" style={{ width: "100%" }}>
         {/* Vlan MyTV */}

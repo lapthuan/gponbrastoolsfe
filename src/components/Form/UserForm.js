@@ -1,5 +1,14 @@
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Select, Space, Descriptions } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Select,
+  Space,
+  Descriptions,
+  Row,
+  Col,
+} from "antd";
 import { useEffect } from "react";
 import useAsync from "../../hook/useAsync";
 import ServiceDeviceType from "../../service/ServiceDeviceType";
@@ -57,19 +66,26 @@ const UserForm = ({
           bordered
           column={1}
           size="small"
-          labelStyle={{ fontWeight: "bold", fontSize: 11 }}
+          labelStyle={{ fontWeight: "bold", fontSize: 12 }}
         >
-          <Descriptions.Item label="Type ID" style={{ fontSize: 11 }}>
+          <Descriptions.Item label="Type ID" style={{ fontSize: 12 }}>
             {inforUserVisa?.TypeId || "N/A"}
           </Descriptions.Item>
-          <Descriptions.Item label="Framed Pool" style={{ fontSize: 11 }}>
+          <Descriptions.Item label="Framed Pool" style={{ fontSize: 12 }}>
             {inforUserVisa?.FramedPool || "N/A"}
           </Descriptions.Item>
-          <Descriptions.Item label="Framed Route" style={{ fontSize: 11 }}>
+          <Descriptions.Item label="Framed Route" style={{ fontSize: 12 }}>
             {inforUserVisa?.FramedRoute || "N/A"}
           </Descriptions.Item>
-          <Descriptions.Item label="framed IP Address" style={{ fontSize: 11 }}>
-            {inforUserVisa?.FrameIpAddress || "N/A"}
+          <Descriptions.Item label="framed IP Address" style={{ fontSize: 12 }}>
+            {inforUserVisa?.FrameIpAddress &&
+            inforUserVisa?.FrameIpAddress != null ? (
+              <span style={{ color: "#28a745" }}>
+                🌐{inforUserVisa?.FrameIpAddress}
+              </span>
+            ) : (
+              "N/A"
+            )}
           </Descriptions.Item>
         </Descriptions>
       </Space>
@@ -131,53 +147,61 @@ const UserForm = ({
           </Form.Item>
 
           {/* IP */}
-          <Form.Item
-            label="IP"
-            name="ipaddress"
-            style={{ marginBottom: 10 }}
-            rules={[{ required: true, message: "Vui lòng chọn IP" }]}
-          >
-            <Select
-              placeholder="Chọn IP"
-              style={{ width: "100%" }}
-              onChange={(value) => setSelectedIp(value)}
-              allowClear
-              showSearch
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                option?.children?.toLowerCase().includes(input.toLowerCase())
-              }
-            >
-              {deviceIps?.map((item) => (
-                <Select.Option key={item._id} value={item.ipaddress}>
-                  {item.ipaddress}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="IP"
+                name="ipaddress"
+                style={{ marginBottom: 10 }}
+                rules={[{ required: true, message: "Vui lòng chọn IP" }]}
+              >
+                <Select
+                  placeholder="Chọn IP"
+                  style={{ width: "100%" }}
+                  onChange={(value) => setSelectedIp(value)}
+                  allowClear
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option?.children
+                      ?.toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                >
+                  {deviceIps?.map((item) => (
+                    <Select.Option key={item._id} value={item.ipaddress}>
+                      {item.ipaddress}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              {/* Vlan Net */}
+              <Form.Item
+                label="Vlan Net"
+                name="vlannet"
+                style={{ marginBottom: 10 }}
+                rules={[{ required: true, message: "Vui lòng chọn Vlan Net" }]}
+              >
+                <Select
+                  placeholder="Chọn Vlan Net"
+                  style={{ width: "100%" }}
+                  onChange={(value) => setSelectedVlannet(value)}
+                  allowClear
+                  showSearch
+                  optionFilterProp="children"
+                >
+                  {deviceVlans?.map((item) => (
+                    <Select.Option key={item._id} value={item.vlannet}>
+                      {item.vlannet}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
 
-          {/* Vlan Net */}
-          <Form.Item
-            label="Vlan Net"
-            name="vlannet"
-            style={{ marginBottom: 10 }}
-            rules={[{ required: true, message: "Vui lòng chọn Vlan Net" }]}
-          >
-            <Select
-              placeholder="Chọn Vlan Net"
-              style={{ width: "100%" }}
-              onChange={(value) => setSelectedVlannet(value)}
-              allowClear
-              showSearch
-              optionFilterProp="children"
-            >
-              {deviceVlans?.map((item) => (
-                <Select.Option key={item._id} value={item.vlannet}>
-                  {item.vlannet}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
           <Space direction="horizontal" style={{ width: "100%" }}>
             {/* Vlan MyTV */}
             <Form.Item
