@@ -240,8 +240,7 @@ const Port = () => {
 
       const dataObject = {
         devicetype: deviceType,
-        selectDevices: deviceNames,
-        ipaddress: deviceIps,
+        ipaddress: deviceIps[0].ipaddress,
         listconfig: listconfig,
       };
 
