@@ -27,53 +27,32 @@ const RadioGroupComponent = ({
           </Radio>
           <Radio
             disabled={
-              deviceType === "GPON MINI HW" || deviceType === "GPON HW"
+              deviceType === "GPON MINI HW" ||
+              deviceType === "GPON HW" ||
+              deviceType === "GPON HW XGSPON"
                 ? false
                 : true
             }
             value={"view_info_onu"}
           >
-            Xem info (GPON MINI HW & GPON HW)
-          </Radio>
-          <Radio
-            disabled={deviceType === "GPON ALU" ? false : true}
-            value={"reboot_alu"}
-          >
-            Reboot Modem ALU
+            Xem info (OLT HW)
           </Radio>
         </div>
         <div className="column">
           <Radio value={"check_capacity"}>Kiểm tra công suất</Radio>
           <Radio
             disabled={
-              deviceType === "GPON HW" || deviceType === "GPON MINI HW"
+              deviceType === "GPON HW" ||
+              deviceType === "GPON MINI HW" ||
+              deviceType === "GPON HW XGSPON"
                 ? false
                 : true
             }
             value={"check_service_port"}
           >
-            Kiểm tra service port cho OLT HW
+            Kiểm tra service port (OLT HW)
           </Radio>
-          <Radio
-            disabled={
-              deviceType === "GPON HW" || deviceType === "GPON MINI HW"
-                ? false
-                : true
-            }
-            value={"reboot_hw"}
-          >
-            Reboot Modem HW & MINI HW
-          </Radio>
-          <Radio
-            disabled={
-              deviceType === "GPON ZTE" || deviceType === "GPON MINI ZTE"
-                ? false
-                : true
-            }
-            value={"reboot_zte"}
-          >
-            Reboot Modem ZTE & MINI ZTE
-          </Radio>
+
           <Radio
             disabled={
               deviceType === "GPON ZTE" || deviceType === "GPON MINI ZTE"
@@ -82,8 +61,9 @@ const RadioGroupComponent = ({
             }
             value={"delete_wan_ip_zte"}
           >
-            Xóa wan ip cho onu loại ZTE
+            Xóa wan ip cho onu (OLT ZTE)
           </Radio>
+          <Radio value={"reboot"}>Reboot Modem</Radio>
         </div>
         <div className="column">
           <Radio value={"change_sync_password"}>Đổi Password đồng bộ</Radio>
