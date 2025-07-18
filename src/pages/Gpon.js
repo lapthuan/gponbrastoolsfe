@@ -344,6 +344,10 @@ function Gpon() {
 
   //Lấy thông tin người dùng
   //Khi nhập tên người dùng và nhấn tìm kiếm, sẽ lấy thông tin người
+  const formatUserName = (value) => {
+    return value.replace(/\s+/g, "");
+  };
+
   const handleGetUser = async () => {
     setLoadingUserName(true);
     try {
@@ -358,7 +362,10 @@ function Gpon() {
         "card",
         "onuId",
       ]);
-      const rs = await ServiceVisa.getUser({ username: userName });
+
+      const rs = await ServiceVisa.getUser({
+        username: formatUserName(userName),
+      });
 
       const user = rs.detail.data[0];
       setInforUserVisa(user);
@@ -424,9 +431,10 @@ function Gpon() {
   const handleChaneCGNAT = async () => {
     try {
       setRunLoading(true);
+      const formatedUserName = formatUserName(userName);
       if (statusCGNAT != null && userName != null) {
         const res = await ServiceVisa.change_cgnat({
-          accountName: userName,
+          accountName: formatedUserName,
           status: statusCGNAT,
         });
 
@@ -438,7 +446,7 @@ function Gpon() {
         } else {
           message.error("Không tìm thấy tài khoản người dùng");
         }
-        const rs = await ServiceVisa.getUser({ username: userName });
+        const rs = await ServiceVisa.getUser({ username: formatedUserName });
         if (rs.detail.data[0] && rs.detail.data[0].CGNAT === "CGNAT") {
           setStatusCGNAT("0");
           setCheckCGNAT(rs.detail.data[0].CGNAT);

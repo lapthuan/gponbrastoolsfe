@@ -76,6 +76,11 @@ const Bras = () => {
     }
   };
 
+  //Xóa các ký tự dấu cách trong username
+  const formatUserName = (value) => {
+    return value.replace(/\s+/g, "");
+  };
+
   const handleRun = async () => {
     try {
       let data = {};
@@ -137,7 +142,10 @@ const Bras = () => {
             setOnLoading(false);
             return;
           }
-          data = { command: "check_user_bras", username_bras: userBras };
+          data = {
+            command: "check_user_bras",
+            username_bras: formatUserName(userBras),
+          };
         } else if (radioValue === "clear_user_bras") {
           if (userBras === "") {
             message.error("Vui lòng nhập username.");
@@ -158,7 +166,7 @@ const Bras = () => {
             const formattedUsernames = `[${usernames.join(",")}]`;
             data = {
               command: "clear_user_bras",
-              username_bras: formattedUsernames,
+              username_bras: formatUserName(formattedUsernames),
             };
           }
 
